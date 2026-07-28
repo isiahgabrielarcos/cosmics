@@ -1,0 +1,26 @@
+[gd_scene format=3 uid="uid://dgelgpq4puvxf"]
+
+[ext_resource type="Script" uid="uid://dqffdctuxhivi" path="res://scripts/levels/battle_scene.gd" id="1_batsc"]
+[ext_resource type="PackedScene" uid="uid://bmq83uhxu5rui" path="res://scenes/characters/toby_ship_1.tscn" id="1_gobkq"]
+[ext_resource type="PackedScene" uid="uid://osds7svbypug" path="res://scenes/ui/background.tscn" id="2_ert8t"]
+[ext_resource type="PackedScene" uid="uid://hv6h1ux32yxc" path="res://scenes/ui/player_hud.tscn" id="6_8v75x"]
+[ext_resource type="Script" path="res://scripts/enemies/spawnerScript.gd" id="7_njctv"]
+
+[node name="Testing Area" type="Node2D" unique_id=2057356583]
+script = ExtResource("1_batsc")
+
+[node name="Background" parent="." unique_id=2070054606 instance=ExtResource("2_ert8t")]
+
+[node name="Toby_Ship_1" parent="." unique_id=1839578066 instance=ExtResource("1_gobkq")]
+position = Vector2(-1, 1)
+
+[node name="Camera2D" type="Camera2D" parent="Toby_Ship_1" unique_id=1947340934]
+position_smoothing_enabled = true
+position_smoothing_speed = 8.0
+
+[node name="Player_HUD" parent="." unique_id=552547318 instance=ExtResource("6_8v75x")]
+
+[node name="spawner" type="Node2D" parent="." unique_id=875976641]
+script = ExtResource("7_njctv")
+player_path = NodePath("../Toby_Ship_1")
+camera_path = NodePath("../Toby_Ship_1/Camera2D")

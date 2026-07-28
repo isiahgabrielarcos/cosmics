@@ -1,0 +1,257 @@
+[gd_scene format=3 uid="uid://hv6h1ux32yxc"]
+
+[ext_resource type="Texture2D" uid="uid://cnfvsa06nvr30" path="res://assets/art/ui/miniMap.png" id="3_osipw"]
+[ext_resource type="Texture2D" uid="uid://bi3py5n3mq7uq" path="res://assets/art/ui/inventory.png" id="4_mjrxy"]
+[ext_resource type="Script" uid="uid://c2qycaas048ia" path="res://scripts/ui/player_hud.gd" id="5_hudhd"]
+[ext_resource type="Texture2D" uid="uid://dd35eae864y7d" path="res://assets/art/ui/healthBar.png" id="6_hpbar"]
+[ext_resource type="Texture2D" uid="uid://c2hd6v3ixmeoe" path="res://assets/art/ui/shieldBar.png" id="7_shbar"]
+[ext_resource type="Texture2D" uid="uid://ft20q8mmj8am" path="res://assets/art/ui/expBar.png" id="8_expbar"]
+[ext_resource type="FontFile" uid="uid://df2u10dmiarah" path="res://assets/fonts/RetroGaming.ttf" id="9_font"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_bhaj2"]
+font_size = 25
+
+[sub_resource type="LabelSettings" id="LabelSettings_x1m7o"]
+font_size = 32
+
+[sub_resource type="LabelSettings" id="LabelSettings_t61g4"]
+font_size = 20
+
+[sub_resource type="LabelSettings" id="LabelSettings_nh6vl"]
+font_size = 29
+
+[sub_resource type="LabelSettings" id="LabelSettings_3cn05"]
+font_size = 38
+
+[node name="Player_HUD" type="CanvasLayer" unique_id=168399030]
+script = ExtResource("5_hudhd")
+
+[node name="Battle_HUD" type="Control" parent="." unique_id=2054501855]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="MiniMap" type="Sprite2D" parent="Battle_HUD" unique_id=867836882]
+position = Vector2(1800.9999, 114.49999)
+scale = Vector2(2.9843748, 2.9843748)
+texture = ExtResource("3_osipw")
+
+[node name="Inventory" type="Sprite2D" parent="Battle_HUD" unique_id=1477557909]
+position = Vector2(989, 1043)
+scale = Vector2(3.25, 3.25)
+texture = ExtResource("4_mjrxy")
+
+[node name="HealthBar" type="TextureProgressBar" parent="Battle_HUD" unique_id=1785019978]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = -0.1015625
+anchor_top = -0.022222223
+anchor_right = -0.050520834
+anchor_bottom = -0.0074074073
+offset_left = 218.0
+offset_top = 50.0
+offset_right = 418.0
+offset_bottom = 70.0
+value = 100.0
+nine_patch_stretch = true
+texture_progress = ExtResource("6_hpbar")
+metadata/_edit_use_anchors_ = true
+
+[node name="ShieldBar" type="TextureProgressBar" parent="Battle_HUD" unique_id=2072254699]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = -0.1015625
+anchor_right = -0.050520834
+anchor_bottom = 0.0129629625
+offset_left = 218.0
+offset_top = 73.0
+offset_right = 418.0
+offset_bottom = 93.0
+max_value = 50.0
+value = 50.0
+nine_patch_stretch = true
+texture_progress = ExtResource("7_shbar")
+metadata/_edit_use_anchors_ = true
+
+[node name="ExpBar" type="TextureProgressBar" parent="Battle_HUD" unique_id=1071344489]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = -0.09947917
+anchor_top = 0.015740741
+anchor_right = -0.053125
+anchor_bottom = 0.016666668
+offset_left = 218.0
+offset_top = 99.0
+offset_right = 418.0
+offset_bottom = 111.0
+max_value = 30.0
+nine_patch_stretch = true
+texture_progress = ExtResource("8_expbar")
+metadata/_edit_use_anchors_ = true
+
+[node name="LevelLabel" type="Label" parent="Battle_HUD" unique_id=407473824]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = -0.0984375
+anchor_top = 0.058333334
+anchor_right = -0.0984375
+anchor_bottom = 0.0712963
+offset_left = 218.0
+offset_top = 81.0
+offset_right = 318.0
+offset_bottom = 99.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("9_font")
+theme_override_font_sizes/font_size = 14
+text = "LVL 1"
+label_settings = SubResource("LabelSettings_bhaj2")
+metadata/_edit_use_anchors_ = true
+
+[node name="AmmoLabel" type="Label" parent="Battle_HUD" unique_id=79216499]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = -0.1390625
+anchor_top = 0.7925926
+anchor_right = -0.08958333
+anchor_bottom = 0.8333333
+offset_left = 218.0
+offset_top = 115.0
+offset_right = 318.0
+offset_bottom = 133.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("9_font")
+theme_override_font_sizes/font_size = 14
+text = "18 / 18"
+label_settings = SubResource("LabelSettings_x1m7o")
+horizontal_alignment = 2
+metadata/_edit_use_anchors_ = true
+
+[node name="ReloadLabel" type="Label" parent="Battle_HUD" unique_id=419132173]
+visible = false
+modulate = Color(1, 0.55, 0, 1)
+layout_mode = 0
+offset_left = 168.0
+offset_top = 983.0
+offset_right = 368.0
+offset_bottom = 1009.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("9_font")
+theme_override_font_sizes/font_size = 14
+text = "RELOADING..."
+label_settings = SubResource("LabelSettings_t61g4")
+
+[node name="WeaponLabel" type="Label" parent="Battle_HUD" unique_id=1078856004]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = -0.104166664
+anchor_top = 0.75
+anchor_right = -0.104166664
+anchor_bottom = 0.75
+offset_left = 218.0
+offset_top = 135.0
+offset_right = 318.0
+offset_bottom = 153.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("9_font")
+theme_override_font_sizes/font_size = 14
+text = "PRI W1"
+metadata/_edit_use_anchors_ = true
+
+[node name="SkillLabel" type="Label" parent="Battle_HUD" unique_id=2142679768]
+modulate = Color(0.5, 1, 0.6, 1)
+layout_mode = 1
+anchors_preset = -1
+anchor_left = -0.104166664
+anchor_top = 0.79907405
+anchor_right = -0.08645833
+anchor_bottom = 0.81203705
+offset_left = 218.0
+offset_top = 155.0
+offset_right = 380.0
+offset_bottom = 173.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("9_font")
+theme_override_font_sizes/font_size = 14
+text = "SKILL READY"
+label_settings = SubResource("LabelSettings_nh6vl")
+metadata/_edit_use_anchors_ = true
+
+[node name="TimerLabel" type="Label" parent="Battle_HUD" unique_id=325934674]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -60.0
+offset_top = 16.0
+offset_right = 60.0
+offset_bottom = 56.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("9_font")
+theme_override_font_sizes/font_size = 28
+label_settings = SubResource("LabelSettings_3cn05")
+horizontal_alignment = 1
+metadata/_edit_use_anchors_ = true
+
+[node name="KillsLabel" type="Label" parent="Battle_HUD" unique_id=140875801]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -80.0
+offset_top = 52.0
+offset_right = 80.0
+offset_bottom = 76.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("9_font")
+theme_override_font_sizes/font_size = 16
+horizontal_alignment = 1
+metadata/_edit_use_anchors_ = true
+
+[node name="CurrencyLabel" type="Label" parent="Battle_HUD" unique_id=2118718851]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.98541665
+anchor_top = 0.19351852
+anchor_right = 0.98541665
+anchor_bottom = 0.19351852
+offset_left = -330.0
+offset_top = 16.0
+offset_bottom = 40.0
+grow_horizontal = 0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("9_font")
+theme_override_font_sizes/font_size = 16
+metadata/_edit_use_anchors_ = true
+
+[node name="Hub_HUD" type="Control" parent="." unique_id=2084233367]
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="InventoryHint" type="Label" parent="Hub_HUD" unique_id=1553827020]
+modulate = Color(1, 1, 1, 0.7)
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -80.0
+offset_top = -46.0
+offset_right = 80.0
+offset_bottom = -26.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("9_font")
+theme_override_font_sizes/font_size = 14
+text = "[ I ] Inventory"
+horizontal_alignment = 1

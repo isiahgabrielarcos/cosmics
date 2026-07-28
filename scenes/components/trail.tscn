@@ -1,0 +1,18 @@
+[gd_scene load_steps=4 format=3 uid="uid://dkwdtcpw11y6"]
+
+[ext_resource type="Script" uid="uid://cxrwssd6bjfmy" path="res://scripts/characters/ufo_trail.gd" id="1_65rx5"]
+
+[sub_resource type="Curve" id="Curve_e0vd0"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="Gradient" id="Gradient_vc0dx"]
+offsets = PackedFloat32Array(0, 0.146667, 1)
+colors = PackedColorArray(0.86483, 0.930058, 1, 1, 0.0299855, 0.503079, 0.959603, 0.853333, 2.88785e-06, 0, 0.724565, 0)
+
+[node name="trail" type="Line2D"]
+width = 50.0
+width_curve = SubResource("Curve_e0vd0")
+gradient = SubResource("Gradient_vc0dx")
+joint_mode = 2
+script = ExtResource("1_65rx5")

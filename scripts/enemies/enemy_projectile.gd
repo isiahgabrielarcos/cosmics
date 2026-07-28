@@ -1,0 +1,45 @@
+extends Area2D
+class_name EnemyProjectile
+
+# Ports the enemyShooter() projectile — laserBeam1.png fired at the hero,
+# damage 5, ~5 s lifetime.
+
+const TEX := preload("res://assets/art/characters/laserBeam1.png")
+
+var direction: Vector2 = Vector2.RIGHT
+var speed: float = 400.0
+var damage: int = 5
+var lifetime: float = 5.0
+
+var _age: float = 0.0
+
+
+func _ready() -> void:
+	var spr := Sprite2D.new()
+	spr.texture = TEX
+	add_child(spr)
+
+	var shape := CollisionShape2D.new()
+	var circle := CircleShape2D.new()
+	circle.radius = 10.0
+	shape.shape = circle
+	add_child(shape)
+
+	rotation = direction.angle() + PI / 2.0
+	collision_layer = 0
+	collision_mask = 1
+	body_entered.connect(_on_body_entered)
+
+
+func _physics_process(delta: float) -> void:
+	_age += delta
+	if _age >= lifetime:
+		queue_free()
+		return
+	global_position += direction * speed * delta
+
+
+func _on_body_entered(body: Node) -> void:
+	if body.is_in_group("friendlies") and body.has_method("take_damage"):
+		body.take_damage(damage)
+		queue_free()

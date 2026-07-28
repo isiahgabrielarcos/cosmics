@@ -1,0 +1,92 @@
+[gd_scene format=3 uid="uid://osds7svbypug"]
+
+[ext_resource type="Texture2D" uid="uid://c2a6qqax1rwmd" path="res://assets/art/environment/gradient2.png" id="1_abame"]
+[ext_resource type="Script" path="res://scripts/systems/parallax_layer.gd" id="2_ictjh"]
+[ext_resource type="Texture2D" uid="uid://dh6edgnxp7sn6" path="res://assets/art/environment/space2.png" id="3_78gbh"]
+[ext_resource type="Texture2D" uid="uid://eqcbko2e1grv" path="res://assets/art/ui/stars.png" id="4_umig0"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_st1"]
+atlas = ExtResource("4_umig0")
+region = Rect2(0, 0, 256, 256)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_st2"]
+atlas = ExtResource("4_umig0")
+region = Rect2(256, 0, 256, 256)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_st3"]
+atlas = ExtResource("4_umig0")
+region = Rect2(512, 0, 256, 256)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_st4"]
+atlas = ExtResource("4_umig0")
+region = Rect2(768, 0, 256, 256)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_st5"]
+atlas = ExtResource("4_umig0")
+region = Rect2(1024, 0, 256, 256)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_st6"]
+atlas = ExtResource("4_umig0")
+region = Rect2(0, 256, 256, 256)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_stars"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_st1")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_st2")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_st3")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_st4")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_st5")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_st6")
+}],
+"loop": 1,
+"name": &"default",
+"speed": 5.0
+}]
+
+[node name="Background" type="ParallaxBackground" unique_id=2070054606]
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=1657787206]
+offset_left = -494.0
+offset_top = -362.0
+offset_right = 2039.0
+offset_bottom = 1270.0
+color = Color(0, 0, 0, 1)
+metadata/_edit_use_anchors_ = true
+
+[node name="Gradient2" type="Sprite2D" parent="." unique_id=2096904507]
+modulate = Color(1, 1, 1, 0.196078)
+texture_filter = 1
+position = Vector2(773.75, 495)
+scale = Vector2(1.68167, 0.753333)
+texture = ExtResource("1_abame")
+
+[node name="ParallaxLayer" type="ParallaxLayer" parent="." unique_id=11391450]
+position = Vector2(-5, 0)
+motion_scale = Vector2(0.1, 0.1)
+motion_mirroring = Vector2(1920, 1080)
+script = ExtResource("2_ictjh")
+
+[node name="Space2" type="Sprite2D" parent="ParallaxLayer" unique_id=1351764366]
+position = Vector2(948, 581)
+texture = ExtResource("3_78gbh")
+
+[node name="ParallaxLayer2" type="ParallaxLayer" parent="." unique_id=161247838]
+motion_scale = Vector2(0.003, 0.003)
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="ParallaxLayer2" unique_id=1035169546]
+position = Vector2(518, 331)
+scale = Vector2(0.460938, 0.460938)
+sprite_frames = SubResource("SpriteFrames_stars")
+autoplay = "default"

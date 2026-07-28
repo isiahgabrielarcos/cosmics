@@ -1,0 +1,21 @@
+[gd_scene load_steps=4 format=3 uid="uid://df353oon5gubt"]
+
+[ext_resource type="PackedScene" uid="uid://bmq83uhxu5rui" path="res://scenes/characters/toby_ship_1.tscn" id="1_be18q"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_u45ue"]
+
+[sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_xuusf"]
+
+[node name="Testing" type="Node3D"]
+
+[node name="StaticBody3D" type="StaticBody3D" parent="."]
+physics_material_override = SubResource("PhysicsMaterial_u45ue")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
+shape = SubResource("WorldBoundaryShape3D_xuusf")
+
+[node name="PlayerShip" parent="." instance=ExtResource("1_be18q")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.791027, 0)
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.866025, 0.5, 0, -0.5, 0.866025, 0, 10, 12)

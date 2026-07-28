@@ -1,0 +1,68 @@
+[gd_scene load_steps=10 format=3 uid="uid://cbhke7gpryuiu"]
+
+[ext_resource type="Script" uid="uid://usbw0l5bbdmi" path="res://scripts/enemies/frokenvinter_slasher_1.gd" id="1_6euif"]
+[ext_resource type="Texture2D" uid="uid://dt80p0r33n7o6" path="res://assets/art/characters/enemyShipFrokenVinter.png" id="2_fwqxm"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_p2vnt"]
+atlas = ExtResource("2_fwqxm")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_m7f75"]
+atlas = ExtResource("2_fwqxm")
+region = Rect2(32, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_bn2cl"]
+atlas = ExtResource("2_fwqxm")
+region = Rect2(0, 32, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_jkec4"]
+atlas = ExtResource("2_fwqxm")
+region = Rect2(32, 32, 32, 32)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_5uck2"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_p2vnt")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_m7f75")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_bn2cl")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_jkec4")
+}],
+"loop": true,
+"name": &"default",
+"speed": 12.0
+}]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_uwtnm"]
+radius = 23.0
+height = 52.0
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_t4qr4"]
+radius = 29.0
+height = 68.0
+
+[node name="frokenvinter_slasher_1" type="CharacterBody2D" groups=["enemies"]]
+collision_layer = 16
+collision_mask = 17
+collision_priority = 5.0
+script = ExtResource("1_6euif")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+scale = Vector2(1.58492, 1.58492)
+sprite_frames = SubResource("SpriteFrames_5uck2")
+autoplay = "default"
+frame_progress = 0.490811
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CapsuleShape2D_uwtnm")
+
+[node name="Area2D" type="Area2D" parent="."]
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="Area2D"]
+shape = SubResource("CapsuleShape2D_t4qr4")
