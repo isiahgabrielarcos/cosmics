@@ -231,7 +231,7 @@ func queue_battle(stage: int, diff: String) -> void:
 func goto_main_menu() -> void:
 	resume_game()
 	current_stage = 100
-	get_tree().change_scene_to_file("res://scenes/levels/hub_scene.tscn")
+	get_tree().change_scene_to_file("res://scenes/levels/cosmic_hub.tscn")
 
 
 # ── Enemy kill tracking ────────────────────────────────────────────────────────

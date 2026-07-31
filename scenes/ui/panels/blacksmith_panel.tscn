@@ -1,0 +1,280 @@
+[gd_scene format=3 uid="uid://dmmo8qy5pitji"]
+
+[ext_resource type="Script" uid="uid://d2kc1nkfr0id8" path="res://scripts/ui/blacksmith_panel.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://cxoc0wqqqyntj" path="res://assets/art/ui/cosmicGameMode.png" id="2_backdrop"]
+[ext_resource type="Texture2D" uid="uid://dukklejm5o7fy" path="res://assets/art/ui/close.png" id="3_close"]
+[ext_resource type="Texture2D" uid="uid://c8r8vbijjc6bf" path="res://assets/art/ui/gamemodeMenu.png" id="4_card"]
+[ext_resource type="FontFile" uid="uid://df2u10dmiarah" path="res://assets/fonts/RetroGaming.ttf" id="5_font"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_f1kql"]
+font_size = 60
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_row"]
+texture = ExtResource("4_card")
+texture_margin_left = 10.0
+texture_margin_top = 10.0
+texture_margin_right = 10.0
+texture_margin_bottom = 10.0
+modulate_color = Color(1, 1, 1, 0.35)
+
+[sub_resource type="LabelSettings" id="LabelSettings_on5mt"]
+font_size = 30
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_btn"]
+texture = ExtResource("4_card")
+texture_margin_left = 10.0
+texture_margin_top = 10.0
+texture_margin_right = 10.0
+texture_margin_bottom = 10.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_focus"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_vgegb"]
+font_size = 60
+
+[sub_resource type="LabelSettings" id="LabelSettings_miag3"]
+font_size = 30
+
+[node name="BlacksmithPanel" type="CanvasLayer" unique_id=35720987]
+script = ExtResource("1_script")
+
+[node name="Root" type="Control" parent="." unique_id=1046268870]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Dim" type="ColorRect" parent="Root" unique_id=2106781703]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.8)
+
+[node name="Frame" type="Control" parent="Root" unique_id=926947717]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -900.0
+offset_top = -506.0
+offset_right = 900.0
+offset_bottom = 506.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Backdrop" type="TextureRect" parent="Root/Frame" unique_id=1051861257]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_backdrop")
+expand_mode = 1
+
+[node name="CloseButton" type="TextureButton" parent="Root/Frame" unique_id=1007458775]
+visible = false
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -174.0
+offset_top = 46.0
+offset_right = -110.0
+offset_bottom = 110.0
+texture_normal = ExtResource("3_close")
+ignore_texture_size = true
+stretch_mode = 4
+
+[node name="Margin" type="MarginContainer" parent="Root/Frame" unique_id=2078259779]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 130
+theme_override_constants/margin_top = 60
+theme_override_constants/margin_right = 130
+theme_override_constants/margin_bottom = 80
+
+[node name="Content" type="VBoxContainer" parent="Root/Frame/Margin" unique_id=1538492303]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Title" type="Label" parent="Root/Frame/Margin/Content" unique_id=700409078]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("5_font")
+theme_override_font_sizes/font_size = 34
+text = "• Ship Status •"
+horizontal_alignment = 1
+
+[node name="Scroll" type="ScrollContainer" parent="Root/Frame/Margin/Content" unique_id=1068280375]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Columns" type="HBoxContainer" parent="Root/Frame/Margin/Content/Scroll" unique_id=388556374]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 50
+
+[node name="WeaponsCol" type="VBoxContainer" parent="Root/Frame/Margin/Content/Scroll/Columns" unique_id=842189301]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 8
+
+[node name="Header" type="Label" parent="Root/Frame/Margin/Content/Scroll/Columns/WeaponsCol" unique_id=561853897]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("5_font")
+theme_override_font_sizes/font_size = 24
+text = "Weapon Slots"
+label_settings = SubResource("LabelSettings_f1kql")
+
+[node name="List" type="VBoxContainer" parent="Root/Frame/Margin/Content/Scroll/Columns/WeaponsCol" unique_id=1576620710]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="RowTemplate" type="PanelContainer" parent="Root/Frame/Margin/Content/Scroll/Columns/WeaponsCol/List" unique_id=1829324042]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_row")
+
+[node name="HBox" type="HBoxContainer" parent="Root/Frame/Margin/Content/Scroll/Columns/WeaponsCol/List/RowTemplate" unique_id=157651729]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="Icon" type="TextureRect" parent="Root/Frame/Margin/Content/Scroll/Columns/WeaponsCol/List/RowTemplate/HBox" unique_id=810727249]
+custom_minimum_size = Vector2(72, 72)
+layout_mode = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="TextCol" type="VBoxContainer" parent="Root/Frame/Margin/Content/Scroll/Columns/WeaponsCol/List/RowTemplate/HBox" unique_id=414321351]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="NameLabel" type="Label" parent="Root/Frame/Margin/Content/Scroll/Columns/WeaponsCol/List/RowTemplate/HBox/TextCol" unique_id=1922232691]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("5_font")
+theme_override_font_sizes/font_size = 18
+text = "Weapon Name [1/7]"
+label_settings = SubResource("LabelSettings_on5mt")
+
+[node name="DescLabel" type="Label" parent="Root/Frame/Margin/Content/Scroll/Columns/WeaponsCol/List/RowTemplate/HBox/TextCol" unique_id=2086815602]
+modulate = Color(0.8, 0.8, 0.9, 1)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("5_font")
+theme_override_font_sizes/font_size = 13
+text = "Weapon description"
+
+[node name="W1Button" type="Button" parent="Root/Frame/Margin/Content/Scroll/Columns/WeaponsCol/List/RowTemplate/HBox" unique_id=1658226556]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("5_font")
+theme_override_font_sizes/font_size = 16
+theme_override_styles/normal = SubResource("StyleBoxTexture_btn")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_focus")
+text = "W1"
+
+[node name="W2Button" type="Button" parent="Root/Frame/Margin/Content/Scroll/Columns/WeaponsCol/List/RowTemplate/HBox" unique_id=2127862071]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("5_font")
+theme_override_font_sizes/font_size = 16
+theme_override_styles/normal = SubResource("StyleBoxTexture_btn")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_focus")
+text = "W2"
+
+[node name="LockedLabel" type="Label" parent="Root/Frame/Margin/Content/Scroll/Columns/WeaponsCol/List/RowTemplate/HBox" unique_id=930871918]
+visible = false
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("5_font")
+theme_override_font_sizes/font_size = 14
+text = "LOCKED"
+
+[node name="SkillsCol" type="VBoxContainer" parent="Root/Frame/Margin/Content/Scroll/Columns" unique_id=1781228191]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 8
+
+[node name="Header" type="Label" parent="Root/Frame/Margin/Content/Scroll/Columns/SkillsCol" unique_id=789423559]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("5_font")
+theme_override_font_sizes/font_size = 24
+text = "Skill Slot"
+label_settings = SubResource("LabelSettings_vgegb")
+
+[node name="List" type="VBoxContainer" parent="Root/Frame/Margin/Content/Scroll/Columns/SkillsCol" unique_id=593836005]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="RowTemplate" type="PanelContainer" parent="Root/Frame/Margin/Content/Scroll/Columns/SkillsCol/List" unique_id=2101497103]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_row")
+
+[node name="HBox" type="HBoxContainer" parent="Root/Frame/Margin/Content/Scroll/Columns/SkillsCol/List/RowTemplate" unique_id=2023815358]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="Icon" type="TextureRect" parent="Root/Frame/Margin/Content/Scroll/Columns/SkillsCol/List/RowTemplate/HBox" unique_id=357802446]
+custom_minimum_size = Vector2(72, 72)
+layout_mode = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="TextCol" type="VBoxContainer" parent="Root/Frame/Margin/Content/Scroll/Columns/SkillsCol/List/RowTemplate/HBox" unique_id=274598011]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="NameLabel" type="Label" parent="Root/Frame/Margin/Content/Scroll/Columns/SkillsCol/List/RowTemplate/HBox/TextCol" unique_id=774532189]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("5_font")
+theme_override_font_sizes/font_size = 18
+text = "Skill Name [1/7]"
+label_settings = SubResource("LabelSettings_miag3")
+
+[node name="DescLabel" type="Label" parent="Root/Frame/Margin/Content/Scroll/Columns/SkillsCol/List/RowTemplate/HBox/TextCol" unique_id=1491808751]
+modulate = Color(0.8, 0.8, 0.9, 1)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("5_font")
+theme_override_font_sizes/font_size = 13
+text = "Skill description"
+
+[node name="EquipButton" type="Button" parent="Root/Frame/Margin/Content/Scroll/Columns/SkillsCol/List/RowTemplate/HBox" unique_id=1992376195]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("5_font")
+theme_override_font_sizes/font_size = 16
+theme_override_styles/normal = SubResource("StyleBoxTexture_btn")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_focus")
+text = "Equip"
+
+[node name="LockedLabel" type="Label" parent="Root/Frame/Margin/Content/Scroll/Columns/SkillsCol/List/RowTemplate/HBox" unique_id=1710412945]
+visible = false
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("5_font")
+theme_override_font_sizes/font_size = 14
+text = "LOCKED"
+
+[node name="Hint" type="Label" parent="Root/Frame/Margin/Content" unique_id=1205545976]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("5_font")
+theme_override_font_sizes/font_size = 14
+text = "Q swaps W1/W2 in battle · Space uses your skill · I opens this menu"
+horizontal_alignment = 1

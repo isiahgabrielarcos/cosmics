@@ -56,30 +56,38 @@ const SFX := {
 
 const SFX_POOL_SIZE := 12
 
-var master_volume: float = 0.75   # `volume = .75` in main.lua
-var music_volume: float = 0.5     # channel-1 volume in main.lua
+# Master multiplies every category below; each category multiplies its own
+# player's volume. No engine audio buses needed — just linear multipliers.
+var master_volume: float  = 0.75   # `volume = .75` in main.lua
+var music_volume: float   = 0.5    # channel-1 volume in main.lua
+var ambient_volume: float = 0.75
+var sfx_volume: float     = 1.0
 
 var _music_player: AudioStreamPlayer
+var _ambient_player: AudioStreamPlayer
 var _sfx_pool: Array[AudioStreamPlayer] = []
 var _sfx_next: int = 0
 var _streams: Dictionary = {}
 var current_music: String = ""
+var current_ambient: String = ""
 
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS   # audio keeps working while paused
 
 	_music_player = AudioStreamPlayer.new()
-	_music_player.bus = "Master"
 	add_child(_music_player)
+
+	_ambient_player = AudioStreamPlayer.new()
+	add_child(_ambient_player)
 
 	for i in SFX_POOL_SIZE:
 		var p := AudioStreamPlayer.new()
-		p.bus = "Master"
 		add_child(p)
 		_sfx_pool.append(p)
 
-	set_master_volume(master_volume)
+	_refresh_music_volume()
+	_refresh_ambient_volume()
 
 
 func _get_stream(path: String) -> AudioStream:
@@ -100,7 +108,7 @@ func play_music(name: String, loop: bool = true) -> void:
 	if stream is AudioStreamMP3:
 		stream.loop = loop
 	_music_player.stream = stream
-	_music_player.volume_db = linear_to_db(music_volume)
+	_refresh_music_volume()
 	_music_player.play()
 	current_music = name
 
@@ -108,6 +116,23 @@ func play_music(name: String, loop: bool = true) -> void:
 func stop_music() -> void:
 	_music_player.stop()
 	current_music = ""
+
+
+# ── Ambient — looping environment sound bed, separate from music/sfx ──────────
+
+func play_ambient(path: String, loop: bool = true) -> void:
+	var stream: AudioStream = _get_stream(path)
+	if stream is AudioStreamMP3:
+		stream.loop = loop
+	_ambient_player.stream = stream
+	_refresh_ambient_volume()
+	_ambient_player.play()
+	current_ambient = path
+
+
+func stop_ambient() -> void:
+	_ambient_player.stop()
+	current_ambient = ""
 
 
 # ── SFX ────────────────────────────────────────────────────────────────────────
@@ -119,6 +144,7 @@ func play_sfx(name: String) -> void:
 	var p := _sfx_pool[_sfx_next]
 	_sfx_next = (_sfx_next + 1) % SFX_POOL_SIZE
 	p.stream = _get_stream(SFX[name])
+	p.volume_db = linear_to_db(maxf(master_volume * sfx_volume, 0.0001))
 	p.play()
 
 
@@ -126,5 +152,27 @@ func play_sfx(name: String) -> void:
 
 func set_master_volume(value: float) -> void:
 	master_volume = clampf(value, 0.0, 1.0)
-	var bus := AudioServer.get_bus_index("Master")
-	AudioServer.set_bus_volume_db(bus, linear_to_db(maxf(master_volume, 0.0001)))
+	_refresh_music_volume()
+	_refresh_ambient_volume()
+
+
+func set_music_volume(value: float) -> void:
+	music_volume = clampf(value, 0.0, 1.0)
+	_refresh_music_volume()
+
+
+func set_ambient_volume(value: float) -> void:
+	ambient_volume = clampf(value, 0.0, 1.0)
+	_refresh_ambient_volume()
+
+
+func set_sfx_volume(value: float) -> void:
+	sfx_volume = clampf(value, 0.0, 1.0)
+
+
+func _refresh_music_volume() -> void:
+	_music_player.volume_db = linear_to_db(maxf(master_volume * music_volume, 0.0001))
+
+
+func _refresh_ambient_volume() -> void:
+	_ambient_player.volume_db = linear_to_db(maxf(master_volume * ambient_volume, 0.0001))

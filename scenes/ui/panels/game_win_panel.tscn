@@ -1,0 +1,85 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/game_win_panel.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://assets/art/ui/tobyAvatar.png" id="2_avatar"]
+[ext_resource type="FontFile" uid="uid://df2u10dmiarah" path="res://assets/fonts/RetroGaming.ttf" id="3_font"]
+
+[node name="GameWinPanel" type="CanvasLayer"]
+script = ExtResource("1_script")
+
+[node name="Root" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Overlay" type="ColorRect" parent="Root"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0)
+
+[node name="Avatar" type="TextureRect" parent="Root"]
+layout_mode = 1
+offset_left = -450.0
+offset_top = 550.0
+offset_right = -50.0
+offset_bottom = 950.0
+texture = ExtResource("2_avatar")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Panel" type="VBoxContainer" parent="Root"]
+layout_mode = 1
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 200.0
+offset_right = 200.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 30
+
+[node name="Title" type="Label" parent="Root/Panel"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("3_font")
+theme_override_font_sizes/font_size = 90
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+horizontal_alignment = 1
+text = "Mission Complete!"
+
+[node name="Subtitle" type="Label" parent="Root/Panel"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("3_font")
+theme_override_font_sizes/font_size = 30
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+horizontal_alignment = 1
+text = "The cosmos are grateful for your work!
+Glad to see you again space cowboy~"
+
+[node name="Rewards" type="Label" parent="Root/Panel"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("3_font")
+theme_override_font_sizes/font_size = 25
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+horizontal_alignment = 1
+text = "Collected:"
+
+[node name="Buttons" type="HBoxContainer" parent="Root/Panel"]
+layout_mode = 2
+alignment = 1
+theme_override_constants/separation = 100
+
+[node name="ContinueButton" type="Button" parent="Root/Panel/Buttons"]
+layout_mode = 2
+flat = true
+theme_override_fonts/font = ExtResource("3_font")
+theme_override_font_sizes/font_size = 50
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "Head to Base"

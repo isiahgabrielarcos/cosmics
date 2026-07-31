@@ -23,6 +23,9 @@ font_size = 29
 [sub_resource type="LabelSettings" id="LabelSettings_3cn05"]
 font_size = 38
 
+[sub_resource type="LabelSettings" id="LabelSettings_nsspx"]
+font_size = 19
+
 [node name="Player_HUD" type="CanvasLayer" unique_id=168399030]
 script = ExtResource("5_hudhd")
 
@@ -228,6 +231,20 @@ theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_fonts/font = ExtResource("9_font")
 theme_override_font_sizes/font_size = 16
 metadata/_edit_use_anchors_ = true
+
+[node name="Label" type="Label" parent="Battle_HUD" unique_id=707986768]
+layout_mode = 0
+offset_left = 23.0
+offset_top = 437.0
+offset_right = 537.0
+offset_bottom = 616.0
+text = "Movement: WASD
+Shoot: Left Click
+Skill: Spacebar
+Dash: Shift (hold)
+
+Pause: Esc"
+label_settings = SubResource("LabelSettings_nsspx")
 
 [node name="Hub_HUD" type="Control" parent="." unique_id=2084233367]
 visible = false

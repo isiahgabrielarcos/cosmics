@@ -1,36 +1,54 @@
 extends CanvasLayer
+class_name PauseMenu
 
-# Ports pauseTheGame() + createVolumeSlider() from globalFunctions.lua.
-# Esc toggles the pause menu. Works while the tree is paused.
+# Ports pauseTheGame() from globalFunctions.lua. Esc toggles the pause menu.
+# Resume / Settings / Abandon + master volume; Settings swaps in a
+# resolution/fullscreen/music/ambient/sfx sub-page (settings_panel.tscn).
 
-const RETRO_FONT := preload("res://assets/fonts/RetroGaming.ttf")
-
-var _overlay: ColorRect
-var _panel: VBoxContainer
-var _volume_label: Label
+@onready var _pause_panel: Control          = $Root/PausePanel
+@onready var _settings_panel: SettingsPanel = $Root/SettingsPanel
+@onready var _resume_btn: Button            = $Root/PausePanel/VBox/ResumeButton
+@onready var _settings_btn: Button          = $Root/PausePanel/VBox/SettingsButton
+@onready var _abandon_btn: Button           = $Root/PausePanel/VBox/AbandonButton
+@onready var _master_slider: HSlider        = $Root/PausePanel/VBox/MasterVolumeSlider
+@onready var _master_label: Label           = $Root/PausePanel/VBox/MasterVolumeLabel
 
 
 func _ready() -> void:
 	layer = 90
 	process_mode = Node.PROCESS_MODE_ALWAYS
-	_build_ui()
 	visible = false
+
+	_resume_btn.pressed.connect(_resume)
+	_settings_btn.pressed.connect(_open_settings)
+	_abandon_btn.pressed.connect(_abandon)
+	_master_slider.value_changed.connect(_on_master_volume_changed)
+	_settings_panel.back_pressed.connect(_close_settings)
+
+	_master_slider.value = AudioManager.master_volume * 100
+	_master_label.text = "Master Volume: %02d" % int(AudioManager.master_volume * 100)
 
 
 func _unhandled_input(event: InputEvent) -> void:
-	if event.is_action_pressed("pause"):
-		if GameManager.game_done or GameManager.ui_open:
-			return
-		if GameManager.game_paused:
-			_resume()
+	if not event.is_action_pressed("pause"):
+		return
+	if GameManager.game_done or GameManager.ui_open:
+		return
+	if GameManager.game_paused:
+		if _settings_panel.visible:
+			_close_settings()
 		else:
-			_open()
+			_resume()
+	else:
+		_open()
 
 
 func _open() -> void:
 	AudioManager.play_sfx("pauseSoundEffect")
 	GameManager.pause_game()
 	visible = true
+	_pause_panel.visible = true
+	_settings_panel.visible = false
 
 
 func _resume() -> void:
@@ -43,65 +61,17 @@ func _abandon() -> void:
 	GameManager.goto_main_menu()
 
 
-# ── UI ─────────────────────────────────────────────────────────────────────────
-
-func _build_ui() -> void:
-	_overlay = ColorRect.new()
-	_overlay.color = Color(0, 0, 0, 0.7)
-	_overlay.set_anchors_preset(Control.PRESET_FULL_RECT)
-	add_child(_overlay)
-
-	_panel = VBoxContainer.new()
-	_panel.set_anchors_preset(Control.PRESET_CENTER)
-	_panel.grow_horizontal = Control.GROW_DIRECTION_BOTH
-	_panel.grow_vertical = Control.GROW_DIRECTION_BOTH
-	_panel.alignment = BoxContainer.ALIGNMENT_CENTER
-	_panel.add_theme_constant_override("separation", 28)
-	add_child(_panel)
-
-	var title := _make_label("Paused", 70)
-	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	_panel.add_child(title)
-
-	var buttons := HBoxContainer.new()
-	buttons.alignment = BoxContainer.ALIGNMENT_CENTER
-	buttons.add_theme_constant_override("separation", 80)
-	_panel.add_child(buttons)
-
-	buttons.add_child(_make_button("Resume", _resume))
-	buttons.add_child(_make_button("Abandon", _abandon))
-
-	_volume_label = _make_label("Master Volume: %02d" % int(AudioManager.master_volume * 100), 30)
-	_volume_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	_panel.add_child(_volume_label)
-
-	var slider := HSlider.new()
-	slider.min_value = 0
-	slider.max_value = 100
-	slider.value = AudioManager.master_volume * 100
-	slider.custom_minimum_size = Vector2(600, 30)
-	slider.value_changed.connect(_on_volume_changed)
-	_panel.add_child(slider)
+func _open_settings() -> void:
+	_pause_panel.visible = false
+	_settings_panel.visible = true
+	_settings_panel.refresh()
 
 
-func _on_volume_changed(value: float) -> void:
+func _close_settings() -> void:
+	_settings_panel.visible = false
+	_pause_panel.visible = true
+
+
+func _on_master_volume_changed(value: float) -> void:
 	AudioManager.set_master_volume(value / 100.0)
-	_volume_label.text = "Master Volume: %02d" % int(value)
-
-
-func _make_label(text: String, size: int) -> Label:
-	var lbl := Label.new()
-	lbl.text = text
-	lbl.add_theme_font_override("font", RETRO_FONT)
-	lbl.add_theme_font_size_override("font_size", size)
-	return lbl
-
-
-func _make_button(text: String, callback: Callable) -> Button:
-	var btn := Button.new()
-	btn.text = text
-	btn.flat = true
-	btn.add_theme_font_override("font", RETRO_FONT)
-	btn.add_theme_font_size_override("font_size", 50)
-	btn.pressed.connect(callback)
-	return btn
+	_master_label.text = "Master Volume: %02d" % int(value)

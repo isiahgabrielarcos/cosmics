@@ -1,0 +1,146 @@
+[gd_scene format=3 uid="uid://brhughaf1tm42"]
+
+[ext_resource type="Script" uid="uid://guite5fkvjyk" path="res://scripts/ui/dialogue_panel.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://b4k2grxeab3yv" path="res://assets/art/ui/chatBox.png" id="2_chatbox"]
+[ext_resource type="TileSet" uid="uid://c4tpxd0n3sq0r" path="res://scenes/TileSet/background_tiles.tres" id="2_mfif4"]
+[ext_resource type="FontFile" uid="uid://df2u10dmiarah" path="res://assets/fonts/RetroGaming.ttf" id="3_font"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_mfif4"]
+font_size = 51
+
+[sub_resource type="LabelSettings" id="LabelSettings_5n01k"]
+font_size = 38
+
+[sub_resource type="LabelSettings" id="LabelSettings_n1lww"]
+font_size = 19
+
+[node name="DialoguePanel" type="CanvasLayer" unique_id=1812358159]
+script = ExtResource("1_script")
+
+[node name="Root" type="Control" parent="." unique_id=1712972943]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Dim" type="ColorRect" parent="Root" unique_id=145237740]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.45)
+
+[node name="Avatar" type="TextureRect" parent="Root" unique_id=81393505]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 52.0
+offset_top = -778.0
+offset_right = 612.0
+offset_bottom = -218.0
+grow_vertical = 0
+scale = Vector2(1.245, 1.245)
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Control2" type="Control" parent="Root" unique_id=1167895600]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="BackgroundDecor" type="TileMap" parent="Root/Control2" unique_id=433370633]
+position = Vector2(-135, 288.00003)
+scale = Vector2(5, 5)
+tile_set = ExtResource("2_mfif4")
+format = 2
+layer_0/tile_data = PackedInt32Array(262155, 262145, 12, 196619, 393217, 11, 131083, 196609, 12)
+
+[node name="BottomBorder" type="TileMap" parent="Root/Control2" unique_id=250394324]
+position = Vector2(-90.00001, 355.00003)
+scale = Vector2(5, 5)
+tile_set = ExtResource("2_mfif4")
+format = 2
+layer_0/tile_data = PackedInt32Array(262151, 851969, 1342177287, 262150, 786440, 8, 262149, 786440, 8, 262148, 851969, 805306375, 262147, 851969, 1342177287, 262146, 851976, 268435464, 262145, 786433, 8, 262144, 8, 9, 262155, 8, 9, 262154, 786433, 8, 262153, 851976, 8, 262152, 851969, 805306375)
+
+[node name="TopBorder" type="TileMap" parent="Root/Control2" unique_id=204120089]
+position = Vector2(1944.0002, 749.00006)
+rotation = 3.1415927
+scale = Vector2(5.2, 5.2)
+tile_set = ExtResource("2_mfif4")
+format = 2
+layer_0/tile_data = PackedInt32Array(262151, 851969, 1342177287, 262150, 786440, 8, 262149, 786440, 8, 262148, 851969, 805306375, 262147, 851969, 1342177287, 262146, 851976, 268435464, 262145, 786433, 8, 262144, 8, 9, 262155, 8, 9, 262154, 786433, 8, 262153, 851976, 8, 262152, 851969, 805306375)
+
+[node name="ChatBox" type="TextureRect" parent="Root" unique_id=1558587782]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -1207.0
+offset_top = -464.99994
+offset_right = 173.0
+offset_bottom = 55.0
+grow_horizontal = 0
+grow_vertical = 0
+scale = Vector2(0.725, 0.725)
+texture = ExtResource("2_chatbox")
+expand_mode = 1
+
+[node name="NameLabel" type="Label" parent="Root/ChatBox" unique_id=13748604]
+layout_mode = 0
+offset_left = 77.241356
+offset_top = 51.034393
+offset_right = 1277.2413
+offset_bottom = 116.03439
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("3_font")
+theme_override_font_sizes/font_size = 26
+text = "NPC Name"
+label_settings = SubResource("LabelSettings_mfif4")
+
+[node name="BodyLabel" type="Label" parent="Root/ChatBox" unique_id=1223380981]
+layout_mode = 0
+offset_left = 164.13791
+offset_top = 164.13785
+offset_right = 1364.138
+offset_bottom = 442.13785
+size_flags_vertical = 3
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("3_font")
+theme_override_font_sizes/font_size = 22
+text = "..."
+label_settings = SubResource("LabelSettings_5n01k")
+autowrap_mode = 3
+
+[node name="HintLabel" type="Label" parent="Root/ChatBox" unique_id=2022330793]
+modulate = Color(0.7, 0.7, 0.8, 1)
+layout_mode = 0
+offset_left = 971.0344
+offset_top = 422.06885
+offset_right = 1321.3793
+offset_bottom = 447.06885
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("3_font")
+theme_override_font_sizes/font_size = 14
+text = "Click or press Esc to close"
+label_settings = SubResource("LabelSettings_n1lww")
+horizontal_alignment = 2
+
+[node name="Control" type="Control" parent="." unique_id=1296472104]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="ForegroundDecor" type="TileMap" parent="Control" unique_id=1390199557]
+position = Vector2(-56, -94)
+scale = Vector2(8, 8)
+tile_set = ExtResource("2_mfif4")
+format = 2
+layer_0/tile_data = PackedInt32Array(262151, 393217, 12, 196615, 458753, 11, 131079, 458753, 11, 65543, 327681, 12)

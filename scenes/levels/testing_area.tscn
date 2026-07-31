@@ -8,7 +8,7 @@
 
 [node name="Testing Area" type="Node2D" unique_id=2057356583]
 script = ExtResource("1_batsc")
-stage = 1
+stage = 21
 
 [node name="Background" parent="." unique_id=2070054606 instance=ExtResource("2_ert8t")]
 

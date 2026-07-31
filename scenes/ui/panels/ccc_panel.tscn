@@ -1,0 +1,213 @@
+[gd_scene format=3 uid="uid://uuvyqovrpokk"]
+
+[ext_resource type="Script" uid="uid://bp5yxt0pmcl5p" path="res://scripts/ui/ccc_panel.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://cxoc0wqqqyntj" path="res://assets/art/ui/cosmicGameMode.png" id="2_backdrop"]
+[ext_resource type="Texture2D" uid="uid://dukklejm5o7fy" path="res://assets/art/ui/close.png" id="3_close"]
+[ext_resource type="Texture2D" uid="uid://c8r8vbijjc6bf" path="res://assets/art/ui/gamemodeMenu.png" id="4_card"]
+[ext_resource type="Texture2D" uid="uid://d1f1xy5aec2hd" path="res://assets/art/ui/acceptCard.png" id="5_accept"]
+[ext_resource type="Texture2D" uid="uid://bb3xxj06aj4ww" path="res://assets/art/ui/rejectCard.png" id="6_reject"]
+[ext_resource type="FontFile" uid="uid://df2u10dmiarah" path="res://assets/fonts/RetroGaming.ttf" id="7_font"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_row"]
+texture = ExtResource("4_card")
+texture_margin_left = 10.0
+texture_margin_top = 10.0
+texture_margin_right = 10.0
+texture_margin_bottom = 10.0
+modulate_color = Color(1, 1, 1, 0.35)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_btn_normal"]
+texture = ExtResource("4_card")
+texture_margin_left = 10.0
+texture_margin_top = 10.0
+texture_margin_right = 10.0
+texture_margin_bottom = 10.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_btn_hover"]
+texture = ExtResource("4_card")
+texture_margin_left = 10.0
+texture_margin_top = 10.0
+texture_margin_right = 10.0
+texture_margin_bottom = 10.0
+modulate_color = Color(1.3, 1.3, 1.4, 1)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_focus"]
+
+[node name="CccPanel" type="CanvasLayer" unique_id=1395046207]
+script = ExtResource("1_script")
+
+[node name="Root" type="Control" parent="." unique_id=381614023]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Dim" type="ColorRect" parent="Root" unique_id=1010786504]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.8)
+
+[node name="Frame" type="Control" parent="Root" unique_id=441062496]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -900.0
+offset_top = -506.0
+offset_right = 900.0
+offset_bottom = 506.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Backdrop" type="TextureRect" parent="Root/Frame" unique_id=1508640222]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_backdrop")
+expand_mode = 1
+
+[node name="CloseButton" type="TextureButton" parent="Root/Frame" unique_id=204379995]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -174.0
+offset_top = 46.0
+offset_right = -110.0
+offset_bottom = 110.0
+texture_normal = ExtResource("3_close")
+ignore_texture_size = true
+stretch_mode = 4
+
+[node name="Margin" type="MarginContainer" parent="Root/Frame" unique_id=1333357163]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 130
+theme_override_constants/margin_top = 60
+theme_override_constants/margin_right = 130
+theme_override_constants/margin_bottom = 80
+
+[node name="Content" type="VBoxContainer" parent="Root/Frame/Margin" unique_id=878242771]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Title" type="Label" parent="Root/Frame/Margin/Content" unique_id=546588941]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("7_font")
+theme_override_font_sizes/font_size = 34
+text = "• Central Cosmic Commission •"
+horizontal_alignment = 1
+
+[node name="Subtitle" type="Label" parent="Root/Frame/Margin/Content" unique_id=1794071463]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("7_font")
+theme_override_font_sizes/font_size = 20
+text = "Pick a solar system to invade:"
+
+[node name="Scroll" type="ScrollContainer" parent="Root/Frame/Margin/Content" unique_id=1930340219]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="MissionList" type="VBoxContainer" parent="Root/Frame/Margin/Content/Scroll" unique_id=1802736511]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 8
+
+[node name="RowTemplate" type="PanelContainer" parent="Root/Frame/Margin/Content/Scroll/MissionList" unique_id=336901836]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxTexture_row")
+
+[node name="HBox" type="HBoxContainer" parent="Root/Frame/Margin/Content/Scroll/MissionList/RowTemplate" unique_id=844262172]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="Icon" type="TextureRect" parent="Root/Frame/Margin/Content/Scroll/MissionList/RowTemplate/HBox" unique_id=668543488]
+custom_minimum_size = Vector2(84, 84)
+layout_mode = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="TextCol" type="VBoxContainer" parent="Root/Frame/Margin/Content/Scroll/MissionList/RowTemplate/HBox" unique_id=439373098]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="NameLabel" type="Label" parent="Root/Frame/Margin/Content/Scroll/MissionList/RowTemplate/HBox/TextCol" unique_id=1544097546]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("7_font")
+theme_override_font_sizes/font_size = 20
+text = "Mission Name"
+
+[node name="DescLabel" type="Label" parent="Root/Frame/Margin/Content/Scroll/MissionList/RowTemplate/HBox/TextCol" unique_id=1717077768]
+modulate = Color(0.8, 0.8, 0.9, 1)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("7_font")
+theme_override_font_sizes/font_size = 13
+text = "Mission description"
+
+[node name="SelectButton" type="Button" parent="Root/Frame/Margin/Content/Scroll/MissionList/RowTemplate/HBox" unique_id=1267810131]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("7_font")
+theme_override_font_sizes/font_size = 16
+theme_override_styles/normal = SubResource("StyleBoxTexture_btn_normal")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_btn_hover")
+theme_override_styles/hover = SubResource("StyleBoxTexture_btn_hover")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_focus")
+text = "Select"
+
+[node name="BottomBar" type="HBoxContainer" parent="Root/Frame/Margin/Content" unique_id=942260603]
+layout_mode = 2
+theme_override_constants/separation = 40
+alignment = 1
+
+[node name="DifficultyLabel" type="Label" parent="Root/Frame/Margin/Content/BottomBar" unique_id=277553812]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("7_font")
+theme_override_font_sizes/font_size = 20
+text = "Difficulty:"
+
+[node name="DifficultyButton" type="Button" parent="Root/Frame/Margin/Content/BottomBar" unique_id=2069627617]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("7_font")
+theme_override_font_sizes/font_size = 18
+theme_override_styles/normal = SubResource("StyleBoxTexture_btn_normal")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_btn_hover")
+theme_override_styles/hover = SubResource("StyleBoxTexture_btn_hover")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_focus")
+text = "NORMAL"
+
+[node name="AcceptButton" type="TextureButton" parent="Root/Frame/Margin/Content/BottomBar" unique_id=1095238777]
+custom_minimum_size = Vector2(48, 96)
+layout_mode = 2
+texture_normal = ExtResource("5_accept")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="RejectButton" type="TextureButton" parent="Root/Frame/Margin/Content/BottomBar" unique_id=706734071]
+custom_minimum_size = Vector2(48, 144)
+layout_mode = 2
+texture_normal = ExtResource("6_reject")
+ignore_texture_size = true
+stretch_mode = 5

@@ -16,6 +16,7 @@ func _ready() -> void:
 	_load_all()
 	if not system_data.has("firstTimePlaying"):
 		_create_first_time_data()
+	_unlock_everything_for_playtesting()
 
 
 # ── First-time defaults (exact values from savingData.lua) ─────────────────────
@@ -80,6 +81,26 @@ func _create_first_time_data() -> void:
 		"characterQuest": 0,
 		"OuterStory": 0,
 	}
+
+	save_all()
+
+
+## Playtest helper — unlocks every weapon/skill and stat gate so the whole
+## game is reachable without grinding. Remove this call in _ready() once
+## real progression/unlocks are wired up.
+func _unlock_everything_for_playtesting() -> void:
+	for i in range(1, 8):
+		weapon_data["w%dvalue" % i] = true
+		skill_data["s%dvalue" % i] = true
+
+	player_data["gems"] = maxi(int(player_data.get("gems", 0)), 99999)
+	player_data["shards"] = maxi(int(player_data.get("shards", 0)), 99999)
+	player_data["centralCurrency"] = maxi(int(player_data.get("centralCurrency", 0)), 99999)
+
+	stats_data["is1stHalfUnlocked"] = 1
+	stats_data["is2ndBaseUnlocked"] = 1
+	stats_data["is2ndBase1stHalfUnlocked"] = 1
+	stats_data["is2ndBaseUnlockedSponsor"] = 1
 
 	save_all()
 

@@ -1,0 +1,193 @@
+[gd_scene format=3 uid="uid://crm6fs67isr82"]
+
+[ext_resource type="Script" uid="uid://dumo6n4trykg2" path="res://scripts/ui/merchant_panel.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://cxoc0wqqqyntj" path="res://assets/art/ui/cosmicGameMode.png" id="2_backdrop"]
+[ext_resource type="Texture2D" uid="uid://dukklejm5o7fy" path="res://assets/art/ui/close.png" id="3_close"]
+[ext_resource type="Texture2D" uid="uid://d1f1xy5aec2hd" path="res://assets/art/ui/acceptCard.png" id="4_accept"]
+[ext_resource type="FontFile" uid="uid://df2u10dmiarah" path="res://assets/fonts/RetroGaming.ttf" id="5_font"]
+
+[node name="MerchantPanel" type="CanvasLayer" unique_id=876152341]
+script = ExtResource("1_script")
+
+[node name="Root" type="Control" parent="." unique_id=1473374782]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Dim" type="ColorRect" parent="Root" unique_id=1276696363]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.8)
+
+[node name="Frame" type="Control" parent="Root" unique_id=579761703]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -900.0
+offset_top = -506.0
+offset_right = 900.0
+offset_bottom = 506.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Backdrop" type="TextureRect" parent="Root/Frame" unique_id=659488575]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_backdrop")
+expand_mode = 1
+
+[node name="CloseButton" type="TextureButton" parent="Root/Frame" unique_id=1638903623]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -174.0
+offset_top = 46.0
+offset_right = -110.0
+offset_bottom = 110.0
+texture_normal = ExtResource("3_close")
+ignore_texture_size = true
+stretch_mode = 4
+
+[node name="Margin" type="MarginContainer" parent="Root/Frame" unique_id=1350436728]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 130
+theme_override_constants/margin_top = 60
+theme_override_constants/margin_right = 130
+theme_override_constants/margin_bottom = 80
+
+[node name="Content" type="VBoxContainer" parent="Root/Frame/Margin" unique_id=207392840]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Title" type="Label" parent="Root/Frame/Margin/Content" unique_id=430129543]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("5_font")
+theme_override_font_sizes/font_size = 34
+text = "• Cosmic Trade Board •"
+horizontal_alignment = 1
+
+[node name="Wallet" type="Label" parent="Root/Frame/Margin/Content" unique_id=148090790]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("5_font")
+theme_override_font_sizes/font_size = 20
+text = "Gems: 0    Shards: 0    CC: 0"
+horizontal_alignment = 1
+
+[node name="Scroll" type="ScrollContainer" parent="Root/Frame/Margin/Content" unique_id=2015202115]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Columns" type="HBoxContainer" parent="Root/Frame/Margin/Content/Scroll" unique_id=1353923839]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 50
+
+[node name="WeaponsCol" type="VBoxContainer" parent="Root/Frame/Margin/Content/Scroll/Columns" unique_id=314337231]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 8
+
+[node name="Header" type="Label" parent="Root/Frame/Margin/Content/Scroll/Columns/WeaponsCol" unique_id=933971438]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("5_font")
+theme_override_font_sizes/font_size = 22
+text = "Weapons — Cosmic Shards"
+
+[node name="List" type="VBoxContainer" parent="Root/Frame/Margin/Content/Scroll/Columns/WeaponsCol" unique_id=1804266215]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="RowTemplate" type="PanelContainer" parent="Root/Frame/Margin/Content/Scroll/Columns/WeaponsCol/List" unique_id=846277682]
+layout_mode = 2
+
+[node name="HBox" type="HBoxContainer" parent="Root/Frame/Margin/Content/Scroll/Columns/WeaponsCol/List/RowTemplate" unique_id=436468041]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="Icon" type="TextureRect" parent="Root/Frame/Margin/Content/Scroll/Columns/WeaponsCol/List/RowTemplate/HBox" unique_id=947988299]
+custom_minimum_size = Vector2(72, 72)
+layout_mode = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="PriceLabel" type="Label" parent="Root/Frame/Margin/Content/Scroll/Columns/WeaponsCol/List/RowTemplate/HBox" unique_id=2040031803]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("5_font")
+theme_override_font_sizes/font_size = 18
+text = "Weapon — 000 shards"
+
+[node name="BuyButton" type="TextureButton" parent="Root/Frame/Margin/Content/Scroll/Columns/WeaponsCol/List/RowTemplate/HBox" unique_id=1807760315]
+custom_minimum_size = Vector2(48, 96)
+layout_mode = 2
+texture_normal = ExtResource("4_accept")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="SkillsCol" type="VBoxContainer" parent="Root/Frame/Margin/Content/Scroll/Columns" unique_id=1041439583]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 8
+
+[node name="Header" type="Label" parent="Root/Frame/Margin/Content/Scroll/Columns/SkillsCol" unique_id=1206101928]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("5_font")
+theme_override_font_sizes/font_size = 22
+text = "Skills — Cosmic Gems"
+
+[node name="List" type="VBoxContainer" parent="Root/Frame/Margin/Content/Scroll/Columns/SkillsCol" unique_id=1344457860]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="RowTemplate" type="PanelContainer" parent="Root/Frame/Margin/Content/Scroll/Columns/SkillsCol/List" unique_id=489125473]
+layout_mode = 2
+
+[node name="HBox" type="HBoxContainer" parent="Root/Frame/Margin/Content/Scroll/Columns/SkillsCol/List/RowTemplate" unique_id=316927325]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="Icon" type="TextureRect" parent="Root/Frame/Margin/Content/Scroll/Columns/SkillsCol/List/RowTemplate/HBox" unique_id=348073590]
+custom_minimum_size = Vector2(72, 72)
+layout_mode = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="PriceLabel" type="Label" parent="Root/Frame/Margin/Content/Scroll/Columns/SkillsCol/List/RowTemplate/HBox" unique_id=331238773]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("5_font")
+theme_override_font_sizes/font_size = 18
+text = "Skill — 000 gems"
+
+[node name="BuyButton" type="TextureButton" parent="Root/Frame/Margin/Content/Scroll/Columns/SkillsCol/List/RowTemplate/HBox" unique_id=1454286906]
+custom_minimum_size = Vector2(48, 96)
+layout_mode = 2
+texture_normal = ExtResource("4_accept")
+ignore_texture_size = true
+stretch_mode = 5

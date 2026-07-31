@@ -1,0 +1,124 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/settings_panel.gd" id="1_script"]
+[ext_resource type="FontFile" uid="uid://df2u10dmiarah" path="res://assets/fonts/RetroGaming.ttf" id="2_font"]
+
+[node name="SettingsPanel" type="Control"]
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_script")
+
+[node name="Content" type="VBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = 24
+
+[node name="Title" type="Label" parent="Content"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 50
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+horizontal_alignment = 1
+text = "Settings"
+
+[node name="ResolutionRow" type="HBoxContainer" parent="Content"]
+layout_mode = 2
+theme_override_constants/separation = 30
+
+[node name="ResolutionLabel" type="Label" parent="Content/ResolutionRow"]
+custom_minimum_size = Vector2(260, 0)
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 22
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "Resolution"
+
+[node name="ResolutionOption" type="OptionButton" parent="Content/ResolutionRow"]
+custom_minimum_size = Vector2(260, 0)
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 18
+
+[node name="FullscreenRow" type="HBoxContainer" parent="Content"]
+layout_mode = 2
+theme_override_constants/separation = 30
+
+[node name="FullscreenLabel" type="Label" parent="Content/FullscreenRow"]
+custom_minimum_size = Vector2(260, 0)
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 22
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "Fullscreen"
+
+[node name="FullscreenCheck" type="CheckBox" parent="Content/FullscreenRow"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 18
+
+[node name="MusicRow" type="VBoxContainer" parent="Content"]
+custom_minimum_size = Vector2(600, 0)
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="MusicLabel" type="Label" parent="Content/MusicRow"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 20
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "Music: 50"
+
+[node name="MusicSlider" type="HSlider" parent="Content/MusicRow"]
+custom_minimum_size = Vector2(600, 30)
+layout_mode = 2
+max_value = 100.0
+value = 50.0
+
+[node name="AmbientRow" type="VBoxContainer" parent="Content"]
+custom_minimum_size = Vector2(600, 0)
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="AmbientLabel" type="Label" parent="Content/AmbientRow"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 20
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "Ambient: 75"
+
+[node name="AmbientSlider" type="HSlider" parent="Content/AmbientRow"]
+custom_minimum_size = Vector2(600, 30)
+layout_mode = 2
+max_value = 100.0
+value = 75.0
+
+[node name="SfxRow" type="VBoxContainer" parent="Content"]
+custom_minimum_size = Vector2(600, 0)
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="SfxLabel" type="Label" parent="Content/SfxRow"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 20
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "Sound Effects: 100"
+
+[node name="SfxSlider" type="HSlider" parent="Content/SfxRow"]
+custom_minimum_size = Vector2(600, 30)
+layout_mode = 2
+max_value = 100.0
+value = 100.0
+
+[node name="BackButton" type="Button" parent="Content"]
+layout_mode = 2
+flat = true
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 34
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "Back"

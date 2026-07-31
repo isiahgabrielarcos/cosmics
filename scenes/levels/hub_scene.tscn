@@ -10,6 +10,18 @@
 [ext_resource type="Texture2D" uid="uid://c2a6qqax1rwmd" path="res://assets/art/environment/gradient2.png" id="8_grad"]
 [ext_resource type="Script" uid="uid://bqnb3w1r6g57v" path="res://scripts/ui/hub_ui.gd" id="9_hubui"]
 [ext_resource type="Script" uid="uid://b61m18m4afrvp" path="res://scripts/levels/hub_npcs.gd" id="10_npcs"]
+[ext_resource type="PackedScene" path="res://scenes/npcs/npc_receptionist.tscn" id="11_recep"]
+[ext_resource type="PackedScene" path="res://scenes/npcs/npc_guard1.tscn" id="12_guard1"]
+[ext_resource type="PackedScene" path="res://scenes/npcs/npc_guard2.tscn" id="13_guard2"]
+[ext_resource type="PackedScene" path="res://scenes/npcs/npc_trader.tscn" id="14_trader"]
+[ext_resource type="PackedScene" path="res://scenes/npcs/npc_blacksmith.tscn" id="15_blacksmith"]
+[ext_resource type="PackedScene" path="res://scenes/npcs/npc_polaroid.tscn" id="16_polaroid"]
+[ext_resource type="PackedScene" path="res://scenes/npcs/npc_nurse.tscn" id="17_nurse"]
+[ext_resource type="PackedScene" path="res://scenes/npcs/npc_guildmerc.tscn" id="18_guildmerc"]
+[ext_resource type="PackedScene" path="res://scenes/ui/panels/ccc_panel.tscn" id="19_ccc"]
+[ext_resource type="PackedScene" path="res://scenes/ui/panels/blacksmith_panel.tscn" id="20_blacksmith"]
+[ext_resource type="PackedScene" path="res://scenes/ui/panels/merchant_panel.tscn" id="21_merchant"]
+[ext_resource type="PackedScene" path="res://scenes/ui/panels/dialogue_panel.tscn" id="22_dialogue"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_st1"]
 atlas = ExtResource("7_stars")
@@ -105,9 +117,41 @@ script = ExtResource("2_bmap")
 [node name="HubUI" type="CanvasLayer" parent="."]
 script = ExtResource("9_hubui")
 
+[node name="CccPanel" parent="HubUI" instance=ExtResource("19_ccc")]
+
+[node name="BlacksmithPanel" parent="HubUI" instance=ExtResource("20_blacksmith")]
+
+[node name="MerchantPanel" parent="HubUI" instance=ExtResource("21_merchant")]
+
+[node name="DialoguePanel" parent="HubUI" instance=ExtResource("22_dialogue")]
+
 [node name="HubNPCs" type="Node2D" parent="."]
 script = ExtResource("10_npcs")
 hub_ui_path = NodePath("../HubUI")
+
+[node name="Receptionist" parent="HubNPCs" instance=ExtResource("11_recep")]
+position = Vector2(0, -768)
+
+[node name="Guard1" parent="HubNPCs" instance=ExtResource("12_guard1")]
+position = Vector2(448, -576)
+
+[node name="Guard2" parent="HubNPCs" instance=ExtResource("13_guard2")]
+position = Vector2(-448, -576)
+
+[node name="Trader" parent="HubNPCs" instance=ExtResource("14_trader")]
+position = Vector2(-832, -896)
+
+[node name="Blacksmith" parent="HubNPCs" instance=ExtResource("15_blacksmith")]
+position = Vector2(832, -896)
+
+[node name="Polaroid" parent="HubNPCs" instance=ExtResource("16_polaroid")]
+position = Vector2(256, -192)
+
+[node name="Nurse" parent="HubNPCs" instance=ExtResource("17_nurse")]
+position = Vector2(-1536, -512)
+
+[node name="GuildMerc" parent="HubNPCs" instance=ExtResource("18_guildmerc")]
+position = Vector2(1520, -512)
 
 [node name="Toby_Ship_1" parent="." instance=ExtResource("3_toby")]
 position = Vector2(0, -64)

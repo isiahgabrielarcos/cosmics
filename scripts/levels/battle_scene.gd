@@ -4,31 +4,27 @@ extends Node2D
 # start music, set up the session, add the pause menu and mission-end screens,
 # and start the mission timer for the stage type.
 
-const PauseMenuScript := preload("res://scripts/ui/pause_menu.gd")
-const MissionEndScript := preload("res://scripts/ui/mission_end_screen.gd")
+const PauseMenuScene := preload("res://scenes/ui/pause_menu.tscn")
+const MissionEndScreenScene := preload("res://scenes/ui/mission_end_screen.tscn")
 
 @export var stage: int = 21              # default: endless stage for testing
 @export var stage_difficulty: String = "normal"
 
 
-func _ready() -> void:
-	# Mission queued from the CCC board overrides the scene default
+func _enter_tree() -> void:
+	# Runs before any child _ready() so the stage is set when HUD and spawner init
 	if GameManager.pending_stage > 0:
 		stage = GameManager.pending_stage
 		stage_difficulty = GameManager.pending_difficulty
 		GameManager.pending_stage = -1
-
 	GameManager.start_session(stage, stage_difficulty)
 
+
+func _ready() -> void:
 	AudioManager.play_music("lightSpeedChase")
 
-	var pause_menu := CanvasLayer.new()
-	pause_menu.set_script(PauseMenuScript)
-	add_child(pause_menu)
-
-	var end_screen := CanvasLayer.new()
-	end_screen.set_script(MissionEndScript)
-	add_child(end_screen)
+	add_child(PauseMenuScene.instantiate())
+	add_child(MissionEndScreenScene.instantiate())
 
 	# Mission timer per stage type (loadAssets in battle.lua)
 	if GameManager.is_endless_stage():

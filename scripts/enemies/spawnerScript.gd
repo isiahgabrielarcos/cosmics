@@ -19,6 +19,7 @@ var camera: Camera2D
 
 var spawn_interval: float = 1.0
 var spawn_count: int = 0
+var _session_faction: int = 0
 
 const MAX_SHARD_DROP_RATE := 6     # currentMaxShardDropRate
 const REPOSITION_RADIUS := 1500.0
@@ -43,6 +44,7 @@ func _ready() -> void:
 	spawn_timer.timeout.connect(_on_spawn_timer_timeout)
 	spawn_timer.start()
 
+	_session_faction = _pick_session_faction()
 	set_process(true)
 
 
@@ -69,8 +71,6 @@ func _random_spawner() -> void:
 	# Free pickup drops near the player
 	if roll <= MAX_SHARD_DROP_RATE:
 		ExperienceShard.spawn(get_tree().current_scene, _pickup_position())
-	if roll <= 2:
-		ModuleChest.spawn(get_tree().current_scene, _pickup_position())
 
 	var faction := _stage_faction()
 	if faction == 0:
@@ -91,17 +91,20 @@ func _random_spawner() -> void:
 		spawn_count += 1
 
 
-func _stage_faction() -> int:
+func _pick_session_faction() -> int:
 	var stage := GameManager.current_stage
 	match stage:
 		1: return 1
 		2: return 2
 		3: return 3
 		4: return 4
-	# complex, endless, and mission stages: any faction
 	if (stage >= 11 and stage <= 39) or stage == 101:
 		return rng.randi_range(1, 4)
 	return 0
+
+
+func _stage_faction() -> int:
+	return _session_faction
 
 
 # ── Positioning ────────────────────────────────────────────────────────────────

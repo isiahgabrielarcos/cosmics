@@ -1,6 +1,11 @@
 extends CharacterBody2D
 class_name EnemyBase
 
+# SUPERSEDED — EnemyFactory now spawns scenes/enemies/enemy_{chaser,bomber,
+# shooter,slasher}.tscn (scripts/enemies/enemy_unit.gd + archetype scripts)
+# instead of building enemies entirely in code. Nothing references this
+# class anymore; kept only for reference until confirmed safe to delete.
+#
 # Generic enemy — ports the archetype behaviours from enemiesMap.lua:
 #   chasers(), stationaryEnemies(), shipChaserDashers(), shipSlasher(),
 #   enemyShooter(), whereSpawn() sizing/health rules.

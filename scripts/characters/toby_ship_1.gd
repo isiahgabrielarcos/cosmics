@@ -7,21 +7,23 @@ signal xp_changed(current: int, required: int, level: int)
 signal player_died
 
 @onready var ship_body: AnimatedSprite2D = $AnimatedSprite2D
-@onready var cooldown_timer: Timer       = $Timers/CooldownTimer
 @onready var shield_regen_timer: Timer   = $Timers/ShieldRegenTimer
 @onready var shield_hit: Sprite2D        = $shieldHit
 
-# Movement / Boost
-const NORMAL_SPEED   := 600.0
-const BOOST_SPEED    := NORMAL_SPEED * 2
-const DASH_DISTANCE  := 50.0
-const DASH_DURATION  := 0.1
-const BOOST_COOLDOWN := 1.0
-const TURN_RATE      := 5.0
+# Movement / Boost — the shield bar doubles as dash fuel: boosting drains it
+# continuously, and once it hits empty you can't boost again until it has
+# regenerated back up to DASH_UNLOCK_RATIO of max.
+const NORMAL_SPEED     := 600.0
+const BOOST_SPEED      := NORMAL_SPEED * 2
+const DASH_DISTANCE    := 50.0
+const DASH_DURATION    := 0.1
+const TURN_RATE        := 5.0
+const DASH_DRAIN_RATE  := 5.0   # shield/sec drained while boosting
+const DASH_UNLOCK_RATIO := 0.2   # must regen to 20% of max before boosting again once empty
 
-var current_speed := NORMAL_SPEED
-var can_boost     := true
-var is_boosting   := false
+var current_speed  := NORMAL_SPEED
+var is_boosting    := false
+var _shield_locked := false
 
 # Health / Shield / XP (initialised from SaveManager stats in _ready)
 var max_hp: int     = 100
@@ -33,7 +35,7 @@ var level: int             = 1
 var current_exp: int       = 0
 var exp_to_next_level: int = 30
 
-var shield_regen_rate: float = 1.0   # baseShieldRegen (ticks scale with it)
+var shield_regen_rate: float = 0.3   # baseShieldRegen (ticks scale with it)
 var health_regen_rate: float = 5.0   # baseHealthRegen
 
 var invincible: bool = false
@@ -52,19 +54,16 @@ func _ready() -> void:
 	max_hp     = int(st.get("baseHealth", 100))
 	hp         = max_hp
 	max_shield = int(st.get("baseShield", 50))
-	shield     = float(st.get("baseInitialShield", 0))
+	shield     = float(max_shield)   # dash fuel — always starts full
 	shield_regen_rate = maxf(float(st.get("baseShieldRegen", 1)), 1.0)
 	health_regen_rate = maxf(float(st.get("baseHealthRegen", 5)), 1.0)
 
 	level = int(st.get("baseHeroLevel", 1))
 	exp_to_next_level = 30 * level
 
-	cooldown_timer.one_shot = true
-	cooldown_timer.wait_time = BOOST_COOLDOWN
-	cooldown_timer.timeout.connect(_on_cooldown_timeout)
-
-	# Shield regen — Lua: +2.5 shield every (3000 / regener) ms
-	shield_regen_timer.wait_time = 3.0 / minf(shield_regen_rate, 20.0)
+	# Shield regen — doubled from the original 3000ms base so dash fuel
+	# comes back at a pace that keeps up with being drained by boosting.
+	shield_regen_timer.wait_time = 1.5 / minf(shield_regen_rate, 20.0)
 	shield_regen_timer.timeout.connect(_on_shield_regen_tick)
 	shield_regen_timer.start()
 
@@ -100,6 +99,7 @@ func _physics_process(delta: float) -> void:
 		return
 	if is_boosting:
 		_handle_boost_movement(delta)
+		_drain_shield_while_boosting(delta)
 	else:
 		_handle_normal_movement()
 	_rotate_ship()
@@ -120,8 +120,11 @@ func _handle_normal_movement() -> void:
 		velocity = Vector2.ZERO
 	move_and_slide()
 
-	if Input.is_action_just_pressed("boost") and can_boost:
+	if Input.is_action_just_pressed("boost") and _can_start_boost():
 		_start_boost()
+
+func _can_start_boost() -> bool:
+	return shield > 0.0 and not _shield_locked
 
 func _handle_boost_movement(delta: float) -> void:
 	var to_mouse = (get_global_mouse_position() - global_position).normalized()
@@ -130,11 +133,16 @@ func _handle_boost_movement(delta: float) -> void:
 	velocity = new_dir * current_speed
 	move_and_slide()
 
+func _drain_shield_while_boosting(delta: float) -> void:
+	shield = maxf(0.0, shield - DASH_DRAIN_RATE * delta)
+	shield_changed.emit(shield, max_shield)
+	if shield <= 0.0:
+		_shield_locked = true
+		_end_boost()
+
 func _start_boost() -> void:
-	can_boost     = false
 	is_boosting   = true
 	current_speed = BOOST_SPEED
-	cooldown_timer.start()
 
 	AudioManager.play_sfx("dashSoundEffect")
 	module_system.do_dash_shockwave()
@@ -154,9 +162,6 @@ func _end_boost() -> void:
 	current_speed = NORMAL_SPEED
 	ship_body.play("idle")
 
-func _on_cooldown_timeout() -> void:
-	can_boost = true
-
 # ── Rotation ──────────────────────────────────────────────────────────────────
 
 func _rotate_ship() -> void:
@@ -175,13 +180,6 @@ func take_damage(amount: int) -> void:
 	# Force-field module absorbs one full hit
 	if module_system and module_system.consume_force_field():
 		return
-
-	if shield > 0:
-		var absorbed = minf(shield, amount)
-		shield -= absorbed
-		amount -= int(absorbed)
-		_flash_shield_hit()
-		shield_changed.emit(shield, max_shield)
 
 	if amount > 0:
 		hp -= amount
@@ -206,8 +204,11 @@ func _on_shield_regen_tick() -> void:
 	if not is_alive:
 		return
 	if shield < max_shield:
-		shield = minf(shield + 2.5, max_shield)   # Lua: +2.5 per tick
-		shield_changed.emit(shield, max_shield)
+		if not is_boosting:
+			shield = minf(shield + 2.5, max_shield)   # Lua: +2.5 per tick
+			shield_changed.emit(shield, max_shield)
+	if _shield_locked and shield >= max_shield * DASH_UNLOCK_RATIO:
+		_shield_locked = false
 
 func _on_health_regen_tick() -> void:
 	if not is_alive:
