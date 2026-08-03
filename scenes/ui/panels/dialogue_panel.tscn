@@ -8,6 +8,9 @@
 [sub_resource type="LabelSettings" id="LabelSettings_mfif4"]
 font_size = 51
 
+[sub_resource type="LabelSettings" id="LabelSettings_role"]
+font_size = 28
+
 [sub_resource type="LabelSettings" id="LabelSettings_5n01k"]
 font_size = 38
 
@@ -95,19 +98,31 @@ expand_mode = 1
 [node name="NameLabel" type="Label" parent="Root/ChatBox" unique_id=13748604]
 layout_mode = 0
 offset_left = 77.241356
-offset_top = 51.034393
+offset_top = 22.068878
 offset_right = 1277.2413
-offset_bottom = 116.03439
+offset_bottom = 87.06888
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_fonts/font = ExtResource("3_font")
 theme_override_font_sizes/font_size = 26
 text = "NPC Name"
 label_settings = SubResource("LabelSettings_mfif4")
 
+[node name="RoleLabel" type="Label" parent="Root/ChatBox" unique_id=837201456]
+layout_mode = 0
+offset_left = 77.241356
+offset_top = 91.03439
+offset_right = 1277.2413
+offset_bottom = 131.0344
+theme_override_colors/font_color = Color(0.78, 0.85, 1, 1)
+theme_override_fonts/font = ExtResource("3_font")
+theme_override_font_sizes/font_size = 18
+text = "Role"
+label_settings = SubResource("LabelSettings_role")
+
 [node name="BodyLabel" type="Label" parent="Root/ChatBox" unique_id=1223380981]
 layout_mode = 0
 offset_left = 164.13791
-offset_top = 164.13785
+offset_top = 186.20682
 offset_right = 1364.138
 offset_bottom = 442.13785
 size_flags_vertical = 3
@@ -121,14 +136,14 @@ autowrap_mode = 3
 [node name="HintLabel" type="Label" parent="Root/ChatBox" unique_id=2022330793]
 modulate = Color(0.7, 0.7, 0.8, 1)
 layout_mode = 0
-offset_left = 971.0344
-offset_top = 422.06885
-offset_right = 1321.3793
-offset_bottom = 447.06885
+offset_left = 933.793
+offset_top = 420.68954
+offset_right = 1297.793
+offset_bottom = 445.68954
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_fonts/font = ExtResource("3_font")
 theme_override_font_sizes/font_size = 14
-text = "Click or press Esc to close"
+text = "Click to continue, Esc to close"
 label_settings = SubResource("LabelSettings_n1lww")
 horizontal_alignment = 2
 

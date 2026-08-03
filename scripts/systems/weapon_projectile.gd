@@ -9,6 +9,8 @@ class_name WeaponProjectile
 # module_system.gd's skill effects still use the older HeroProjectile
 # factory (hero_projectile.gd) — untouched, unrelated to these 7 weapons.
 
+const POP_FX := preload("res://scenes/effects/particle_projectile_pop.tscn")
+
 @export var data: WeaponData
 
 var direction: Vector2 = Vector2.UP
@@ -115,4 +117,5 @@ func _try_hit(node: Node) -> void:
 
 
 func _pop() -> void:
+	ParticleEffect.spawn(POP_FX, get_tree().current_scene, global_position)
 	queue_free()

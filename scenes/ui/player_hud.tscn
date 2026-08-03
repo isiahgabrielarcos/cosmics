@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://hv6h1ux32yxc"]
 
 [ext_resource type="Texture2D" uid="uid://cnfvsa06nvr30" path="res://assets/art/ui/miniMap.png" id="3_osipw"]
-[ext_resource type="Texture2D" uid="uid://bi3py5n3mq7uq" path="res://assets/art/ui/inventory.png" id="4_mjrxy"]
+[ext_resource type="PackedScene" uid="uid://b2p5cqrmci107" path="res://scenes/ui/inventory.tscn" id="4_3cn05"]
 [ext_resource type="Script" uid="uid://c2qycaas048ia" path="res://scripts/ui/player_hud.gd" id="5_hudhd"]
 [ext_resource type="Texture2D" uid="uid://dd35eae864y7d" path="res://assets/art/ui/healthBar.png" id="6_hpbar"]
 [ext_resource type="Texture2D" uid="uid://c2hd6v3ixmeoe" path="res://assets/art/ui/shieldBar.png" id="7_shbar"]
@@ -43,10 +43,8 @@ position = Vector2(1800.9999, 114.49999)
 scale = Vector2(2.9843748, 2.9843748)
 texture = ExtResource("3_osipw")
 
-[node name="Inventory" type="Sprite2D" parent="Battle_HUD" unique_id=1477557909]
-position = Vector2(989, 1043)
-scale = Vector2(3.25, 3.25)
-texture = ExtResource("4_mjrxy")
+[node name="Inventory2" parent="Battle_HUD" unique_id=876152341 instance=ExtResource("4_3cn05")]
+layout_mode = 1
 
 [node name="HealthBar" type="TextureProgressBar" parent="Battle_HUD" unique_id=1785019978]
 layout_mode = 1

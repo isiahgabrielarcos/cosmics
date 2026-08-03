@@ -1,0 +1,248 @@
+[gd_scene format=3 uid="uid://b2p5cqrmci107"]
+
+[ext_resource type="Texture2D" uid="uid://cxoc0wqqqyntj" path="res://assets/art/ui/cosmicGameMode.png" id="1_5yy05"]
+[ext_resource type="Script" uid="uid://gr6hrtruok1c" path="res://scripts/ui/inventory.gd" id="1_weae1"]
+[ext_resource type="Texture2D" uid="uid://bi3py5n3mq7uq" path="res://assets/art/ui/inventory.png" id="2_ulvp7"]
+[ext_resource type="Texture2D" uid="uid://0uckiy8w0bl1" path="res://assets/art/ui/inventoryInterface.png" id="3_bfvro"]
+[ext_resource type="FontFile" uid="uid://df2u10dmiarah" path="res://assets/fonts/RetroGaming.ttf" id="3_weae1"]
+[ext_resource type="Texture2D" uid="uid://d1f1xy5aec2hd" path="res://assets/art/ui/acceptCard.png" id="4_bfvro"]
+[ext_resource type="Texture2D" uid="uid://doqfy6siv7n05" path="res://assets/art/ui/tobyAvatar.png" id="4_ulvp7"]
+
+[sub_resource type="Theme" id="Theme_nsspx"]
+
+[sub_resource type="InputEventKey" id="InputEventKey_weae1"]
+device = -1
+keycode = 69
+unicode = 101
+
+[sub_resource type="Shortcut" id="Shortcut_weae1"]
+events = [SubResource("InputEventKey_weae1")]
+
+[node name="Root" type="Control" unique_id=1473374782]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_weae1")
+
+[node name="Dim" type="ColorRect" parent="." unique_id=1276696363]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.8)
+
+[node name="Inventory" type="Control" parent="." unique_id=579761703]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -726.0
+offset_top = 403.0
+offset_right = 726.0
+offset_bottom = 1225.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Backdrop" type="TextureRect" parent="Inventory" unique_id=659488575]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 99.0
+offset_top = 140.0
+offset_right = -99.0
+offset_bottom = 51.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("1_5yy05")
+expand_mode = 1
+
+[node name="Backdrop2" type="NinePatchRect" parent="Inventory" unique_id=384497323]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 97.0
+offset_top = 23.0
+offset_right = -97.0
+offset_bottom = -695.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = SubResource("Theme_nsspx")
+texture = ExtResource("3_bfvro")
+patch_margin_left = 15
+patch_margin_top = 15
+patch_margin_right = 15
+patch_margin_bottom = 15
+
+[node name="Open-Close" type="TextureButton" parent="Inventory" unique_id=1638903623]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -846.0
+offset_top = 8.0
+offset_right = -567.0
+offset_bottom = 44.0
+grow_horizontal = 0
+shortcut = SubResource("Shortcut_weae1")
+texture_normal = ExtResource("2_ulvp7")
+ignore_texture_size = true
+stretch_mode = 4
+
+[node name="Margin" type="MarginContainer" parent="Inventory" unique_id=1350436728]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 110.0
+offset_top = 131.0
+offset_right = -110.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 100
+theme_override_constants/margin_top = 50
+theme_override_constants/margin_right = 100
+theme_override_constants/margin_bottom = 48
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Inventory/Margin" unique_id=998659650]
+layout_mode = 2
+theme_override_constants/separation = 29
+
+[node name="Content" type="VBoxContainer" parent="Inventory/Margin/HBoxContainer" unique_id=207392840]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Title" type="Label" parent="Inventory/Margin/HBoxContainer/Content" unique_id=430129543]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("3_weae1")
+theme_override_font_sizes/font_size = 34
+text = "Toby"
+horizontal_alignment = 1
+
+[node name="Container" type="TextureRect" parent="Inventory/Margin/HBoxContainer/Content" unique_id=853233905]
+layout_mode = 2
+texture = ExtResource("4_ulvp7")
+expand_mode = 4
+
+[node name="VBoxContainer" type="HBoxContainer" parent="Inventory/Margin/HBoxContainer/Content" unique_id=1662070081]
+layout_mode = 2
+
+[node name="Wallet" type="Label" parent="Inventory/Margin/HBoxContainer/Content/VBoxContainer" unique_id=148090790]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("3_weae1")
+theme_override_font_sizes/font_size = 20
+text = "0"
+horizontal_alignment = 1
+
+[node name="Wallet2" type="Label" parent="Inventory/Margin/HBoxContainer/Content/VBoxContainer" unique_id=892110935]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("3_weae1")
+theme_override_font_sizes/font_size = 20
+text = "0"
+horizontal_alignment = 1
+
+[node name="Wallet3" type="Label" parent="Inventory/Margin/HBoxContainer/Content/VBoxContainer" unique_id=988167562]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("3_weae1")
+theme_override_font_sizes/font_size = 20
+text = "0"
+horizontal_alignment = 1
+
+[node name="Scroll" type="ScrollContainer" parent="Inventory/Margin/HBoxContainer/Content" unique_id=2015202115]
+visible = false
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Columns" type="HBoxContainer" parent="Inventory/Margin/HBoxContainer/Content/Scroll" unique_id=1353923839]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 50
+
+[node name="WeaponsCol" type="VBoxContainer" parent="Inventory/Margin/HBoxContainer/Content/Scroll/Columns" unique_id=314337231]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 8
+
+[node name="Header" type="Label" parent="Inventory/Margin/HBoxContainer/Content/Scroll/Columns/WeaponsCol" unique_id=933971438]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("3_weae1")
+theme_override_font_sizes/font_size = 22
+text = "Weapons — Cosmic Shards"
+
+[node name="List" type="VBoxContainer" parent="Inventory/Margin/HBoxContainer/Content/Scroll/Columns/WeaponsCol" unique_id=1804266215]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="RowTemplate" type="PanelContainer" parent="Inventory/Margin/HBoxContainer/Content/Scroll/Columns/WeaponsCol/List" unique_id=846277682]
+layout_mode = 2
+
+[node name="HBox" type="HBoxContainer" parent="Inventory/Margin/HBoxContainer/Content/Scroll/Columns/WeaponsCol/List/RowTemplate" unique_id=436468041]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="Icon" type="TextureRect" parent="Inventory/Margin/HBoxContainer/Content/Scroll/Columns/WeaponsCol/List/RowTemplate/HBox" unique_id=947988299]
+custom_minimum_size = Vector2(72, 72)
+layout_mode = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="PriceLabel" type="Label" parent="Inventory/Margin/HBoxContainer/Content/Scroll/Columns/WeaponsCol/List/RowTemplate/HBox" unique_id=2040031803]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("3_weae1")
+theme_override_font_sizes/font_size = 18
+text = "Weapon — 000 shards"
+
+[node name="BuyButton" type="TextureButton" parent="Inventory/Margin/HBoxContainer/Content/Scroll/Columns/WeaponsCol/List/RowTemplate/HBox" unique_id=1807760315]
+custom_minimum_size = Vector2(48, 96)
+layout_mode = 2
+texture_normal = ExtResource("4_bfvro")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="Content2" type="VBoxContainer" parent="Inventory/Margin/HBoxContainer" unique_id=1023837934]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Title" type="Label" parent="Inventory/Margin/HBoxContainer/Content2" unique_id=553929952]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("3_weae1")
+theme_override_font_sizes/font_size = 34
+text = "Inventory"
+horizontal_alignment = 1
+
+[node name="Scroll" type="ScrollContainer" parent="Inventory/Margin/HBoxContainer/Content2" unique_id=576621764]
+layout_mode = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+
+[node name="ItemList" type="ItemList" parent="Inventory/Margin/HBoxContainer/Content2/Scroll" unique_id=1471775080]
+layout_mode = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="Inventory/Margin/HBoxContainer/Content2/Scroll/ItemList" unique_id=1351731787]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Panel" type="Panel" parent="Inventory/Margin/HBoxContainer/Content2/Scroll/ItemList" unique_id=2123587584]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[connection signal="pressed" from="Inventory/Open-Close" to="." method="_on_open_close_pressed"]

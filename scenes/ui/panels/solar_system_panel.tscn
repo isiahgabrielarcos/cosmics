@@ -1,0 +1,180 @@
+[gd_scene load_steps=8 format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/solar_system_panel.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://0uckiy8w0bl1" path="res://assets/art/ui/inventoryInterface.png" id="2_frame"]
+[ext_resource type="FontFile" uid="uid://df2u10dmiarah" path="res://assets/fonts/RetroGaming.ttf" id="3_font"]
+
+[sub_resource type="LabelSettings" id="LS_name"]
+font = ExtResource("3_font")
+font_size = 62
+font_color = Color(1, 1, 1, 1)
+outline_size = 8
+outline_color = Color(0, 0, 0, 1)
+
+[sub_resource type="LabelSettings" id="LS_sub"]
+font = ExtResource("3_font")
+font_size = 26
+font_color = Color(0.62, 0.78, 1, 1)
+
+[sub_resource type="LabelSettings" id="LS_body"]
+font = ExtResource("3_font")
+font_size = 22
+font_color = Color(0.9, 0.9, 0.95, 1)
+
+[sub_resource type="LabelSettings" id="LS_tier"]
+font = ExtResource("3_font")
+font_size = 30
+font_color = Color(1, 0.85, 0.35, 1)
+outline_size = 5
+outline_color = Color(0, 0, 0, 1)
+
+[node name="SolarSystemPanel" type="CanvasLayer"]
+script = ExtResource("1_script")
+
+[node name="Root" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Frame" type="NinePatchRect" parent="Root"]
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -760.0
+offset_top = -470.0
+offset_right = -40.0
+offset_bottom = 470.0
+grow_horizontal = 0
+grow_vertical = 2
+texture = ExtResource("2_frame")
+patch_margin_left = 15
+patch_margin_top = 15
+patch_margin_right = 15
+patch_margin_bottom = 15
+
+[node name="SystemName" type="Label" parent="Root/Frame"]
+layout_mode = 0
+offset_left = 40.0
+offset_top = 28.0
+offset_right = 680.0
+offset_bottom = 104.0
+text = "FLASCHBOURN"
+label_settings = SubResource("LS_name")
+horizontal_alignment = 1
+
+[node name="Subtitle" type="Label" parent="Root/Frame"]
+layout_mode = 0
+offset_left = 40.0
+offset_top = 106.0
+offset_right = 680.0
+offset_bottom = 140.0
+text = "The Feiry Solar System"
+label_settings = SubResource("LS_sub")
+horizontal_alignment = 1
+
+[node name="SystemImage" type="TextureRect" parent="Root/Frame"]
+layout_mode = 0
+offset_left = 60.0
+offset_top = 156.0
+offset_right = 660.0
+offset_bottom = 456.0
+expand_mode = 1
+stretch_mode = 5
+
+[node name="NarrativeDescription" type="Label" parent="Root/Frame"]
+layout_mode = 0
+offset_left = 46.0
+offset_top = 474.0
+offset_right = 674.0
+offset_bottom = 596.0
+text = "Narrative description"
+label_settings = SubResource("LS_body")
+autowrap_mode = 3
+
+[node name="GameplayDescription" type="Label" parent="Root/Frame"]
+layout_mode = 0
+offset_left = 46.0
+offset_top = 604.0
+offset_right = 674.0
+offset_bottom = 676.0
+modulate = Color(0.72, 0.88, 1, 1)
+text = "Gameplay description"
+label_settings = SubResource("LS_body")
+autowrap_mode = 3
+
+[node name="TierRow" type="Control" parent="Root/Frame"]
+layout_mode = 0
+offset_left = 46.0
+offset_top = 686.0
+offset_right = 674.0
+offset_bottom = 814.0
+
+[node name="TierName" type="Label" parent="Root/Frame/TierRow"]
+layout_mode = 0
+offset_top = 6.0
+offset_right = 268.0
+offset_bottom = 62.0
+text = "DIFFICULTY  1/5"
+label_settings = SubResource("LS_tier")
+vertical_alignment = 1
+
+[node name="TierButton" type="Button" parent="Root/Frame/TierRow"]
+layout_mode = 0
+offset_left = 278.0
+offset_right = 628.0
+offset_bottom = 68.0
+theme_override_font_sizes/font_size = 32
+theme_override_fonts/font = ExtResource("3_font")
+theme_override_colors/font_color = Color(0.55, 1, 0.6, 1)
+text = "BEGINNER"
+
+[node name="TierDesc" type="Label" parent="Root/Frame/TierRow"]
+layout_mode = 0
+offset_top = 78.0
+offset_right = 628.0
+offset_bottom = 128.0
+text = "Chasers only."
+label_settings = SubResource("LS_body")
+autowrap_mode = 3
+horizontal_alignment = 1
+
+[node name="Buttons" type="Control" parent="Root/Frame"]
+layout_mode = 0
+offset_left = 46.0
+offset_top = 826.0
+offset_right = 674.0
+offset_bottom = 910.0
+
+[node name="RunButton" type="Button" parent="Root/Frame/Buttons"]
+layout_mode = 0
+offset_right = 306.0
+offset_bottom = 84.0
+theme_override_font_sizes/font_size = 30
+theme_override_fonts/font = ExtResource("3_font")
+text = "15-MINUTE RUN"
+
+[node name="EndlessButton" type="Button" parent="Root/Frame/Buttons"]
+layout_mode = 0
+offset_left = 322.0
+offset_right = 628.0
+offset_bottom = 84.0
+theme_override_font_sizes/font_size = 30
+theme_override_fonts/font = ExtResource("3_font")
+text = "ENDLESS MODE"
+
+[node name="CloseButton" type="Button" parent="Root/Frame"]
+layout_mode = 0
+offset_left = 620.0
+offset_top = 20.0
+offset_right = 692.0
+offset_bottom = 84.0
+theme_override_font_sizes/font_size = 34
+theme_override_fonts/font = ExtResource("3_font")
+text = "X"

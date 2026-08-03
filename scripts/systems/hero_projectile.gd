@@ -4,6 +4,8 @@ class_name HeroProjectile
 # Generic hero projectile — ports whichAim()/otherAims() from globalFunctions.lua.
 # All 7 weapon types build one of these with different sprites/behaviours.
 
+const POP_FX := preload("res://scenes/effects/particle_projectile_pop.tscn")
+
 var speed: float = 800.0
 var damage: int = 20
 var pierce: int = 2
@@ -107,4 +109,5 @@ func _try_hit(node: Node) -> void:
 
 
 func _pop() -> void:
+	ParticleEffect.spawn(POP_FX, get_tree().current_scene, global_position)
 	queue_free()

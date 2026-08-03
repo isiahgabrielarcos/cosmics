@@ -30,6 +30,9 @@ const WEAPON_SFX := {
 const BASE_STAT_DAMAGE := 20.0   # baseDamage reference the 7 weapons were tuned against
 const BASE_ATTACK_SPEED := 0.25  # baseAttackSpeed reference for fire_rate scaling
 
+# Comet and Shield Generator — temporarily pulled from the loadout
+const DISABLED_WEAPONS := [3, 7]
+
 var player: CharacterBody2D
 
 # Loadout (from equippedData.json)
@@ -87,6 +90,10 @@ func _ready() -> void:
 	var eq: Dictionary = SaveManager.equipped_data
 	primary_weapon   = int(eq.get("weapon1Slot", 1))
 	secondary_weapon = int(eq.get("weapon2Slot", 1))
+	if primary_weapon in DISABLED_WEAPONS:
+		primary_weapon = 1
+	if secondary_weapon in DISABLED_WEAPONS:
+		secondary_weapon = 1
 
 	var st: Dictionary = SaveManager.stats_data
 	base_damage   = int(st.get("baseDamage", 20))

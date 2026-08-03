@@ -15,6 +15,9 @@ const LAYER_WALLS     := 64  # layer 7
 
 const CONTACT_TICK := 0.8
 
+const DEATH_FX      := preload("res://scenes/effects/particle_enemy_death.tscn")
+const BOSS_DEATH_FX := preload("res://scenes/effects/particle_boss_death.tscn")
+
 @export var data: EnemyData
 var split_depth: int = 0
 
@@ -106,11 +109,15 @@ func apply_damage(amount: int) -> void:
 	hp -= amount
 	modulate = Color(2, 2, 2)
 	create_tween().tween_property(self, "modulate", Color.WHITE, 0.15)
+	HitText.spawn(get_tree().current_scene, global_position, amount, Color.WHITE)
 	if hp <= 0:
 		_die()
 
 
 func _die(with_drops: bool = true) -> void:
+	ParticleEffect.spawn(BOSS_DEATH_FX if data.is_boss else DEATH_FX,
+		get_tree().current_scene, global_position, scale.x)
+
 	if data.self_split_count > 0 and split_depth < data.self_split_max_depth:
 		_split()
 		queue_free()

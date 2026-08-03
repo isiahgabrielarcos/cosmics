@@ -1,0 +1,23 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/effects/particle_effect.gd" id="1_script"]
+
+[sub_resource type="ParticleProcessMaterial" id="PPM_player_hit"]
+direction = Vector3(0, -1, 0)
+spread = 180.0
+initial_velocity_min = 60.0
+initial_velocity_max = 130.0
+gravity = Vector3(0, 100, 0)
+scale_min = 2.0
+scale_max = 3.5
+color = Color(1, 0.1, 0.1, 1)
+
+[node name="ParticlePlayerHitDeath" type="GPUParticles2D"]
+script = ExtResource("1_script")
+emitting = true
+amount = 18
+lifetime = 0.4
+one_shot = true
+explosiveness = 1.0
+randomness = 0.25
+process_material = SubResource("PPM_player_hit")

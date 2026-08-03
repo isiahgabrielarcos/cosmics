@@ -5,6 +5,7 @@ class_name EnemyProjectile
 # damage 5, ~5 s lifetime.
 
 const TEX := preload("res://assets/art/characters/laserBeam1.png")
+const POP_FX := preload("res://scenes/effects/particle_projectile_pop.tscn")
 
 var direction: Vector2 = Vector2.RIGHT
 var speed: float = 400.0
@@ -34,7 +35,7 @@ func _ready() -> void:
 func _physics_process(delta: float) -> void:
 	_age += delta
 	if _age >= lifetime:
-		queue_free()
+		_pop()
 		return
 	global_position += direction * speed * delta
 
@@ -42,4 +43,9 @@ func _physics_process(delta: float) -> void:
 func _on_body_entered(body: Node) -> void:
 	if body.is_in_group("friendlies") and body.has_method("take_damage"):
 		body.take_damage(damage)
-		queue_free()
+		_pop()
+
+
+func _pop() -> void:
+	ParticleEffect.spawn(POP_FX, get_tree().current_scene, global_position)
+	queue_free()

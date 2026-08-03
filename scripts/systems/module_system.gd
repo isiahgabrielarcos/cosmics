@@ -9,6 +9,9 @@ class_name ModuleSystem
 
 signal skill_cooldown_changed(remaining: float, total: float)
 
+# Electric Shock and Giant Beam — temporarily pulled from the loadout
+const DISABLED_SKILLS := [4, 6]
+
 const SHOCKWAVE_FX   := preload("res://assets/art/vfx/shockwave.png")
 const ELECTRIC_FX    := preload("res://assets/art/vfx/electricAura.png")
 const HIT5_FX        := preload("res://assets/art/vfx/hitEffect5.png")
@@ -64,6 +67,8 @@ var _frames_cache: Dictionary = {}
 func _ready() -> void:
 	player = get_parent() as CharacterBody2D
 	skill_slot = int(SaveManager.equipped_data.get("skillSlot", 1))
+	if skill_slot in DISABLED_SKILLS:
+		skill_slot = 1
 
 	_make_module_timer("shockwave", shockwave_cooldown, _do_shockwave)
 	_make_module_timer("electric_aura", 0.5, _do_electric_aura)

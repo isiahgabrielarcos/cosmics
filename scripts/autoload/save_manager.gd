@@ -85,13 +85,22 @@ func _create_first_time_data() -> void:
 	save_all()
 
 
+## Weapons/skills pulled from the loadout while their balance/kit is reworked
+## (Comet, Shield Generator, Electric Shock, Giant Beam) — kept locked even
+## during playtesting so they can't be equipped through a stale save.
+const DISABLED_WEAPONS := [3, 7]
+const DISABLED_SKILLS  := [4, 6]
+
+
 ## Playtest helper — unlocks every weapon/skill and stat gate so the whole
 ## game is reachable without grinding. Remove this call in _ready() once
 ## real progression/unlocks are wired up.
 func _unlock_everything_for_playtesting() -> void:
 	for i in range(1, 8):
-		weapon_data["w%dvalue" % i] = true
-		skill_data["s%dvalue" % i] = true
+		if not (i in DISABLED_WEAPONS):
+			weapon_data["w%dvalue" % i] = true
+		if not (i in DISABLED_SKILLS):
+			skill_data["s%dvalue" % i] = true
 
 	player_data["gems"] = maxi(int(player_data.get("gems", 0)), 99999)
 	player_data["shards"] = maxi(int(player_data.get("shards", 0)), 99999)

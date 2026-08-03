@@ -70,9 +70,18 @@ func open_merchant() -> void:
 	_merchant.open()
 
 
-func open_dialogue(npc_name: String, avatar_key: String, text: String) -> DialoguePanel:
+## speaker must be a key in DialoguePanel.CHARACTERS (its name/role/avatar
+## are looked up automatically, callers only ever pass the key and the line).
+func open_dialogue(speaker: String, text: String) -> DialoguePanel:
 	_begin(_dialogue)
-	_dialogue.open(npc_name, avatar_key, text)
+	_dialogue.open(speaker, text)
+	return _dialogue
+
+
+## Multi-stage, multi-speaker conversation — see DialoguePanel.open_sequence.
+func open_sequence(lines: Array) -> DialoguePanel:
+	_begin(_dialogue)
+	_dialogue.open_sequence(lines)
 	return _dialogue
 
 
@@ -85,5 +94,5 @@ func open_infirmary() -> void:
 		player.shield = player.max_shield
 		player.hp_changed.emit(player.hp, player.max_hp)
 		player.shield_changed.emit(player.shield, player.max_shield)
-	open_dialogue("Cosmic Nurse", "nurse",
+	open_dialogue("nurse",
 		"There you go — patched up and good as new!\nTry not to get shot so much out there, okay?")

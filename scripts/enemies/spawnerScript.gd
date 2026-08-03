@@ -20,6 +20,18 @@ var camera: Camera2D
 var spawn_interval: float = 1.0
 var spawn_count: int = 0
 var _session_faction: int = 0
+var _variety: int = 5   # how many archetypes the difficulty tier allows
+
+# Archetype unlock order as the tier climbs. Roll bands come from
+# EnemyFactory.spawn_from_roll: 1-10 chaser · 11-15 shooter · 16-20 bomber ·
+# 21-25 slasher · 26-30 ship.
+const VARIETY_ROLLS := [
+	[1, 10],   # tier 1 — chasers only
+	[1, 15],   # tier 2 — + shooters
+	[1, 20],   # tier 3 — + bombers
+	[1, 25],   # tier 4 — + slashers
+	[1, 30],   # tier 5 — full roster
+]
 
 const MAX_SHARD_DROP_RATE := 6     # currentMaxShardDropRate
 const REPOSITION_RADIUS := 1500.0
@@ -37,6 +49,7 @@ func _ready() -> void:
 	# Per-mission tuning from GameManager (enemySpawner variants in the Lua)
 	var settings: Dictionary = GameManager.get_spawner_settings()
 	spawn_interval = settings.get("interval", 1.0)
+	_variety = int(settings.get("variety", 5))
 
 	spawn_timer.wait_time = spawn_interval
 	spawn_timer.one_shot = false
@@ -64,12 +77,20 @@ func _on_spawn_timer_timeout() -> void:
 
 # ── randomSpawner() ────────────────────────────────────────────────────────────
 
-func _random_spawner() -> void:
-	var roll := rng.randi_range(1, 30)
-	var roll2 := rng.randi_range(1, 30)
+## Rolls inside the band the current difficulty tier unlocks, so low tiers
+## face fewer enemy types rather than merely fewer enemies.
+func _variety_roll() -> int:
+	var band: Array = VARIETY_ROLLS[clampi(_variety, 1, 5) - 1]
+	return rng.randi_range(band[0], band[1])
 
-	# Free pickup drops near the player
-	if roll <= MAX_SHARD_DROP_RATE:
+
+func _random_spawner() -> void:
+	var roll := _variety_roll()
+	var roll2 := _variety_roll()
+
+	# Free pickup drops near the player — rolled separately from the archetype
+	# roll so a low-variety tier doesn't also mean a shard shower.
+	if rng.randi_range(1, 30) <= MAX_SHARD_DROP_RATE:
 		ExperienceShard.spawn(get_tree().current_scene, _pickup_position())
 
 	var faction := _stage_faction()

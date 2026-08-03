@@ -1,0 +1,23 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/effects/hit_text.gd" id="1_script"]
+[ext_resource type="FontFile" uid="uid://df2u10dmiarah" path="res://assets/fonts/RetroGaming.ttf" id="2_font"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_hit"]
+font = ExtResource("2_font")
+font_size = 28
+font_color = Color(1, 1, 1, 1)
+outline_size = 6
+outline_color = Color(0, 0, 0, 1)
+
+[node name="HitText" type="Label"]
+script = ExtResource("1_script")
+offset_right = 140.0
+offset_bottom = 50.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+label_settings = SubResource("LabelSettings_hit")
+horizontal_alignment = 1
+vertical_alignment = 1
+text = "0"
+z_index = 100

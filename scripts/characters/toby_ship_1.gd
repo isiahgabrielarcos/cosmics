@@ -21,6 +21,9 @@ const TURN_RATE        := 5.0
 const DASH_DRAIN_RATE  := 5.0   # shield/sec drained while boosting
 const DASH_UNLOCK_RATIO := 0.2   # must regen to 20% of max before boosting again once empty
 
+const HIT_DEATH_FX := preload("res://scenes/effects/particle_player_hit_death.tscn")
+const LEVEL_UP_FX   := preload("res://scenes/effects/particle_level_up.tscn")
+
 var current_speed  := NORMAL_SPEED
 var is_boosting    := false
 var _shield_locked := false
@@ -184,6 +187,8 @@ func take_damage(amount: int) -> void:
 	if amount > 0:
 		hp -= amount
 		hp_changed.emit(hp, max_hp)
+		HitText.spawn(get_tree().current_scene, global_position, amount, Color(1, 0.15, 0.15))
+		ParticleEffect.spawn(HIT_DEATH_FX, get_tree().current_scene, global_position)
 
 	if hp <= 0:
 		_die()
@@ -192,6 +197,7 @@ func _die() -> void:
 	if not is_alive:
 		return
 	is_alive = false
+	ParticleEffect.spawn(HIT_DEATH_FX, get_tree().current_scene, global_position, 1.6)
 	player_died.emit()
 
 func _flash_shield_hit() -> void:
@@ -224,6 +230,7 @@ func add_experience(amount: int) -> void:
 		level += 1
 		exp_to_next_level = 30 * level
 		AudioManager.play_sfx("levelUp")
+		ParticleEffect.spawn(LEVEL_UP_FX, get_tree().current_scene, global_position)
 	xp_changed.emit(current_exp, exp_to_next_level, level)
 
 # ── Animation ─────────────────────────────────────────────────────────────────

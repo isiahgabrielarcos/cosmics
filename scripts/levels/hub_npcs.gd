@@ -19,10 +19,10 @@ func _ready() -> void:
 	$Receptionist.interacted.connect(func(): _ui.open_ccc())
 
 	# Guards flanking the CCC desk
-	$Guard1.interacted.connect(func(): _ui.open_dialogue("CCC Guard", "guard1",
+	$Guard1.interacted.connect(func(): _ui.open_dialogue("guard1",
 		"The Commission desk is right up there.\nStay out of trouble, pilot."))
 
-	$Guard2.interacted.connect(func(): _ui.open_dialogue("CCC Guard", "guard2",
+	$Guard2.interacted.connect(func(): _ui.open_dialogue("guard2",
 		"Heard the fiends are getting bolder out there.\nGood thing you're on our side."))
 
 	# Cosmic Trader — merchant shop
@@ -32,12 +32,12 @@ func _ready() -> void:
 	$Blacksmith.interacted.connect(func(): _ui.open_blacksmith())
 
 	# Polaroid — flavor
-	$Polaroid.interacted.connect(func(): _ui.open_dialogue("Cosmic Polaroid", "polaroid",
+	$Polaroid.interacted.connect(func(): _ui.open_dialogue("polaroid",
 		"Say cheese! One day I'll photograph every corner of the cosmos.\nEven the scary ones."))
 
 	# Nurse — infirmary
 	$Nurse.interacted.connect(func(): _ui.open_infirmary())
 
 	# Guild Merc — quests (coming later)
-	$GuildMerc.interacted.connect(func(): _ui.open_dialogue("Guild Mercenary", "girl",
+	$GuildMerc.interacted.connect(func(): _ui.open_dialogue("guildmerc",
 		"The guild board's empty today.\nCheck back later — bounties are coming."))

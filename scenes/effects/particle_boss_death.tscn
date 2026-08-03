@@ -1,0 +1,23 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/effects/particle_effect.gd" id="1_script"]
+
+[sub_resource type="ParticleProcessMaterial" id="PPM_boss_death"]
+direction = Vector3(0, -1, 0)
+spread = 180.0
+initial_velocity_min = 120.0
+initial_velocity_max = 260.0
+gravity = Vector3(0, 140, 0)
+scale_min = 4.0
+scale_max = 8.0
+color = Color(1, 0.35, 0.1, 1)
+
+[node name="ParticleBossDeath" type="GPUParticles2D"]
+script = ExtResource("1_script")
+emitting = true
+amount = 50
+lifetime = 0.9
+one_shot = true
+explosiveness = 0.85
+randomness = 0.35
+process_material = SubResource("PPM_boss_death")

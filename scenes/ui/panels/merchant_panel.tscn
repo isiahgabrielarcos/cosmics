@@ -1,15 +1,63 @@
-[gd_scene format=3 uid="uid://crm6fs67isr82"]
+[gd_scene format=3 uid="uid://bmerchpnl2q7x"]
 
-[ext_resource type="Script" uid="uid://dumo6n4trykg2" path="res://scripts/ui/merchant_panel.gd" id="1_script"]
+[ext_resource type="Script" path="res://scripts/ui/merchant_panel.gd" id="1_script"]
 [ext_resource type="Texture2D" uid="uid://cxoc0wqqqyntj" path="res://assets/art/ui/cosmicGameMode.png" id="2_backdrop"]
 [ext_resource type="Texture2D" uid="uid://dukklejm5o7fy" path="res://assets/art/ui/close.png" id="3_close"]
-[ext_resource type="Texture2D" uid="uid://d1f1xy5aec2hd" path="res://assets/art/ui/acceptCard.png" id="4_accept"]
-[ext_resource type="FontFile" uid="uid://df2u10dmiarah" path="res://assets/fonts/RetroGaming.ttf" id="5_font"]
+[ext_resource type="Texture2D" uid="uid://damrkcplhuc3" path="res://assets/art/ui/cosmicTraderAvatar.png" id="3_pepw5"]
+[ext_resource type="Texture2D" uid="uid://bsey77b8l8edr" path="res://assets/art/ui/SkillModule.png" id="6_pepw5"]
+[ext_resource type="TileSet" uid="uid://c4tpxd0n3sq0r" path="res://scenes/TileSet/background_tiles.tres" id="7_lfjxp"]
+[ext_resource type="Texture2D" uid="uid://dsaphitivrwaw" path="res://assets/art/ui/skillArray.png" id="7_t4q7c"]
+[ext_resource type="Texture2D" uid="uid://bodi6oa53d511" path="res://assets/art/ui/WeaponsModule.png" id="8_t4q7c"]
+[ext_resource type="Texture2D" uid="uid://0uckiy8w0bl1" path="res://assets/art/ui/inventoryInterface.png" id="9_svfdy"]
 
-[node name="MerchantPanel" type="CanvasLayer" unique_id=876152341]
+[sub_resource type="LabelSettings" id="LabelSettings_lyl02"]
+font_size = 67
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_svfdy"]
+atlas = ExtResource("7_t4q7c")
+region = Rect2(0, 0, 128, 128)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_nsspx"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_svfdy")
+}],
+"loop": 1,
+"name": &"default",
+"speed": 5.0
+}]
+
+[sub_resource type="LabelSettings" id="LabelSettings_nsspx"]
+font_size = 22
+outline_color = Color(0.054241963, 0.29207325, 1, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_flwv8"]
+font_size = 21
+
+[sub_resource type="LabelSettings" id="LabelSettings_m3ae2"]
+font_size = 69
+outline_color = Color(0.054241963, 0.29207325, 1, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_5x6en"]
+font_size = 40
+
+[sub_resource type="LabelSettings" id="LabelSettings_r7q3b"]
+font_size = 29
+
+[sub_resource type="LabelSettings" id="LabelSettings_equipped"]
+font_size = 26
+font_color = Color(0.42, 1, 0.55, 1)
+outline_size = 5
+outline_color = Color(0, 0, 0, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_a041j"]
+font_size = 27
+
+[node name="MerchantPanel" type="CanvasLayer" unique_id=35720987]
 script = ExtResource("1_script")
 
-[node name="Root" type="Control" parent="." unique_id=1473374782]
+[node name="Root" type="Control" parent="." unique_id=1046268870]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -17,7 +65,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Dim" type="ColorRect" parent="Root" unique_id=1276696363]
+[node name="Dim" type="ColorRect" parent="Root" unique_id=2106781703]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -26,31 +74,127 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0, 0, 0, 0.8)
 
-[node name="Frame" type="Control" parent="Root" unique_id=579761703]
+[node name="Backdrop2" type="TextureRect" parent="Root" unique_id=739803794]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 1343.0
+offset_top = 386.0
+offset_right = -38.0
+offset_bottom = -251.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_backdrop")
+expand_mode = 1
+
+[node name="Backdrop" type="TextureRect" parent="Root" unique_id=1051861257]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 41.0
+offset_top = 386.0
+offset_right = -1340.0
+offset_bottom = -251.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_backdrop")
+expand_mode = 1
+
+[node name="HUD Decor2" type="Control" parent="Root" unique_id=678212750]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Decor" type="TileMap" parent="Root/HUD Decor2" unique_id=1676766282]
+position = Vector2(119.00001, 911.00006)
+scale = Vector2(5.805, 5.805)
+tile_set = ExtResource("7_lfjxp")
+format = 2
+layer_0/tile_data = PackedInt32Array(-65534, 589831, 19, -131070, 589831, 18, -65537, 524295, 18, -1, 524295, 19, -131072, 589831, 18, -131071, 524295, 18, -65535, 524295, 19, -65536, 589831, 19, -131066, 524295, 18, -65530, 524295, 19, -131065, 589831, 18, -65529, 589831, 19, -131064, 524295, 18, -65528, 524295, 19, -131063, 589831, 18, -65527, 589831, 19)
+
+[node name="Decor2" type="TileMap" parent="Root/HUD Decor2" unique_id=1227749721]
+position = Vector2(142, 986)
+scale = Vector2(5.67, 5.67)
+tile_set = ExtResource("7_lfjxp")
+format = 2
+layer_0/tile_data = PackedInt32Array(-262145, 983045, 2, -327680, 1048581, 2, -327679, 1048581, 2, -327678, 1114117, 2, -327674, 983045, 1, -327673, 1048581, 1, -327672, 1048581, 1, -327671, 1114117, 1)
+
+[node name="BottomBorder" type="TileMap" parent="Root/HUD Decor2" unique_id=144702327]
+position = Vector2(-46, 352)
+scale = Vector2(5.22, 5.22)
+tile_set = ExtResource("7_lfjxp")
+format = 2
+layer_0/tile_data = PackedInt32Array(131072, 196616, 1342177288, 131073, 786440, 8, 131074, 196616, 1342177288, 131075, 786440, 8, 65536, 786440, 8, 65537, 196616, 1342177288, 65538, 786440, 8, 65539, 196616, 1342177288, 65544, 196616, 1342177288, 65545, 786440, 8, 65546, 196616, 1342177288, 65547, 786440, 8, 131080, 786440, 8, 131081, 196616, 1342177288, 131082, 786440, 8, 131083, 196616, 1342177288)
+
+[node name="TopBorder" type="TileMap" parent="Root/HUD Decor2" unique_id=1978260367]
+position = Vector2(1944.0002, 749.00006)
+rotation = 3.1415927
+scale = Vector2(5.2, 5.2)
+tile_set = ExtResource("7_lfjxp")
+format = 2
+
+[node name="Label" type="Label" parent="Root/HUD Decor2" unique_id=1397882001]
+layout_mode = 0
+offset_left = 133.0
+offset_top = 136.0
+offset_right = 501.0
+offset_bottom = 222.0
+text = "BUY WEAPONS"
+label_settings = SubResource("LabelSettings_lyl02")
+
+[node name="Label2" type="Label" parent="Root/HUD Decor2" unique_id=560003882]
+layout_mode = 0
+offset_left = 1402.0
+offset_top = 136.0
+offset_right = 1804.0
+offset_bottom = 222.0
+text = "BUY SPECIALS"
+label_settings = SubResource("LabelSettings_lyl02")
+
+[node name="Wallet" type="Label" parent="Root" unique_id=810000001]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -520.0
+offset_top = 24.0
+offset_right = 520.0
+offset_bottom = 76.0
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 34
+text = "GEMS 0      SHARDS 0      CC 0"
+horizontal_alignment = 1
+
+[node name="Frame" type="Control" parent="Root" unique_id=926947717]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -900.0
-offset_top = -506.0
-offset_right = 900.0
-offset_bottom = 506.0
+offset_left = -479.0
+offset_top = -221.0
+offset_right = 296.0
+offset_bottom = 397.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Backdrop" type="TextureRect" parent="Root/Frame" unique_id=659488575]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-texture = ExtResource("2_backdrop")
+[node name="TextureRect" type="TextureRect" parent="Root/Frame" unique_id=1121061781]
+layout_mode = 0
+offset_left = -562.0
+offset_top = -777.0
+offset_right = 1486.0
+offset_bottom = 1271.0
+offset_transform_enabled = true
+offset_transform_scale = Vector2(0.3, 0.3)
+offset_transform_visual_only = false
+texture = ExtResource("3_pepw5")
 expand_mode = 1
 
-[node name="CloseButton" type="TextureButton" parent="Root/Frame" unique_id=1638903623]
+[node name="CloseButton" type="TextureButton" parent="Root/Frame" unique_id=1007458775]
+visible = false
 layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0
@@ -59,135 +203,793 @@ offset_left = -174.0
 offset_top = 46.0
 offset_right = -110.0
 offset_bottom = 110.0
+grow_horizontal = 0
 texture_normal = ExtResource("3_close")
 ignore_texture_size = true
 stretch_mode = 4
 
-[node name="Margin" type="MarginContainer" parent="Root/Frame" unique_id=1350436728]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_constants/margin_left = 130
-theme_override_constants/margin_top = 60
-theme_override_constants/margin_right = 130
-theme_override_constants/margin_bottom = 80
+[node name="Skills" type="Control" parent="Root" unique_id=625106057]
+anchors_preset = 0
+offset_left = 1253.0
+offset_top = 445.0
+offset_right = 1293.0
+offset_bottom = 485.0
 
-[node name="Content" type="VBoxContainer" parent="Root/Frame/Margin" unique_id=207392840]
-layout_mode = 2
-theme_override_constants/separation = 10
+[node name="Skill" type="Control" parent="Root/Skills" unique_id=1792669391]
+anchors_preset = 0
+offset_left = 22.0
+offset_top = 125.0
+offset_right = 255.0
+offset_bottom = 440.0
+scale = Vector2(0.9422476, 0.9422476)
 
-[node name="Title" type="Label" parent="Root/Frame/Margin/Content" unique_id=430129543]
-layout_mode = 2
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_fonts/font = ExtResource("5_font")
-theme_override_font_sizes/font_size = 34
-text = "• Cosmic Trade Board •"
+[node name="Skill Module" type="TextureRect" parent="Root/Skills/Skill" unique_id=197772995]
+layout_mode = 0
+offset_left = -6.0
+offset_top = 42.0
+offset_right = 256.688
+offset_bottom = 392.25067
+scale = Vector2(0.80000055, 0.80000067)
+texture = ExtResource("6_pepw5")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Root/Skills/Skill" unique_id=1767052451]
+position = Vector2(97, 183)
+scale = Vector2(1.125, 1.125)
+sprite_frames = SubResource("SpriteFrames_nsspx")
+
+[node name="Skill Name" type="Label" parent="Root/Skills/Skill" unique_id=756869344]
+layout_mode = 0
+offset_left = 28.0
+offset_top = 68.0
+offset_right = 164.0
+offset_bottom = 96.0
+text = "NAMENAME"
+label_settings = SubResource("LabelSettings_nsspx")
+
+[node name="Skill Price" type="Label" parent="Root/Skills/Skill" unique_id=585419725]
+layout_mode = 0
+offset_left = 29.0
+offset_top = 268.0
+offset_right = 99.0
+offset_bottom = 295.0
+text = "Price"
+label_settings = SubResource("LabelSettings_flwv8")
+
+[node name="Button" type="TextureButton" parent="Root/Skills/Skill" unique_id=2049029474]
+layout_mode = 0
+offset_left = -6.0
+offset_top = 42.0
+offset_right = 248.99976
+offset_bottom = 392.25067
+scale = Vector2(0.80000055, 0.80000067)
+stretch_mode = 0
+
+
+[node name="EquippedLabel" type="Label" parent="Root/Skills/Skill" unique_id=700000006]
+layout_mode = 0
+offset_left = -6.0
+offset_top = 330.0
+offset_right = 250.0
+offset_bottom = 368.0
+text = ""
+label_settings = SubResource("LabelSettings_equipped")
 horizontal_alignment = 1
 
-[node name="Wallet" type="Label" parent="Root/Frame/Margin/Content" unique_id=148090790]
-layout_mode = 2
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_fonts/font = ExtResource("5_font")
-theme_override_font_sizes/font_size = 20
-text = "Gems: 0    Shards: 0    CC: 0"
+[node name="Skill2" type="Control" parent="Root/Skills" unique_id=964663714]
+anchors_preset = 0
+offset_left = 238.0
+offset_top = 125.0
+offset_right = 471.0
+offset_bottom = 440.0
+scale = Vector2(0.9422476, 0.9422476)
+
+[node name="Skill Module" type="TextureRect" parent="Root/Skills/Skill2" unique_id=1706606641]
+layout_mode = 0
+offset_left = -6.0
+offset_top = 42.0
+offset_right = 256.688
+offset_bottom = 392.25067
+scale = Vector2(0.80000055, 0.80000067)
+texture = ExtResource("6_pepw5")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Root/Skills/Skill2" unique_id=54520937]
+position = Vector2(97, 183)
+scale = Vector2(1.125, 1.125)
+sprite_frames = SubResource("SpriteFrames_nsspx")
+
+[node name="Skill Name" type="Label" parent="Root/Skills/Skill2" unique_id=1309868303]
+layout_mode = 0
+offset_left = 28.0
+offset_top = 68.0
+offset_right = 164.0
+offset_bottom = 96.0
+text = "NAMENAME"
+label_settings = SubResource("LabelSettings_nsspx")
+
+[node name="Skill Price" type="Label" parent="Root/Skills/Skill2" unique_id=655307888]
+layout_mode = 0
+offset_left = 29.0
+offset_top = 268.0
+offset_right = 99.0
+offset_bottom = 295.0
+text = "Price"
+label_settings = SubResource("LabelSettings_flwv8")
+
+[node name="Button" type="TextureButton" parent="Root/Skills/Skill2" unique_id=1090778566]
+layout_mode = 0
+offset_left = -6.0
+offset_top = 42.0
+offset_right = 248.99976
+offset_bottom = 392.25067
+scale = Vector2(0.80000055, 0.80000067)
+stretch_mode = 0
+
+
+[node name="EquippedLabel" type="Label" parent="Root/Skills/Skill2" unique_id=700000007]
+layout_mode = 0
+offset_left = -6.0
+offset_top = 330.0
+offset_right = 250.0
+offset_bottom = 368.0
+text = ""
+label_settings = SubResource("LabelSettings_equipped")
 horizontal_alignment = 1
 
-[node name="Scroll" type="ScrollContainer" parent="Root/Frame/Margin/Content" unique_id=2015202115]
-layout_mode = 2
-size_flags_vertical = 3
+[node name="Skill3" type="Control" parent="Root/Skills" unique_id=1568701582]
+anchors_preset = 0
+offset_left = 457.0
+offset_top = 125.0
+offset_right = 690.0
+offset_bottom = 440.0
+scale = Vector2(0.9422476, 0.9422476)
 
-[node name="Columns" type="HBoxContainer" parent="Root/Frame/Margin/Content/Scroll" unique_id=1353923839]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_constants/separation = 50
+[node name="Skill Module" type="TextureRect" parent="Root/Skills/Skill3" unique_id=1277242937]
+layout_mode = 0
+offset_left = -6.0
+offset_top = 42.0
+offset_right = 256.688
+offset_bottom = 392.25067
+scale = Vector2(0.80000055, 0.80000067)
+texture = ExtResource("6_pepw5")
 
-[node name="WeaponsCol" type="VBoxContainer" parent="Root/Frame/Margin/Content/Scroll/Columns" unique_id=314337231]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_constants/separation = 8
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Root/Skills/Skill3" unique_id=1765744547]
+position = Vector2(97, 183)
+scale = Vector2(1.125, 1.125)
+sprite_frames = SubResource("SpriteFrames_nsspx")
 
-[node name="Header" type="Label" parent="Root/Frame/Margin/Content/Scroll/Columns/WeaponsCol" unique_id=933971438]
-layout_mode = 2
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_fonts/font = ExtResource("5_font")
-theme_override_font_sizes/font_size = 22
-text = "Weapons — Cosmic Shards"
+[node name="Skill Name" type="Label" parent="Root/Skills/Skill3" unique_id=1529929908]
+layout_mode = 0
+offset_left = 28.0
+offset_top = 68.0
+offset_right = 164.0
+offset_bottom = 96.0
+text = "NAMENAME"
+label_settings = SubResource("LabelSettings_nsspx")
 
-[node name="List" type="VBoxContainer" parent="Root/Frame/Margin/Content/Scroll/Columns/WeaponsCol" unique_id=1804266215]
-layout_mode = 2
-theme_override_constants/separation = 8
+[node name="Skill Price" type="Label" parent="Root/Skills/Skill3" unique_id=2017798702]
+layout_mode = 0
+offset_left = 29.0
+offset_top = 268.0
+offset_right = 99.0
+offset_bottom = 295.0
+text = "Price"
+label_settings = SubResource("LabelSettings_flwv8")
 
-[node name="RowTemplate" type="PanelContainer" parent="Root/Frame/Margin/Content/Scroll/Columns/WeaponsCol/List" unique_id=846277682]
-layout_mode = 2
+[node name="Button" type="TextureButton" parent="Root/Skills/Skill3" unique_id=1130729878]
+layout_mode = 0
+offset_left = -6.0
+offset_top = 42.0
+offset_right = 248.99976
+offset_bottom = 392.25067
+scale = Vector2(0.80000055, 0.80000067)
+stretch_mode = 0
 
-[node name="HBox" type="HBoxContainer" parent="Root/Frame/Margin/Content/Scroll/Columns/WeaponsCol/List/RowTemplate" unique_id=436468041]
-layout_mode = 2
-theme_override_constants/separation = 14
 
-[node name="Icon" type="TextureRect" parent="Root/Frame/Margin/Content/Scroll/Columns/WeaponsCol/List/RowTemplate/HBox" unique_id=947988299]
-custom_minimum_size = Vector2(72, 72)
-layout_mode = 2
-expand_mode = 1
-stretch_mode = 5
+[node name="EquippedLabel" type="Label" parent="Root/Skills/Skill3" unique_id=700000008]
+layout_mode = 0
+offset_left = -6.0
+offset_top = 330.0
+offset_right = 250.0
+offset_bottom = 368.0
+text = ""
+label_settings = SubResource("LabelSettings_equipped")
+horizontal_alignment = 1
 
-[node name="PriceLabel" type="Label" parent="Root/Frame/Margin/Content/Scroll/Columns/WeaponsCol/List/RowTemplate/HBox" unique_id=2040031803]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_fonts/font = ExtResource("5_font")
-theme_override_font_sizes/font_size = 18
-text = "Weapon — 000 shards"
+[node name="Skill4" type="Control" parent="Root/Skills" unique_id=766879328]
+anchors_preset = 0
+offset_left = 154.0
+offset_top = -226.0
+offset_right = 387.0
+offset_bottom = 89.0
+scale = Vector2(0.9422476, 0.9422476)
 
-[node name="BuyButton" type="TextureButton" parent="Root/Frame/Margin/Content/Scroll/Columns/WeaponsCol/List/RowTemplate/HBox" unique_id=1807760315]
-custom_minimum_size = Vector2(48, 96)
-layout_mode = 2
-texture_normal = ExtResource("4_accept")
-ignore_texture_size = true
-stretch_mode = 5
+[node name="Skill Module" type="TextureRect" parent="Root/Skills/Skill4" unique_id=275919929]
+layout_mode = 0
+offset_left = -6.0
+offset_top = 42.0
+offset_right = 256.688
+offset_bottom = 392.25067
+scale = Vector2(0.80000055, 0.80000067)
+texture = ExtResource("6_pepw5")
 
-[node name="SkillsCol" type="VBoxContainer" parent="Root/Frame/Margin/Content/Scroll/Columns" unique_id=1041439583]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_constants/separation = 8
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Root/Skills/Skill4" unique_id=964029324]
+position = Vector2(97, 183)
+scale = Vector2(1.125, 1.125)
+sprite_frames = SubResource("SpriteFrames_nsspx")
 
-[node name="Header" type="Label" parent="Root/Frame/Margin/Content/Scroll/Columns/SkillsCol" unique_id=1206101928]
-layout_mode = 2
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_fonts/font = ExtResource("5_font")
-theme_override_font_sizes/font_size = 22
-text = "Skills — Cosmic Gems"
+[node name="Skill Name" type="Label" parent="Root/Skills/Skill4" unique_id=1062592855]
+layout_mode = 0
+offset_left = 28.0
+offset_top = 68.0
+offset_right = 164.0
+offset_bottom = 96.0
+text = "NAMENAME"
+label_settings = SubResource("LabelSettings_nsspx")
 
-[node name="List" type="VBoxContainer" parent="Root/Frame/Margin/Content/Scroll/Columns/SkillsCol" unique_id=1344457860]
-layout_mode = 2
-theme_override_constants/separation = 8
+[node name="Skill Price" type="Label" parent="Root/Skills/Skill4" unique_id=909391964]
+layout_mode = 0
+offset_left = 29.0
+offset_top = 268.0
+offset_right = 99.0
+offset_bottom = 295.0
+text = "Price"
+label_settings = SubResource("LabelSettings_flwv8")
 
-[node name="RowTemplate" type="PanelContainer" parent="Root/Frame/Margin/Content/Scroll/Columns/SkillsCol/List" unique_id=489125473]
-layout_mode = 2
+[node name="Button" type="TextureButton" parent="Root/Skills/Skill4" unique_id=1523299269]
+layout_mode = 0
+offset_left = -6.0
+offset_top = 42.0
+offset_right = 248.99976
+offset_bottom = 392.25067
+scale = Vector2(0.80000055, 0.80000067)
+stretch_mode = 0
 
-[node name="HBox" type="HBoxContainer" parent="Root/Frame/Margin/Content/Scroll/Columns/SkillsCol/List/RowTemplate" unique_id=316927325]
-layout_mode = 2
-theme_override_constants/separation = 14
 
-[node name="Icon" type="TextureRect" parent="Root/Frame/Margin/Content/Scroll/Columns/SkillsCol/List/RowTemplate/HBox" unique_id=348073590]
-custom_minimum_size = Vector2(72, 72)
-layout_mode = 2
-expand_mode = 1
-stretch_mode = 5
+[node name="EquippedLabel" type="Label" parent="Root/Skills/Skill4" unique_id=700000009]
+layout_mode = 0
+offset_left = -6.0
+offset_top = 330.0
+offset_right = 250.0
+offset_bottom = 368.0
+text = ""
+label_settings = SubResource("LabelSettings_equipped")
+horizontal_alignment = 1
 
-[node name="PriceLabel" type="Label" parent="Root/Frame/Margin/Content/Scroll/Columns/SkillsCol/List/RowTemplate/HBox" unique_id=331238773]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_fonts/font = ExtResource("5_font")
-theme_override_font_sizes/font_size = 18
-text = "Skill — 000 gems"
+[node name="Skill5" type="Control" parent="Root/Skills" unique_id=1938521977]
+anchors_preset = 0
+offset_left = 385.0
+offset_top = -226.0
+offset_right = 618.0
+offset_bottom = 89.0
+scale = Vector2(0.9422476, 0.9422476)
 
-[node name="BuyButton" type="TextureButton" parent="Root/Frame/Margin/Content/Scroll/Columns/SkillsCol/List/RowTemplate/HBox" unique_id=1454286906]
-custom_minimum_size = Vector2(48, 96)
-layout_mode = 2
-texture_normal = ExtResource("4_accept")
-ignore_texture_size = true
-stretch_mode = 5
+[node name="Skill Module" type="TextureRect" parent="Root/Skills/Skill5" unique_id=1251260495]
+layout_mode = 0
+offset_left = -6.0
+offset_top = 42.0
+offset_right = 256.688
+offset_bottom = 392.25067
+scale = Vector2(0.80000055, 0.80000067)
+texture = ExtResource("6_pepw5")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Root/Skills/Skill5" unique_id=1645409824]
+position = Vector2(97, 183)
+scale = Vector2(1.125, 1.125)
+sprite_frames = SubResource("SpriteFrames_nsspx")
+
+[node name="Skill Name" type="Label" parent="Root/Skills/Skill5" unique_id=1507744169]
+layout_mode = 0
+offset_left = 28.0
+offset_top = 68.0
+offset_right = 164.0
+offset_bottom = 96.0
+text = "NAMENAME"
+label_settings = SubResource("LabelSettings_nsspx")
+
+[node name="Skill Price" type="Label" parent="Root/Skills/Skill5" unique_id=521785349]
+layout_mode = 0
+offset_left = 29.0
+offset_top = 268.0
+offset_right = 99.0
+offset_bottom = 295.0
+text = "Price"
+label_settings = SubResource("LabelSettings_flwv8")
+
+[node name="Button" type="TextureButton" parent="Root/Skills/Skill5" unique_id=228825548]
+layout_mode = 0
+offset_left = -6.0
+offset_top = 42.0
+offset_right = 248.99976
+offset_bottom = 392.25067
+scale = Vector2(0.80000055, 0.80000067)
+stretch_mode = 0
+
+
+[node name="EquippedLabel" type="Label" parent="Root/Skills/Skill5" unique_id=700000010]
+layout_mode = 0
+offset_left = -6.0
+offset_top = 330.0
+offset_right = 250.0
+offset_bottom = 368.0
+text = ""
+label_settings = SubResource("LabelSettings_equipped")
+horizontal_alignment = 1
+
+[node name="Weapons" type="Control" parent="Root" unique_id=1594406228]
+anchors_preset = 0
+offset_left = -12.0
+offset_top = 445.0
+offset_right = 28.0
+offset_bottom = 485.0
+
+[node name="Weapons1" type="Control" parent="Root/Weapons" unique_id=46377095]
+anchors_preset = 0
+offset_left = 22.0
+offset_top = 121.0
+offset_right = 255.0
+offset_bottom = 436.0
+scale = Vector2(0.9422476, 0.9422476)
+
+[node name="modulesprite" type="TextureRect" parent="Root/Weapons/Weapons1" unique_id=836765626]
+layout_mode = 0
+offset_left = -6.0
+offset_top = 42.0
+offset_right = 256.688
+offset_bottom = 392.25067
+scale = Vector2(0.80000055, 0.80000067)
+texture = ExtResource("8_t4q7c")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Root/Weapons/Weapons1" unique_id=1362679590]
+position = Vector2(97, 183)
+scale = Vector2(1.125, 1.125)
+sprite_frames = SubResource("SpriteFrames_nsspx")
+
+[node name="Weapon Name" type="Label" parent="Root/Weapons/Weapons1" unique_id=305331509]
+layout_mode = 0
+offset_left = 28.0
+offset_top = 68.0
+offset_right = 164.0
+offset_bottom = 96.0
+text = "NAMENAME"
+label_settings = SubResource("LabelSettings_nsspx")
+
+[node name="Weapon Price" type="Label" parent="Root/Weapons/Weapons1" unique_id=1585328242]
+layout_mode = 0
+offset_left = 29.0
+offset_top = 268.0
+offset_right = 99.0
+offset_bottom = 295.0
+text = "Price"
+label_settings = SubResource("LabelSettings_flwv8")
+
+[node name="Button" type="TextureButton" parent="Root/Weapons/Weapons1" unique_id=1387824620]
+layout_mode = 0
+offset_left = -6.0
+offset_top = 42.0
+offset_right = 248.99976
+offset_bottom = 392.25067
+scale = Vector2(0.80000055, 0.80000067)
+stretch_mode = 0
+
+
+[node name="EquippedLabel" type="Label" parent="Root/Weapons/Weapons1" unique_id=700000001]
+layout_mode = 0
+offset_left = -6.0
+offset_top = 330.0
+offset_right = 250.0
+offset_bottom = 368.0
+text = ""
+label_settings = SubResource("LabelSettings_equipped")
+horizontal_alignment = 1
+
+[node name="Weapons2" type="Control" parent="Root/Weapons" unique_id=568381891]
+anchors_preset = 0
+offset_left = 241.00002
+offset_top = 125.0
+offset_right = 474.0
+offset_bottom = 440.0
+scale = Vector2(0.9422476, 0.9422476)
+
+[node name="modulesprite" type="TextureRect" parent="Root/Weapons/Weapons2" unique_id=1173415544]
+layout_mode = 0
+offset_left = -6.0
+offset_top = 42.0
+offset_right = 256.688
+offset_bottom = 392.25067
+scale = Vector2(0.80000055, 0.80000067)
+texture = ExtResource("8_t4q7c")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Root/Weapons/Weapons2" unique_id=1546608766]
+position = Vector2(97, 183)
+scale = Vector2(1.125, 1.125)
+sprite_frames = SubResource("SpriteFrames_nsspx")
+
+[node name="Weapon Name" type="Label" parent="Root/Weapons/Weapons2" unique_id=2052749592]
+layout_mode = 0
+offset_left = 28.0
+offset_top = 68.0
+offset_right = 164.0
+offset_bottom = 96.0
+text = "NAMENAME"
+label_settings = SubResource("LabelSettings_nsspx")
+
+[node name="Weapon Price" type="Label" parent="Root/Weapons/Weapons2" unique_id=870094857]
+layout_mode = 0
+offset_left = 29.0
+offset_top = 268.0
+offset_right = 99.0
+offset_bottom = 295.0
+text = "Price"
+label_settings = SubResource("LabelSettings_flwv8")
+
+[node name="Button" type="TextureButton" parent="Root/Weapons/Weapons2" unique_id=345553901]
+layout_mode = 0
+offset_left = -6.0
+offset_top = 42.0
+offset_right = 248.99976
+offset_bottom = 392.25067
+scale = Vector2(0.80000055, 0.80000067)
+stretch_mode = 0
+
+
+[node name="EquippedLabel" type="Label" parent="Root/Weapons/Weapons2" unique_id=700000002]
+layout_mode = 0
+offset_left = -6.0
+offset_top = 330.0
+offset_right = 250.0
+offset_bottom = 368.0
+text = ""
+label_settings = SubResource("LabelSettings_equipped")
+horizontal_alignment = 1
+
+[node name="Weapons3" type="Control" parent="Root/Weapons" unique_id=1848852408]
+anchors_preset = 0
+offset_left = 457.0
+offset_top = 121.0
+offset_right = 690.0
+offset_bottom = 436.0
+scale = Vector2(0.9422476, 0.9422476)
+
+[node name="modulesprite" type="TextureRect" parent="Root/Weapons/Weapons3" unique_id=2037539712]
+layout_mode = 0
+offset_left = -6.0
+offset_top = 42.0
+offset_right = 256.688
+offset_bottom = 392.25067
+scale = Vector2(0.80000055, 0.80000067)
+texture = ExtResource("8_t4q7c")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Root/Weapons/Weapons3" unique_id=1222076009]
+position = Vector2(97, 183)
+scale = Vector2(1.125, 1.125)
+sprite_frames = SubResource("SpriteFrames_nsspx")
+
+[node name="Weapon Name" type="Label" parent="Root/Weapons/Weapons3" unique_id=320531809]
+layout_mode = 0
+offset_left = 28.0
+offset_top = 68.0
+offset_right = 164.0
+offset_bottom = 96.0
+text = "NAMENAME"
+label_settings = SubResource("LabelSettings_nsspx")
+
+[node name="Weapon Price" type="Label" parent="Root/Weapons/Weapons3" unique_id=384769286]
+layout_mode = 0
+offset_left = 29.0
+offset_top = 268.0
+offset_right = 99.0
+offset_bottom = 295.0
+text = "Price"
+label_settings = SubResource("LabelSettings_flwv8")
+
+[node name="Button" type="TextureButton" parent="Root/Weapons/Weapons3" unique_id=1822530640]
+layout_mode = 0
+offset_left = -6.0
+offset_top = 42.0
+offset_right = 248.99976
+offset_bottom = 392.25067
+scale = Vector2(0.80000055, 0.80000067)
+stretch_mode = 0
+
+
+[node name="EquippedLabel" type="Label" parent="Root/Weapons/Weapons3" unique_id=700000003]
+layout_mode = 0
+offset_left = -6.0
+offset_top = 330.0
+offset_right = 250.0
+offset_bottom = 368.0
+text = ""
+label_settings = SubResource("LabelSettings_equipped")
+horizontal_alignment = 1
+
+[node name="Weapons4" type="Control" parent="Root/Weapons" unique_id=1088192900]
+anchors_preset = 0
+offset_left = 105.0
+offset_top = -226.0
+offset_right = 338.0
+offset_bottom = 89.0
+scale = Vector2(0.9422476, 0.9422476)
+
+[node name="modulesprite" type="TextureRect" parent="Root/Weapons/Weapons4" unique_id=330791267]
+layout_mode = 0
+offset_left = -6.0
+offset_top = 42.0
+offset_right = 256.688
+offset_bottom = 392.25067
+scale = Vector2(0.80000055, 0.80000067)
+texture = ExtResource("8_t4q7c")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Root/Weapons/Weapons4" unique_id=736290909]
+position = Vector2(97, 183)
+scale = Vector2(1.125, 1.125)
+sprite_frames = SubResource("SpriteFrames_nsspx")
+
+[node name="Weapon Name" type="Label" parent="Root/Weapons/Weapons4" unique_id=1142407710]
+layout_mode = 0
+offset_left = 28.0
+offset_top = 68.0
+offset_right = 164.0
+offset_bottom = 96.0
+text = "NAMENAME"
+label_settings = SubResource("LabelSettings_nsspx")
+
+[node name="Weapon Price" type="Label" parent="Root/Weapons/Weapons4" unique_id=1423694736]
+layout_mode = 0
+offset_left = 29.0
+offset_top = 268.0
+offset_right = 99.0
+offset_bottom = 295.0
+text = "Price"
+label_settings = SubResource("LabelSettings_flwv8")
+
+[node name="Button" type="TextureButton" parent="Root/Weapons/Weapons4" unique_id=1502535912]
+layout_mode = 0
+offset_left = -6.0
+offset_top = 42.0
+offset_right = 248.99976
+offset_bottom = 392.25067
+scale = Vector2(0.80000055, 0.80000067)
+stretch_mode = 0
+
+
+[node name="EquippedLabel" type="Label" parent="Root/Weapons/Weapons4" unique_id=700000004]
+layout_mode = 0
+offset_left = -6.0
+offset_top = 330.0
+offset_right = 250.0
+offset_bottom = 368.0
+text = ""
+label_settings = SubResource("LabelSettings_equipped")
+horizontal_alignment = 1
+
+[node name="Weapons5" type="Control" parent="Root/Weapons" unique_id=187291029]
+anchors_preset = 0
+offset_left = 336.0
+offset_top = -226.0
+offset_right = 569.0
+offset_bottom = 89.0
+scale = Vector2(0.9422476, 0.9422476)
+
+[node name="modulesprite" type="TextureRect" parent="Root/Weapons/Weapons5" unique_id=228437632]
+layout_mode = 0
+offset_left = -6.0
+offset_top = 42.0
+offset_right = 256.688
+offset_bottom = 392.25067
+scale = Vector2(0.80000055, 0.80000067)
+texture = ExtResource("8_t4q7c")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Root/Weapons/Weapons5" unique_id=134744425]
+position = Vector2(97, 183)
+scale = Vector2(1.125, 1.125)
+sprite_frames = SubResource("SpriteFrames_nsspx")
+
+[node name="Weapon Name" type="Label" parent="Root/Weapons/Weapons5" unique_id=39648777]
+layout_mode = 0
+offset_left = 28.0
+offset_top = 68.0
+offset_right = 164.0
+offset_bottom = 96.0
+text = "NAMENAME"
+label_settings = SubResource("LabelSettings_nsspx")
+
+[node name="Weapon Price" type="Label" parent="Root/Weapons/Weapons5" unique_id=586864557]
+layout_mode = 0
+offset_left = 29.0
+offset_top = 268.0
+offset_right = 99.0
+offset_bottom = 295.0
+text = "Price"
+label_settings = SubResource("LabelSettings_flwv8")
+
+[node name="Button" type="TextureButton" parent="Root/Weapons/Weapons5" unique_id=421559260]
+layout_mode = 0
+offset_left = -6.0
+offset_top = 42.0
+offset_right = 248.99976
+offset_bottom = 392.25067
+scale = Vector2(0.80000055, 0.80000067)
+stretch_mode = 0
+
+
+[node name="EquippedLabel" type="Label" parent="Root/Weapons/Weapons5" unique_id=700000005]
+layout_mode = 0
+offset_left = -6.0
+offset_top = 330.0
+offset_right = 250.0
+offset_bottom = 368.0
+text = ""
+label_settings = SubResource("LabelSettings_equipped")
+horizontal_alignment = 1
+
+[node name="HUD Decor" type="Control" parent="Root" unique_id=109615928]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Decore" type="TileMap" parent="Root/HUD Decor" unique_id=122667143]
+position = Vector2(-117, 911.00006)
+scale = Vector2(6.7, 6.7)
+tile_set = ExtResource("7_lfjxp")
+format = 2
+layer_0/tile_data = PackedInt32Array(9, 458753, 9, 8, 458753, 9, 7, 458753, 9, 6, 458753, 9, 5, 458753, 9, 4, 458753, 9, 3, 458753, 9, 2, 458753, 9, 1, 458753, 9, 0, 458753, 9, -65527, 393216, 805306377, -65528, 393216, 805306377, -65529, 393216, 805306377, -65530, 393216, 805306377, -65531, 393216, 805306377, -65532, 393216, 805306377, -65533, 393216, 805306377, -65534, 393216, 805306377, -65535, 393216, 805306377, -65536, 393216, 805306377)
+
+[node name="BottomBorder" type="TileMap" parent="Root/HUD Decor" unique_id=29996242]
+position = Vector2(-46, 324)
+scale = Vector2(5.22, 5.22)
+tile_set = ExtResource("7_lfjxp")
+format = 2
+layer_0/tile_data = PackedInt32Array(262151, 786439, 16, 262150, 1638407, 16, 262149, 1572871, 16, 262148, 851975, 16, 262147, 786439, 16, 262146, 393223, 18, 262145, 1376263, 16, 262144, 1310727, 16, 262155, 1376263, 16, 262154, 1310727, 16, 262153, 393223, 18, 262152, 851975, 16, 327685, 1572871, 17, 327686, 1638407, 17)
+
+[node name="TopBorder" type="TileMap" parent="Root/HUD Decor" unique_id=1639975649]
+position = Vector2(1944.0002, 702.00006)
+rotation = 3.1415927
+scale = Vector2(5.2, 5.2)
+tile_set = ExtResource("7_lfjxp")
+format = 2
+layer_0/tile_data = PackedInt32Array(262151, 786439, 16, 262150, 1638407, 16, 262149, 1572871, 16, 262148, 851975, 16, 262147, 786439, 16, 262146, 393223, 18, 262145, 1376263, 16, 262144, 1310727, 16, 262155, 1376263, 16, 262154, 1310727, 16, 262153, 393223, 18, 262152, 851975, 16, 327685, 1572871, 17, 327686, 1638407, 17)
+
+[node name="Weapons Panel" type="Control" parent="Root" unique_id=743179709]
+visible = false
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="TextureRect" type="NinePatchRect" parent="Root/Weapons Panel" unique_id=1398607830]
+layout_mode = 0
+offset_left = 1246.0
+offset_top = 60.0
+offset_right = 1955.0
+offset_bottom = 940.0
+texture = ExtResource("9_svfdy")
+patch_margin_left = 15
+patch_margin_top = 15
+patch_margin_right = 15
+patch_margin_bottom = 15
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Root/Weapons Panel" unique_id=1531903157]
+position = Vector2(1592.0001, 350)
+scale = Vector2(2.7343726, 2.7343726)
+sprite_frames = SubResource("SpriteFrames_nsspx")
+
+[node name="Weapon Name" type="Label" parent="Root/Weapons Panel" unique_id=1751950713]
+layout_mode = 0
+offset_left = 1368.0
+offset_top = 80.0
+offset_right = 1795.0
+offset_bottom = 168.0
+text = "NAMENAME"
+label_settings = SubResource("LabelSettings_m3ae2")
+
+[node name="Weapon Price" type="Label" parent="Root/Weapons Panel" unique_id=425802673]
+layout_mode = 0
+offset_left = 1491.0
+offset_top = 518.0
+offset_right = 1684.0
+offset_bottom = 569.0
+text = "Price    "
+label_settings = SubResource("LabelSettings_5x6en")
+horizontal_alignment = 3
+
+[node name="BuyButton" type="Button" parent="Root/Weapons Panel" unique_id=1920809613]
+layout_mode = 0
+offset_left = 1303.0
+offset_top = 784.0
+offset_right = 1935.4998
+offset_bottom = 903.00073
+scale = Vector2(0.80000055, 0.80000067)
+theme_override_font_sizes/font_size = 40
+text = "EQUIP"
+
+[node name="NarrativeDescription" type="Label" parent="Root/Weapons Panel" unique_id=830901782]
+layout_mode = 0
+offset_left = 1291.0
+offset_top = 574.0
+offset_right = 1876.0
+offset_bottom = 625.0
+text = "Narrative Description"
+label_settings = SubResource("LabelSettings_r7q3b")
+horizontal_alignment = 3
+
+[node name="GameplayDescription" type="Label" parent="Root/Weapons Panel" unique_id=459823325]
+layout_mode = 0
+offset_left = 1291.0
+offset_top = 667.0
+offset_right = 1876.0
+offset_bottom = 718.0
+text = "Gameplay Stats"
+label_settings = SubResource("LabelSettings_r7q3b")
+horizontal_alignment = 3
+
+[node name="Skill Panel" type="Control" parent="Root" unique_id=1861408480]
+visible = false
+anchors_preset = 0
+offset_left = -1276.0
+offset_right = -1236.0
+offset_bottom = 40.0
+
+[node name="TextureRect" type="NinePatchRect" parent="Root/Skill Panel" unique_id=847749010]
+layout_mode = 0
+offset_left = 1246.0
+offset_top = 60.0
+offset_right = 1955.0
+offset_bottom = 940.0
+texture = ExtResource("9_svfdy")
+patch_margin_left = 15
+patch_margin_top = 15
+patch_margin_right = 15
+patch_margin_bottom = 15
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Root/Skill Panel" unique_id=1690762494]
+position = Vector2(1615.0001, 350)
+scale = Vector2(2.7343726, 2.7343726)
+sprite_frames = SubResource("SpriteFrames_nsspx")
+
+[node name="Skill Name" type="Label" parent="Root/Skill Panel" unique_id=653589889]
+layout_mode = 0
+offset_left = 1391.0
+offset_top = 80.0
+offset_right = 1818.0
+offset_bottom = 168.0
+text = "NAMENAME"
+label_settings = SubResource("LabelSettings_m3ae2")
+
+[node name="Skill Price" type="Label" parent="Root/Skill Panel" unique_id=1357517637]
+layout_mode = 0
+offset_left = 1514.0
+offset_top = 518.0
+offset_right = 1707.0
+offset_bottom = 569.0
+text = "Price    "
+label_settings = SubResource("LabelSettings_5x6en")
+horizontal_alignment = 3
+
+[node name="BuyButton" type="Button" parent="Root/Skill Panel" unique_id=125735035]
+layout_mode = 0
+offset_left = 1393.0001
+offset_top = 795.0
+offset_right = 1920.4998
+offset_bottom = 914.00073
+scale = Vector2(0.80000055, 0.80000067)
+theme_override_font_sizes/font_size = 48
+text = "EQUIP"
+
+[node name="NarrativeDescription" type="Label" parent="Root/Skill Panel" unique_id=1741730377]
+layout_mode = 0
+offset_left = 1314.0
+offset_top = 574.0
+offset_right = 1899.0
+offset_bottom = 625.0
+text = "Narrative Description"
+label_settings = SubResource("LabelSettings_r7q3b")
+horizontal_alignment = 3
+
+[node name="GameplayDescription" type="Label" parent="Root/Skill Panel" unique_id=1694666361]
+layout_mode = 0
+offset_left = 1314.0
+offset_top = 648.0
+offset_right = 1899.0
+offset_bottom = 699.0
+text = "Gameplay Stats"
+label_settings = SubResource("LabelSettings_r7q3b")
+horizontal_alignment = 3

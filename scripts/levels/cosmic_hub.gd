@@ -15,32 +15,35 @@ func _ready() -> void:
 
 	add_child(PauseMenuScene.instantiate())
 
-	# Receptionist — sends the player straight to the testing area on close
+	# Receptionist — a short Chesca/Toby exchange, then the CCC level selection
 	$Receptionist.interacted.connect(_on_receptionist_interact)
 
-	$Guard1.interacted.connect(func(): _ui.open_dialogue("CCC Guard", "guard1",
+	$Guard1.interacted.connect(func(): _ui.open_dialogue("guard1",
 		"The Commission desk is right up there.\nStay out of trouble, pilot."))
 
-	$Guard2.interacted.connect(func(): _ui.open_dialogue("CCC Guard", "guard2",
+	$Guard2.interacted.connect(func(): _ui.open_dialogue("guard2",
 		"Heard the fiends are getting bolder out there.\nGood thing you're on our side."))
 
-	$Trader.interacted.connect(func(): _ui.open_dialogue("Cosmic Trader", "trader",
-		"Welcome to the Trade Board!\nCome back soon — I'll have wares ready for you."))
+	# Cosmic Trader — trade board
+	$Trader.interacted.connect(func(): _ui.open_merchant())
 
-	$Blacksmith.interacted.connect(func(): _ui.open_dialogue("Blacksmith Talyer", "blacksmith",
-		"The forge is hot and ready.\nBring me some shards and we'll see what we can do."))
+	# Blacksmith Gabriel — ship status / loadout
+	$Blacksmith.interacted.connect(func(): _ui.open_blacksmith())
 
-	$Polaroid.interacted.connect(func(): _ui.open_dialogue("Cosmic Polaroid", "polaroid",
+	$Polaroid.interacted.connect(func(): _ui.open_dialogue("polaroid",
 		"Say cheese! One day I'll photograph every corner of the cosmos.\nEven the scary ones."))
 
-	$Nurse.interacted.connect(func(): _ui.open_dialogue("Nurse", "nurse",
-		"Rest up, pilot. The infirmary is open whenever you need it.\nDon't push yourself too hard out there."))
+	# Nurse Mary Jane — infirmary (heals, then chats)
+	$Nurse.interacted.connect(func(): _ui.open_infirmary())
 
-	$GuildMerc.interacted.connect(func(): _ui.open_dialogue("Guild Mercenary", "girl",
+	$GuildMerc.interacted.connect(func(): _ui.open_dialogue("guildmerc",
 		"The guild board's empty today.\nCheck back later — bounties are coming."))
 
 
 func _on_receptionist_interact() -> void:
-	var dlg: DialoguePanel = _ui.open_dialogue("Receptionist", "receptionist",
-		"Ready to head out, pilot?\nI'll patch you through to the testing area now.")
-	dlg.closed.connect(func(): GameManager.goto_battle(), CONNECT_ONE_SHOT)
+	var dlg: DialoguePanel = _ui.open_sequence([
+		{ "speaker": "receptionist", "text": "Looking for work, pilot?" },
+		{ "speaker": "toby",         "text": "Always. What's on the board?" },
+		{ "speaker": "receptionist", "text": "Pulling up the cluster map now.\nPick your system and I'll file the contract." },
+	])
+	dlg.closed.connect(func(): GameManager.goto_level_select(), CONNECT_ONE_SHOT)
