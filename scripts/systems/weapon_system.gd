@@ -29,6 +29,7 @@ const WEAPON_SFX := {
 
 const BASE_STAT_DAMAGE := 20.0   # baseDamage reference the 7 weapons were tuned against
 const BASE_ATTACK_SPEED := 0.25  # baseAttackSpeed reference for fire_rate scaling
+const BASE_AMMO_CAPACITY := 18   # baseAmmoCapacity reference — anything above it is a bonus
 
 # Comet and Shield Generator — temporarily pulled from the loadout
 const DISABLED_WEAPONS := [3, 7]
@@ -43,12 +44,23 @@ var is_primary_selected: bool = true
 # Stats (from baseStatData.json — enterStats())
 var base_damage: int = 20
 var attack_speed: float = 0.25      # baseAttackSpeed 250 ms
-var ammo_capacity: int = 18         # baseAmmoCapacity
 var reload_time: float = 2.0        # baseReloadTime
-var pierce: int = 2                 # piercing (unused directly — each weapon carries its own)
 var weapon_range: float = 200.0     # baseRange (kept for parity; weapons carry their own lifetime now)
 
+# Magazine size and pierce are per-weapon (WeaponData) now. These two are the
+# upgrade channels on top of them — baseAmmoCapacity above the 18 reference
+# adds rounds to every weapon, and bonus_pierce stacks onto each weapon's
+# pierce up to its own pierce_cap.
+var bonus_ammo: int = 0
+var bonus_pierce: int = 0
+
+# Mirrors of the selected slot, kept in sync by _load_slot() — the HUD reads
+# these. Each of the two loadout slots keeps its own magazine in _slot_ammo,
+# so swapping weapons doesn't hand you a free full clip.
+var ammo_capacity: int = 18
 var current_ammo: int = 18
+var _slot_ammo := {1: 18, 2: 18}
+
 var reloading: bool = false
 var _can_fire: bool = true
 
@@ -97,9 +109,13 @@ func _ready() -> void:
 
 	var st: Dictionary = SaveManager.stats_data
 	base_damage   = int(st.get("baseDamage", 20))
-	ammo_capacity = int(st.get("baseAmmoCapacity", 18))
+	bonus_ammo    = int(st.get("baseAmmoCapacity", 18)) - BASE_AMMO_CAPACITY
 	weapon_range  = float(st.get("baseRange", 200))
-	current_ammo  = ammo_capacity
+
+	# Both slots start loaded
+	_slot_ammo[1] = _capacity_for(primary_weapon)
+	_slot_ammo[2] = _capacity_for(secondary_weapon)
+	_load_slot()
 
 	_emit_ammo()
 
@@ -107,6 +123,47 @@ func _ready() -> void:
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("switch_weapon"):
 		switch_weapon()
+	elif event.is_action_pressed("reload"):
+		try_reload()
+
+
+# ── Slot / magazine bookkeeping ───────────────────────────────────────────────
+
+func _selected_slot() -> int:
+	return 1 if is_primary_selected else 2
+
+
+func _selected_weapon() -> int:
+	return primary_weapon if is_primary_selected else secondary_weapon
+
+
+func _capacity_for(weapon_id: int) -> int:
+	var data: WeaponData = _weapon_data[weapon_id]
+	return maxi(1, data.ammo_capacity + bonus_ammo)
+
+
+## Points current_ammo / ammo_capacity at whichever slot is selected.
+func _load_slot() -> void:
+	ammo_capacity = _capacity_for(_selected_weapon())
+	current_ammo = mini(int(_slot_ammo[_selected_slot()]), ammo_capacity)
+
+
+## Re-equips both slots (the Ship Status screen changing the loadout) and
+## racks fresh magazines sized for the new weapons.
+func set_loadout(slot1: int, slot2: int) -> void:
+	primary_weapon = 1 if slot1 in DISABLED_WEAPONS else slot1
+	secondary_weapon = 1 if slot2 in DISABLED_WEAPONS else slot2
+	_slot_ammo[1] = _capacity_for(primary_weapon)
+	_slot_ammo[2] = _capacity_for(secondary_weapon)
+	_load_slot()
+	_emit_ammo()
+
+
+func _pierce_for(data: WeaponData) -> int:
+	var p := data.pierce + bonus_pierce
+	if data.pierce_cap >= 0:
+		p = mini(p, data.pierce_cap)
+	return maxi(1, p)
 
 
 func _physics_process(_delta: float) -> void:
@@ -120,13 +177,14 @@ func try_shoot() -> void:
 	if not _can_fire or reloading or get_tree().paused or GameManager.ui_open:
 		return
 
-	var slot := primary_weapon if is_primary_selected else secondary_weapon
+	var slot := _selected_weapon()
 	var data: WeaponData = _weapon_data[slot]
 
 	_can_fire = false
 	_fire_timer.start(data.fire_rate * (attack_speed / BASE_ATTACK_SPEED))
 
 	current_ammo -= 1
+	_slot_ammo[_selected_slot()] = current_ammo
 
 	for i in repeater_cannon_amount:
 		_fire_weapon(slot, data)
@@ -147,6 +205,7 @@ func _fire_weapon(slot: int, data: WeaponData) -> void:
 	proj.direction = _aim_dir()
 	proj.rotation = _aim_rotation()
 	proj.damage = int(data.base_damage * (base_damage / BASE_STAT_DAMAGE))
+	proj.pierce_override = _pierce_for(data)
 	_roll_procs(proj)
 
 	if data.archetype != WeaponData.Archetype.BOLT:
@@ -164,11 +223,16 @@ func _fire_weapon(slot: int, data: WeaponData) -> void:
 	AudioManager.play_sfx(WEAPON_SFX[slot])
 
 
+## Swapping slots racks a fresh magazine, so you pay the reload either way
+## instead of dodging it by flipping to the other weapon mid-clip.
 func switch_weapon() -> void:
-	if get_tree().paused:
+	if get_tree().paused or reloading:
 		return
+	_slot_ammo[_selected_slot()] = current_ammo
 	is_primary_selected = not is_primary_selected
+	_load_slot()
 	AudioManager.play_sfx("switchMode")
+	_start_reload()
 
 
 # ── Aim helpers ────────────────────────────────────────────────────────────────
@@ -213,12 +277,23 @@ func _side_shooting() -> void:
 
 # ── Reload (ammoUsed / reloadCooldown) ─────────────────────────────────────────
 
+## Manual reload (R) — top up before a fight instead of waiting to run dry.
+func try_reload() -> void:
+	if reloading or get_tree().paused or GameManager.ui_open:
+		return
+	if current_ammo >= ammo_capacity:
+		return
+	_start_reload()
+
+
 func _start_reload() -> void:
 	reloading = true
 	_reload_timer.start(reload_time)
 	_emit_ammo()
 
 	# Animated reload bar above the ship (cosmicReload.png, 20 frames)
+	if _reload_sprite and is_instance_valid(_reload_sprite):
+		_reload_sprite.queue_free()
 	_reload_sprite = AnimatedSprite2D.new()
 	_reload_sprite.sprite_frames = _sheet_frames(RELOAD_SHEET, 64, 16, 20, 20.0 / reload_time)
 	_reload_sprite.position = Vector2(0, -60)
@@ -231,6 +306,7 @@ func _start_reload() -> void:
 func _on_reload_done() -> void:
 	reloading = false
 	current_ammo = ammo_capacity
+	_slot_ammo[_selected_slot()] = current_ammo
 	if _reload_sprite:
 		_reload_sprite.queue_free()
 		_reload_sprite = null

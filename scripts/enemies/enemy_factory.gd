@@ -62,7 +62,15 @@ const DEFS := {
 }
 
 const FACTION_PREFIX := { 1: "fb", 2: "sh", 3: "fv", 4: "st" }
-const BOSS_IDS := ["boss_strogghold", "boss_frokenvinter", "boss_flaschbourn", "boss_squilltrant"]
+
+## Each solar system has its own boss — you always face that faction's own
+## champion rather than a random one out of the pool.
+const FACTION_BOSS := {
+	1: "boss_flaschbourn",
+	2: "boss_strogghold",
+	3: "boss_frokenvinter",
+	4: "boss_squilltrant",
+}
 
 static var _data_cache: Dictionary = {}
 
@@ -84,27 +92,22 @@ static func spawn_baby_slime(parent: Node, pos: Vector2) -> Node:
 	return spawn(parent, "baby_slime", pos)
 
 
-## Ports the faction spawn weights (roll 1..30):
-##   1–10 chaser (mama for Squilltrant) · 11–15 shooter · 16–20 bomber ·
-##   21–25 slasher · 26–30 ship
-static func spawn_from_roll(parent: Node, faction: int, roll: int, pos: Vector2) -> Node:
+## Spawns one archetype ("chaser" / "shooter" / "bomber" / "slasher" / "ship")
+## in the given faction's flavour. Squilltrant has no plain chaser — its
+## mama slime fills that slot and splits into babies when killed.
+static func spawn_kind(parent: Node, faction: int, kind: String, pos: Vector2) -> Node:
 	var prefix: String = FACTION_PREFIX.get(faction, "fb")
-	var kind: String
-	if roll <= 10:
-		kind = "mama" if prefix == "st" else "chaser"
-	elif roll <= 15:
-		kind = "shooter"
-	elif roll <= 20:
-		kind = "bomber"
-	elif roll <= 25:
-		kind = "slasher"
-	else:
-		kind = "ship"
-	return spawn(parent, "%s_%s" % [prefix, kind], pos)
+	if kind == "chaser" and prefix == "st":
+		kind = "mama"
+	var id := "%s_%s" % [prefix, kind]
+	if not DEFS.has(id):
+		push_warning("EnemyFactory: no def for '%s', falling back to chaser" % id)
+		id = "st_mama" if prefix == "st" else "%s_chaser" % prefix
+	return spawn(parent, id, pos)
 
 
-static func spawn_random_boss(parent: Node, pos: Vector2) -> Node:
-	return spawn(parent, BOSS_IDS[randi_range(0, BOSS_IDS.size() - 1)], pos)
+static func spawn_system_boss(parent: Node, faction: int, pos: Vector2) -> Node:
+	return spawn(parent, FACTION_BOSS.get(faction, "boss_flaschbourn"), pos)
 
 
 static func _build_data(id: String) -> EnemyData:
@@ -128,16 +131,20 @@ static func _build_data(id: String) -> EnemyData:
 	d.fires_projectiles = def.get("shoots", def["arch"] == Archetype.SHOOTER)
 	d.physics_group     = def["group"]
 
-	# Health rules from whereSpawn(): enemyLevel = heroLevel * 30
-	var enemy_level: int = int(SaveManager.stats_data.get("baseHeroLevel", 1)) * 30
+	# Base health only. The hero-level bonus and the difficulty multiplier are
+	# applied per-instance at spawn (EnemyUnit), because this resource is
+	# cached and shared — enemies spawned later in a run have to be tougher
+	# than the ones that came before.
 	if d.is_boss:
-		d.max_hp = (1000 if id == "boss_strogghold" else 800) + enemy_level * 10
+		d.max_hp = 1000 if id == "boss_strogghold" else 800
+		d.hp_per_hero_level = 200
 	elif def.get("mama", false):
-		d.max_hp = 100 + enemy_level
+		d.max_hp = 100
 	elif def.get("baby", false):
 		d.max_hp = 25
+		d.hp_per_hero_level = 5
 	else:
-		d.max_hp = 50 + enemy_level
+		d.max_hp = 50
 
 	# Size: bosses fixed 2x, baby fixed 1x (its sheet is already 2x the raw
 	# pixel size of the mama's), mama/normal random 2–3x.

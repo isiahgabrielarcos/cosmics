@@ -35,13 +35,13 @@ const SKILLS := {
 		 "stats": "12 bolts in a full circle\n25 damage each · 3 pierce" },
 	2: { "name": "Shockwave",        "price": 50,  "cd": 5.0,
 		 "story": "Slam the drive core and let the pressure wave do the work.",
-		 "stats": "700 radius blast\n40 damage · heavy knockback" },
+		 "stats": "700 radius blast\n50 + 5 per level damage · heavy knockback" },
 	3: { "name": "Energy Overdrive", "price": 75,  "cd": 20.0,
 		 "story": "Redline the cannons and hope the coolant holds.",
-		 "stats": "Fire rate x2.5 for 6 s" },
+		 "stats": "Fire rate x2.5 and +30% speed for 6 s" },
 	5: { "name": "Purple",           "price": 150, "cd": 20.0,
 		 "story": "Nobody at the Commission will tell you what this actually is.",
-		 "stats": "450 radius blast\n60 damage · knockback" },
+		 "stats": "Charges 3 s on the hull, then launches\n100 + 5 per level damage · unlimited pierce\nInterrupted: 20 hp to you, half payload to them" },
 	7: { "name": "Invincible Frames","price": 300, "cd": 10.0,
 		 "story": "Phase the hull out of sync with everything trying to hit it.",
 		 "stats": "Ignore all damage for 5 s" },
@@ -50,6 +50,11 @@ const SKILLS := {
 const SLIDE_DISTANCE := 1100.0
 const SLIDE_TIME := 0.32
 
+# Idle bob on the 10 module tiles. Each one gets its own amplitude, period and
+# starting phase so the grid drifts instead of pulsing in lockstep.
+const HOVER_AMPLITUDE := Vector2(3.0, 8.0)   # min/max pixels
+const HOVER_PERIOD := Vector2(1.8, 3.2)      # min/max seconds per cycle
+
 @onready var _root: Control          = $Root
 @onready var _dim: ColorRect         = $Root/Dim
 @onready var _close_btn: TextureButton = $Root/Frame/CloseButton
@@ -57,7 +62,7 @@ const SLIDE_TIME := 0.32
 @onready var _skills_root: Control   = $Root/Skills
 
 @onready var _wpanel: Control        = $"Root/Weapons Panel"
-@onready var _wpanel_art: NinePatchRect = $"Root/Weapons Panel/TextureRect"
+@onready var _wpanel_art: NinePatchRect = $"Root/Weapons Panel/TextureRect2"
 @onready var _wp_icon: AnimatedSprite2D = $"Root/Weapons Panel/AnimatedSprite2D"
 @onready var _wp_name: Label         = $"Root/Weapons Panel/Weapon Name"
 @onready var _wp_price: Label        = $"Root/Weapons Panel/Weapon Price"
@@ -83,6 +88,8 @@ var _open_weapon: int = -1
 var _open_skill: int = -1
 var _weapon_stats_cache: Dictionary = {}
 var _slide_tween: Tween = null
+var _hover_tiles: Array = []
+var _hover_time: float = 0.0
 
 
 func _ready() -> void:
@@ -110,6 +117,8 @@ func _ready() -> void:
 		var btn: TextureButton = _skills_root.get_node("%s/Button" % _skill_node(i))
 		btn.pressed.connect(_show_skill_panel.bind(_skill_ids[i]))
 
+	_setup_hover()
+
 	_wp_btn1.pressed.connect(func(): _weapon_action(1))
 	_wp_btn2.pressed.connect(func(): _weapon_action(2))
 	_sp_btn.pressed.connect(_skill_action)
@@ -117,6 +126,35 @@ func _ready() -> void:
 
 func _skill_node(i: int) -> String:
 	return "Skill" if i == 0 else "Skill%d" % (i + 1)
+
+
+# ── Idle bob ──────────────────────────────────────────────────────────────────
+
+func _setup_hover() -> void:
+	for i in _weapon_ids.size():
+		_add_hover_tile(_weapons_root.get_node("Weapons%d" % (i + 1)))
+	for i in _skill_ids.size():
+		_add_hover_tile(_skills_root.get_node(_skill_node(i)))
+
+
+func _add_hover_tile(tile: Control) -> void:
+	_hover_tiles.append({
+		"node": tile,
+		"base_y": tile.position.y,
+		"amplitude": randf_range(HOVER_AMPLITUDE.x, HOVER_AMPLITUDE.y),
+		"frequency": TAU / randf_range(HOVER_PERIOD.x, HOVER_PERIOD.y),
+		"phase": randf() * TAU,
+	})
+
+
+func _process(delta: float) -> void:
+	if not visible:
+		return
+	_hover_time += delta
+	for tile in _hover_tiles:
+		var node: Control = tile["node"]
+		node.position.y = tile["base_y"] \
+			+ sin(_hover_time * tile["frequency"] + tile["phase"]) * tile["amplitude"]
 
 
 func open() -> void:
@@ -361,13 +399,20 @@ func _weapon_stats(id: int) -> String:
 	var lines := ["%d damage · %.2f s per shot" % [d.base_damage, d.fire_rate]]
 	match d.archetype:
 		WeaponData.Archetype.BOLT:
-			lines.append("%.0f speed · %d pierce" % [d.speed, d.pierce])
+			lines.append("%.0f speed" % d.speed)
 		WeaponData.Archetype.SWEEP:
-			lines.append("Spins around the ship · %d pierce" % d.pierce)
+			lines.append("Spins around the ship")
 		WeaponData.Archetype.THRUST:
 			lines.append("Lunges %.0f units forward" % d.thrust_distance)
 		WeaponData.Archetype.SHIELD:
 			lines.append("%.0f knockback · %.1f s invuln" % [d.knockback_force, d.invuln_duration])
+
+	var pierce_note := "no pierce cap"
+	if d.pierce_cap >= 0:
+		pierce_note = "%d pierce (max %d)" % [d.pierce, d.pierce_cap]
+	elif d.pierce < 99:
+		pierce_note = "%d pierce" % d.pierce
+	lines.append("%d ammo · %s" % [d.ammo_capacity, pierce_note])
 
 	var text := "\n".join(lines)
 	_weapon_stats_cache[id] = text
@@ -438,8 +483,9 @@ func _refresh_player_loadout() -> void:
 	var player = players[0]
 	var ws = player.get_node_or_null("WeaponSystem")
 	if ws:
-		ws.primary_weapon = int(SaveManager.equipped_data.get("weapon1Slot", 1))
-		ws.secondary_weapon = int(SaveManager.equipped_data.get("weapon2Slot", 1))
+		ws.set_loadout(
+			int(SaveManager.equipped_data.get("weapon1Slot", 1)),
+			int(SaveManager.equipped_data.get("weapon2Slot", 1)))
 	var ms = player.get_node_or_null("ModuleSystem")
 	if ms:
 		ms.skill_slot = int(SaveManager.equipped_data.get("skillSlot", 1))

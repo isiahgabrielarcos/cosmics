@@ -3,8 +3,8 @@
 [ext_resource type="Texture2D" uid="uid://fmlrki3kblag" path="res://assets/art/characters/toby-overworld.png" id="1_083f5"]
 [ext_resource type="Script" uid="uid://djr5kajn4r1n0" path="res://scripts/characters/toby_overworld.gd" id="1_script"]
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_gtx3u"]
-radius = 21.0
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_miag3"]
+size = Vector2(32, 5)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_oe8n1"]
 atlas = ExtResource("1_083f5")
@@ -141,14 +141,31 @@ animations = [{
 "speed": 8.0
 }]
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_nsspx"]
+size = Vector2(38, 6.5)
+
 [node name="Toby" type="CharacterBody2D" unique_id=778770256 groups=["friendlies"]]
+z_index = 1
 collision_mask = 65
 script = ExtResource("1_script")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=404083819]
-shape = SubResource("CircleShape2D_gtx3u")
+position = Vector2(0, 18)
+shape = SubResource("RectangleShape2D_miag3")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1165964662]
 scale = Vector2(0.9166666, 0.9166665)
 sprite_frames = SubResource("SpriteFrames_wkthd")
 animation = &"down"
+
+[node name="TopOrder" type="Area2D" parent="." unique_id=480132526]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="TopOrder" unique_id=750828155]
+position = Vector2(0, -18.75)
+shape = SubResource("RectangleShape2D_nsspx")
+
+[node name="Low Order" type="Area2D" parent="." unique_id=1627804267]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Low Order" unique_id=1354233802]
+position = Vector2(0, 18.75)
+shape = SubResource("RectangleShape2D_nsspx")

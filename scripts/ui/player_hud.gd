@@ -18,6 +18,11 @@ extends CanvasLayer
 var _player: Node = null
 var _weapon_system: Node = null
 
+# Ammo readout counts up over the reload instead of snapping, so a weapon
+# swap reads as "refilling to the new magazine" rather than a number jump.
+var _ammo_tween: Tween = null
+var _ammo_max: int = 0
+
 
 func _ready() -> void:
 	
@@ -89,8 +94,26 @@ func _on_shield_changed(current: float, maximum: int) -> void:
 
 
 func _on_ammo_changed(current: int, maximum: int, reloading: bool) -> void:
-	ammo_label.text = "%d / %d" % [current, maximum]
+	if _ammo_tween and _ammo_tween.is_valid():
+		_ammo_tween.kill()
+		_ammo_tween = null
+
+	_ammo_max = maximum
 	reload_label.visible = reloading
+
+	if not reloading:
+		_set_ammo_display(float(current))
+		return
+
+	var duration: float = 2.0
+	if _weapon_system:
+		duration = _weapon_system.reload_time
+	_ammo_tween = create_tween()
+	_ammo_tween.tween_method(_set_ammo_display, float(current), float(maximum), duration)
+
+
+func _set_ammo_display(value: float) -> void:
+	ammo_label.text = "%d / %d" % [int(round(value)), _ammo_max]
 
 
 func _on_xp_changed(current: int, required: int, lv: int) -> void:

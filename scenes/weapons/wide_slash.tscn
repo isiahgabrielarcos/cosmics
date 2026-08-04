@@ -1,8 +1,21 @@
-[gd_scene load_steps=10 format=3]
+[gd_scene format=3 uid="uid://bdf8krw8qxwtu"]
 
-[ext_resource type="Script" path="res://scripts/systems/weapon_projectile.gd" id="1_proj"]
-[ext_resource type="Script" path="res://scripts/systems/weapon_data.gd" id="2_data"]
-[ext_resource type="Texture2D" path="res://assets/art/characters/lightWave.png" id="3_tex"]
+[ext_resource type="Script" uid="uid://bkacryxjt1kb0" path="res://scripts/systems/weapon_projectile.gd" id="1_proj"]
+[ext_resource type="Script" uid="uid://t7h60q4dcgp4" path="res://scripts/systems/weapon_data.gd" id="2_data"]
+[ext_resource type="Texture2D" uid="uid://c06rb78eicdsg" path="res://assets/art/characters/lightWave.png" id="3_tex"]
+
+[sub_resource type="Resource" id="Resource_data"]
+script = ExtResource("2_data")
+base_damage = 55
+fire_rate = 1.1
+visual_scale = 2.2
+hit_radius = 90.0
+speed = 500.0
+pierce = 3
+ammo_capacity = 5
+pierce_cap = 3
+thrust_distance = 0.0
+knockback_force = 0.0
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_1"]
 atlas = ExtResource("3_tex")
@@ -42,36 +55,22 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_5")
 }],
-"loop": true,
+"loop": 1,
 "name": &"moving",
 "speed": 12.0
 }]
 
-[sub_resource type="Resource" id="Resource_data"]
-script = ExtResource("2_data")
-base_damage = 55
-fire_rate = 1.1
-visual_scale = 2.2
-hit_radius = 90.0
-lifetime = 1.0
-speed = 500.0
-pierce = 99
-archetype = 0
-spin_speed = 0.0
-thrust_distance = 0.0
-knockback_force = 0.0
-invuln_duration = 0.0
+[sub_resource type="ConvexPolygonShape2D" id="ConvexPolygonShape2D_1ygmv"]
+points = PackedVector2Array(0, -25, 24, -19, 54, -3, 62, 13, 61, 26, 27, 3, -26, 3, -46, 13, -62, 24, -61, 8, -48, -7, -26, -19)
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_1"]
-radius = 90.0
-
-[node name="WideSlash" type="Area2D"]
+[node name="WideSlash" type="Area2D" unique_id=1018330312]
 script = ExtResource("1_proj")
 data = SubResource("Resource_data")
 
-[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=900961913]
+rotation = -1.5707964
 sprite_frames = SubResource("SpriteFrames_1")
 animation = &"moving"
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-shape = SubResource("CircleShape2D_1")
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=763352069]
+shape = SubResource("ConvexPolygonShape2D_1ygmv")

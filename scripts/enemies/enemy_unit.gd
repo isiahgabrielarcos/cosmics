@@ -14,6 +14,9 @@ const LAYER_SHOOTERS  := 32  # layer 6 — shooters
 const LAYER_WALLS     := 64  # layer 7
 
 const CONTACT_TICK := 0.8
+## Small grace on top of the two collision radii, so a hit still registers on
+## the frame the bodies are resolved apart by move_and_slide.
+const CONTACT_TOLERANCE := 4.0
 
 const DEATH_FX      := preload("res://scenes/effects/particle_enemy_death.tscn")
 const BOSS_DEATH_FX := preload("res://scenes/effects/particle_boss_death.tscn")
@@ -23,6 +26,17 @@ var split_depth: int = 0
 
 var hp: int
 var max_hp: int
+
+# Scaled copies of the damage numbers. `data` is a cached resource shared by
+# every enemy of this kind, so difficulty multipliers have to live on the
+# instance rather than being written back into it.
+var contact_damage: int
+var projectile_damage: int
+
+# Contact reach, derived from the real collision radii in _setup_collision so
+# hits land when the bodies actually meet.
+var _contact_reach: float = 60.0
+var _cached_player_radius: float = -1.0
 
 var _sprite: AnimatedSprite2D
 var _contact_cooldown: float = 0.0
@@ -81,15 +95,28 @@ func _face_player(turn: float) -> void:
 
 # ── Contact damage / ranged attack ─────────────────────────────────────────────
 
+## Contact damage lands only once the two hulls actually meet — the reach is
+## this enemy's collision radius plus the player's, not a flat radius that let
+## enemies tag the player from well outside their own sprite.
 func _check_contact() -> void:
 	if _player == null:
 		return
-	var reach := 60.0 * scale.x if not data.is_boss else 250.0
+	var reach := _contact_reach + _player_radius() + CONTACT_TOLERANCE
 	if global_position.distance_to(_player.global_position) > reach:
 		return
 	if _player.has_method("take_damage"):
-		_player.take_damage(data.contact_damage)
+		_player.take_damage(contact_damage)
 	_contact_cooldown = CONTACT_TICK
+
+
+func _player_radius() -> float:
+	if _cached_player_radius >= 0.0:
+		return _cached_player_radius
+	_cached_player_radius = 24.0
+	var shape := _player.get_node_or_null("CollisionShape2D") as CollisionShape2D
+	if shape and shape.shape is CircleShape2D:
+		_cached_player_radius = (shape.shape as CircleShape2D).radius * _player.scale.x
+	return _cached_player_radius
 
 
 func _fire_at_player() -> void:
@@ -98,7 +125,7 @@ func _fire_at_player() -> void:
 	var proj := EnemyProjectile.new()
 	proj.direction = (_player.global_position - global_position).normalized()
 	proj.speed = data.projectile_speed
-	proj.damage = data.projectile_damage
+	proj.damage = projectile_damage
 	proj.global_position = global_position
 	get_tree().current_scene.add_child(proj)
 
@@ -169,8 +196,14 @@ func _setup_visual() -> void:
 	_sprite.sprite_frames = _get_frames(data)
 	_sprite.play("idle")
 
-	max_hp = data.max_hp
+	# Health climbs with the hero so late-run enemies stay a threat; both
+	# health and damage then scale with the chosen difficulty.
+	var mult := GameManager.get_enemy_stat_mult()
+	max_hp = maxi(1, int(round(
+		(data.max_hp + data.hp_per_hero_level * GameManager.get_hero_level()) * mult)))
 	hp = max_hp
+	contact_damage = maxi(1, int(round(data.contact_damage * mult)))
+	projectile_damage = maxi(1, int(round(data.projectile_damage * mult)))
 
 	scale = Vector2.ONE * (data.fixed_scale if data.fixed_scale > 0.0 else randf_range(data.scale_min, data.scale_max))
 
@@ -180,6 +213,8 @@ func _setup_collision() -> void:
 	var circle := CircleShape2D.new()
 	circle.radius = 60.0 if data.is_boss else 16.0
 	shape.shape = circle
+	# scale is already applied by _setup_visual, which runs first
+	_contact_reach = circle.radius * scale.x
 
 	var group_layer := LAYER_CHASERS
 	match data.physics_group:

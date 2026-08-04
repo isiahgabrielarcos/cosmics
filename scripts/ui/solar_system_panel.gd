@@ -10,21 +10,19 @@ class_name SolarSystemPanel
 signal closed
 signal launch_requested(stage: int, tier: int, endless: bool)
 
-const TIER_COUNT := 5
+const TIER_COUNT := 4
 
-## Per-tier label + the enemy variety it unlocks (mirrors GameManager's
-## TIER_VARIETY / the spawner's VARIETY_ROLLS bands).
+## Per-tier label, roster and stat scaling — mirrors GameManager's
+## TIER_ROSTER and TIER_STAT_MULT.
 const TIERS := [
 	{ "name": "BEGINNER",     "color": Color(0.55, 1.0, 0.6),
-	  "desc": "Chasers only. A clean run to learn the system." },
-	{ "name": "EASY",         "color": Color(0.75, 1.0, 0.5),
-	  "desc": "Chasers and ranged shooters." },
-	{ "name": "MEDIUM",       "color": Color(1.0, 0.9, 0.4),
-	  "desc": "Adds bombers that detonate on contact." },
+	  "desc": "Chasers, fast chasers and shooters.\nEnemies at 0.9x health and damage." },
+	{ "name": "NORMAL",       "color": Color(1.0, 0.9, 0.4),
+	  "desc": "Adds bombers that detonate on contact.\nBaseline health and damage." },
 	{ "name": "HARD",         "color": Color(1.0, 0.6, 0.3),
-	  "desc": "Adds slashers that lunge once they close." },
+	  "desc": "Adds slashers that lunge once they close.\nEnemies at 1.4x health and damage." },
 	{ "name": "SPACE COWBOY", "color": Color(1.0, 0.35, 0.35),
-	  "desc": "Full roster, fastest spawns, no mercy." },
+	  "desc": "Full roster, fastest spawns, no mercy.\nEnemies at 2x health and damage." },
 ]
 
 ## Every named system, keyed by its battle stage id. Endless uses stage+20
@@ -162,4 +160,5 @@ func _refresh_tier() -> void:
 
 
 func _launch(endless: bool) -> void:
+	GameManager.last_talked_to == ""
 	launch_requested.emit(_stage, clampi(_tier, 1, TIER_COUNT), endless)

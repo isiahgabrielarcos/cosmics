@@ -16,6 +16,11 @@ const POP_FX := preload("res://scenes/effects/particle_projectile_pop.tscn")
 var direction: Vector2 = Vector2.UP
 var follow_target: Node2D = null
 var damage: int = 0
+
+## data.pierce plus whatever upgrades add, already clamped to the weapon's
+## pierce_cap by WeaponSystem. -1 falls back to the resource's own value.
+var pierce_override: int = -1
+
 var scorching: bool = false
 var electric: bool = false
 
@@ -28,7 +33,7 @@ func _ready() -> void:
 	body_entered.connect(_on_body_entered)
 	area_entered.connect(_on_area_entered)
 
-	_pierce_left = data.pierce
+	_pierce_left = pierce_override if pierce_override >= 0 else data.pierce
 	scale = Vector2.ONE * data.visual_scale
 
 	var shape: CollisionShape2D = $CollisionShape2D
@@ -63,7 +68,6 @@ func _physics_process(delta: float) -> void:
 		WeaponData.Archetype.SWEEP:
 			if follow_target and is_instance_valid(follow_target):
 				global_position = follow_target.global_position
-			rotation += data.spin_speed * delta
 		WeaponData.Archetype.THRUST:
 			if follow_target and is_instance_valid(follow_target):
 				global_position = follow_target.global_position + direction * (data.hit_radius * 0.6)

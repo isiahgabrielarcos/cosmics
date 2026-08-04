@@ -1,0 +1,17 @@
+[gd_resource type="ShaderMaterial" format=3 uid="uid://bdfpxcqd7dhhf"]
+
+[ext_resource type="Shader" uid="uid://sag3nmd66dhs" path="res://assets/art/shaders/glare_sweep.gdshader" id="1_shader"]
+
+[resource]
+shader = ExtResource("1_shader")
+shader_parameter/glare_color = Color(1, 1, 1, 1)
+shader_parameter/intensity = 4.0
+shader_parameter/luma_threshold = 0.7
+shader_parameter/luma_softness = 0.25
+shader_parameter/angle_degrees = 35.0
+shader_parameter/band_width = 0.22
+shader_parameter/band_sharpness = 2.0
+shader_parameter/period = 5.0
+shader_parameter/sweep_fraction = 0.3
+shader_parameter/phase_offset = 0.0
+shader_parameter/screen_space = true

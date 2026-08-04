@@ -20,21 +20,23 @@ var camera: Camera2D
 var spawn_interval: float = 1.0
 var spawn_count: int = 0
 var _session_faction: int = 0
-var _variety: int = 5   # how many archetypes the difficulty tier allows
 
-# Archetype unlock order as the tier climbs. Roll bands come from
-# EnemyFactory.spawn_from_roll: 1-10 chaser · 11-15 shooter · 16-20 bomber ·
-# 21-25 slasher · 26-30 ship.
-const VARIETY_ROLLS := [
-	[1, 10],   # tier 1 — chasers only
-	[1, 15],   # tier 2 — + shooters
-	[1, 20],   # tier 3 — + bombers
-	[1, 25],   # tier 4 — + slashers
-	[1, 30],   # tier 5 — full roster
-]
+## Weighted archetype table for the session's difficulty (GameManager's
+## TIER_ROSTER) — which enemy kinds may spawn and how often.
+var _roster: Dictionary = {}
+var _roster_total: int = 0
 
 const MAX_SHARD_DROP_RATE := 6     # currentMaxShardDropRate
 const REPOSITION_RADIUS := 1500.0
+
+# Swarms — instead of a steady trickle, a tick can occasionally dump a whole
+# patch of enemies in from one side. Common while the field is thin (so quiet
+# stretches don't drag), rare once there's already a crowd to deal with.
+const WAVE_SIZE := Vector2i(5, 10)
+const WAVE_QUIET_THRESHOLD := 15   # "few enemies" line
+const WAVE_CHANCE_QUIET := 15      # percent, below the threshold
+const WAVE_CHANCE_BUSY := 1        # percent, at or above it
+const WAVE_SPREAD := 350.0         # how loosely the patch is scattered
 
 
 func _ready() -> void:
@@ -49,7 +51,7 @@ func _ready() -> void:
 	# Per-mission tuning from GameManager (enemySpawner variants in the Lua)
 	var settings: Dictionary = GameManager.get_spawner_settings()
 	spawn_interval = settings.get("interval", 1.0)
-	_variety = int(settings.get("variety", 5))
+	_set_roster(settings.get("roster", {}))
 
 	spawn_timer.wait_time = spawn_interval
 	spawn_timer.one_shot = false
@@ -69,27 +71,39 @@ func _on_spawn_timer_timeout() -> void:
 	if GameManager.game_done or GameManager.is_hub():
 		return
 	var cap: int = GameManager.get_spawner_settings().get("cap", 100)
-	if get_tree().get_nodes_in_group("enemies").size() >= cap:
+	var live: int = get_tree().get_nodes_in_group("enemies").size()
+	if live >= cap:
 		return
 
-	_random_spawner()
+	var wave_chance := WAVE_CHANCE_QUIET if live < WAVE_QUIET_THRESHOLD else WAVE_CHANCE_BUSY
+	if rng.randi_range(1, 100) <= wave_chance:
+		_spawn_wave(cap - live)
+	else:
+		_random_spawner()
 
 
 # ── randomSpawner() ────────────────────────────────────────────────────────────
 
-## Rolls inside the band the current difficulty tier unlocks, so low tiers
-## face fewer enemy types rather than merely fewer enemies.
-func _variety_roll() -> int:
-	var band: Array = VARIETY_ROLLS[clampi(_variety, 1, 5) - 1]
-	return rng.randi_range(band[0], band[1])
+func _set_roster(roster: Dictionary) -> void:
+	_roster = roster if not roster.is_empty() else GameManager.TIER_ROSTER[4]
+	_roster_total = 0
+	for kind in _roster:
+		_roster_total += int(_roster[kind])
+
+
+## Weighted pick from the difficulty's archetype table.
+func _roll_kind() -> String:
+	var pick := rng.randi_range(1, maxi(1, _roster_total))
+	for kind in _roster:
+		pick -= int(_roster[kind])
+		if pick <= 0:
+			return kind
+	return "chaser"
 
 
 func _random_spawner() -> void:
-	var roll := _variety_roll()
-	var roll2 := _variety_roll()
-
 	# Free pickup drops near the player — rolled separately from the archetype
-	# roll so a low-variety tier doesn't also mean a shard shower.
+	# roll so a narrow roster doesn't also mean a shard shower.
 	if rng.randi_range(1, 30) <= MAX_SHARD_DROP_RATE:
 		ExperienceShard.spawn(get_tree().current_scene, _pickup_position())
 
@@ -97,18 +111,38 @@ func _random_spawner() -> void:
 	if faction == 0:
 		return   # hub or unknown stage — no spawns
 
-	EnemyFactory.spawn_from_roll(get_tree().current_scene, faction, roll, _spawn_position())
+	EnemyFactory.spawn_kind(get_tree().current_scene, faction, _roll_kind(), _spawn_position())
 	spawn_count += 1
 
-	# roll 25–30: bonus enemy from a random faction
-	if roll >= 25:
-		EnemyFactory.spawn_from_roll(get_tree().current_scene,
-			rng.randi_range(1, 4), roll2, _spawn_position())
+	# Now and then a second one tags along, so the field doesn't arrive at a
+	# perfectly even drip.
+	if rng.randi_range(1, 100) <= 20:
+		EnemyFactory.spawn_kind(get_tree().current_scene, faction, _roll_kind(), _spawn_position())
 		spawn_count += 1
 
-	# every 50th spawn: a boss shows up
+	# every 50th spawn: this system's boss shows up
 	if spawn_count % 50 == 0 and spawn_count > 10:
-		EnemyFactory.spawn_random_boss(get_tree().current_scene, _spawn_position())
+		EnemyFactory.spawn_system_boss(get_tree().current_scene, faction, _spawn_position())
+		spawn_count += 1
+
+
+## A patch of enemies dropped in together from one side, rather than the
+## usual one-at-a-time trickle.
+func _spawn_wave(room_left: int) -> void:
+	var faction := _stage_faction()
+	if faction == 0:
+		return
+
+	var count := mini(rng.randi_range(WAVE_SIZE.x, WAVE_SIZE.y), room_left)
+	if count <= 0:
+		return
+
+	var anchor := _spawn_position()
+	for i in count:
+		var at := anchor + Vector2(
+			rng.randf_range(-WAVE_SPREAD, WAVE_SPREAD),
+			rng.randf_range(-WAVE_SPREAD, WAVE_SPREAD))
+		EnemyFactory.spawn_kind(get_tree().current_scene, faction, _roll_kind(), at)
 		spawn_count += 1
 
 

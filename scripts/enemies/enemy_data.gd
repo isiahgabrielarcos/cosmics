@@ -17,8 +17,10 @@ class_name EnemyData
 @export var scale_max: float = 3.0
 @export var fixed_scale: float = 0.0
 
-## Stats
+## Stats. `max_hp` is the base only — EnemyUnit adds `hp_per_hero_level` for
+## every hero level and then applies the difficulty multiplier at spawn.
 @export var max_hp: int = 50
+@export var hp_per_hero_level: int = 20
 @export var contact_damage: int = 5
 @export var experience_value: int = 5
 @export var speed: float = 260.0

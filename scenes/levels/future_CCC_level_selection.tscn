@@ -80,9 +80,15 @@ animations = [{
 "speed": 8.0
 }]
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_21q5v"]
+transparency = 1
+albedo_color = Color(0.83514625, 0.45086628, 0, 0.24313726)
+
 [sub_resource type="TorusMesh" id="TorusMesh_nsspx"]
+material = SubResource("StandardMaterial3D_21q5v")
 inner_radius = 7.01
 outer_radius = 7.055
+rings = 128
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_ugt4o"]
 atlas = ExtResource("1_43tmt")
@@ -249,6 +255,9 @@ animations = [{
 "speed": 5.0
 }]
 
+[sub_resource type="LabelSettings" id="LabelSettings_nsspx"]
+font_size = 25
+
 [node name="Node3D" type="Node3D" unique_id=1278982592]
 script = ExtResource("3_lvlsel")
 
@@ -257,7 +266,7 @@ environment = SubResource("Environment_21q5v")
 camera_attributes = SubResource("CameraAttributesPractical_flwv8")
 
 [node name="Flashbourn" type="AnimatedSprite3D" parent="." unique_id=1015918688]
-transform = Transform3D(0.405, 0, 0, 0, 0.405, 0, 0, 0, 0.405, -1.7468734, -2.7263942, -1.8169003)
+transform = Transform3D(0.405, 0, 0, 0, 0.405, 0, 0, 0, 0.405, -3.89337, -2.7263942, -4.2018967)
 billboard = 1
 sprite_frames = SubResource("SpriteFrames_nsspx")
 autoplay = "default"
@@ -265,14 +274,27 @@ autoplay = "default"
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Flashbourn" unique_id=903826354]
 mesh = SubResource("TorusMesh_nsspx")
 
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="Flashbourn" unique_id=1810616203]
+transform = Transform3D(0.81, 0, 0, 0, 0.81, 0, 0, 0, 0.81, 0, 0, 0)
+mesh = SubResource("TorusMesh_nsspx")
+
+[node name="MeshInstance3D3" type="MeshInstance3D" parent="Flashbourn" unique_id=1114256692]
+transform = Transform3D(0.545, 0, 0, 0, 0.545, 0, 0, 0, 0.545, 0, 0, 0)
+mesh = SubResource("TorusMesh_nsspx")
+
+[node name="MeshInstance3D4" type="MeshInstance3D" parent="Flashbourn" unique_id=171142692]
+transform = Transform3D(0.765, 0, 0, 0, 0.765, 0, 0, 0, 0.765, 0, 0, 0)
+mesh = SubResource("TorusMesh_nsspx")
+
 [node name="camera pointer" type="Node3D" parent="." unique_id=1847327742]
 script = ExtResource("4_orbit")
 
 [node name="Camera3D" type="Camera3D" parent="camera pointer" unique_id=372474987]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 9.253661)
+fov = 84.5
 
 [node name="Squilltrant" type="AnimatedSprite3D" parent="." unique_id=918227430]
-transform = Transform3D(0.405, 0, 0, 0, 0.405, 0, 0, 0, 0.405, 2.035695, 0.2909218, -3.87082)
+transform = Transform3D(0.405, 0, 0, 0, 0.405, 0, 0, 0, 0.405, 2.8633091, 0.2909218, -4.5742407)
 billboard = 1
 sprite_frames = SubResource("SpriteFrames_m3ae2")
 autoplay = "default"
@@ -280,8 +302,12 @@ autoplay = "default"
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Squilltrant" unique_id=1553522125]
 mesh = SubResource("TorusMesh_nsspx")
 
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="Squilltrant" unique_id=1634195624]
+transform = Transform3D(0.53, 0, 0, 0, 0.53, 0, 0, 0, 0.53, 0, 0, 0)
+mesh = SubResource("TorusMesh_nsspx")
+
 [node name="Frokenvinter" type="AnimatedSprite3D" parent="." unique_id=2020568364]
-transform = Transform3D(0.405, 0, 0, 0, 0.405, 0, 0, 0, 0.405, 1.7806243, -0.12775087, 3.0554848)
+transform = Transform3D(0.405, 0, 0, 0, 0.405, 0, 0, 0, 0.405, 2.7346234, -0.12775087, 3.8604198)
 billboard = 1
 sprite_frames = SubResource("SpriteFrames_5x6en")
 autoplay = "default"
@@ -289,14 +315,46 @@ autoplay = "default"
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Frokenvinter" unique_id=218607071]
 mesh = SubResource("TorusMesh_nsspx")
 
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="Frokenvinter" unique_id=617743909]
+transform = Transform3D(0.34, 0, 0, 0, 0.34, 0, 0, 0, 0.34, 0, 0, 0)
+mesh = SubResource("TorusMesh_nsspx")
+
+[node name="MeshInstance3D3" type="MeshInstance3D" parent="Frokenvinter" unique_id=1650647209]
+transform = Transform3D(0.42, 0, 0, 0, 0.42, 0, 0, 0, 0.42, 0, 0, 0)
+mesh = SubResource("TorusMesh_nsspx")
+
+[node name="MeshInstance3D4" type="MeshInstance3D" parent="Frokenvinter" unique_id=936310333]
+transform = Transform3D(0.755, 0, 0, 0, 0.755, 0, 0, 0, 0.755, 0, 0, 0)
+mesh = SubResource("TorusMesh_nsspx")
+
+[node name="MeshInstance3D5" type="MeshInstance3D" parent="Frokenvinter" unique_id=424278858]
+transform = Transform3D(0.805, 0, 0, 0, 0.805, 0, 0, 0, 0.805, 0, 0, 0)
+mesh = SubResource("TorusMesh_nsspx")
+
 [node name="Strogghold" type="AnimatedSprite3D" parent="." unique_id=1076539167]
-transform = Transform3D(0.405, 0, 0, 0, 0.405, 0, 0, 0, 0.405, -3.249084, -0.11911416, 3.994142)
+transform = Transform3D(0.405, 0, 0, 0, 0.405, 0, 0, 0, 0.405, -5.6299143, -1.6836927, 2.6904988)
 billboard = 1
 sprite_frames = SubResource("SpriteFrames_svfdy")
 autoplay = "default"
 frame_progress = 0.13948764
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Strogghold" unique_id=1483546491]
+mesh = SubResource("TorusMesh_nsspx")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="Strogghold" unique_id=258066709]
+transform = Transform3D(0.32, 0, 0, 0, 0.32, 0, 0, 0, 0.32, 0, 0, 0)
+mesh = SubResource("TorusMesh_nsspx")
+
+[node name="MeshInstance3D3" type="MeshInstance3D" parent="Strogghold" unique_id=679041130]
+transform = Transform3D(0.365, 0, 0, 0, 0.365, 0, 0, 0, 0.365, 0, 0, 0)
+mesh = SubResource("TorusMesh_nsspx")
+
+[node name="MeshInstance3D4" type="MeshInstance3D" parent="Strogghold" unique_id=1489371596]
+transform = Transform3D(0.515, 0, 0, 0, 0.515, 0, 0, 0, 0.515, 0, 0, 0)
+mesh = SubResource("TorusMesh_nsspx")
+
+[node name="MeshInstance3D5" type="MeshInstance3D" parent="Strogghold" unique_id=301618589]
+transform = Transform3D(0.94, 0, 0, 0, 0.94, 0, 0, 0, 0.94, 0, 0, 0)
 mesh = SubResource("TorusMesh_nsspx")
 
 [node name="Citadel" type="AnimatedSprite3D" parent="." unique_id=372347010]
@@ -325,5 +383,26 @@ transform = Transform3D(1.5851853e-07, 6.431, -2.8110796e-07, -2.9346456e-12, -2
 texture = ExtResource("7_stars")
 
 [node name="Sprite3D6" type="Sprite3D" parent="." unique_id=1914721216]
-transform = Transform3D(4.8552704e-07, 6.431, -2.8110796e-07, 0, -2.8110796e-07, -6.431, -6.431, 4.8552704e-07, -2.122306e-14, 0.14231472, -103.91199, -0.85514706)
+transform = Transform3D(4.8552704e-07, 6.431, -2.8110796e-07, 0, -2.8110796e-07, -6.431, -6.431, 4.8552704e-07, -2.122306e-14, 0.14231472, -99.56445, -0.85514706)
 texture = ExtResource("7_stars")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=17332950]
+transform = Transform3D(1, 0, 0, 0, 0.31240422, 0.94994926, 0, -0.94994926, 0.31240422, 0, 5, 13)
+
+[node name="Label" type="Label" parent="." unique_id=1623867873]
+offset_left = 508.0
+offset_top = 1007.0
+offset_right = 1387.0
+offset_bottom = 1067.0
+text = "Drag to rotate  |  Click a solar system to view contracts"
+label_settings = SubResource("LabelSettings_nsspx")
+horizontal_alignment = 1
+
+[node name="Button" type="Button" parent="." unique_id=144622328]
+offset_left = 18.0
+offset_top = 19.0
+offset_right = 157.0
+offset_bottom = 77.0
+text = "BACK"
+
+[connection signal="pressed" from="Button" to="." method="_on_back"]

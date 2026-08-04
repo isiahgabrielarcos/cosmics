@@ -1,8 +1,22 @@
-[gd_scene load_steps=9 format=3]
+[gd_scene format=3 uid="uid://c2gvfg1wopj6w"]
 
-[ext_resource type="Script" path="res://scripts/systems/weapon_projectile.gd" id="1_proj"]
-[ext_resource type="Script" path="res://scripts/systems/weapon_data.gd" id="2_data"]
-[ext_resource type="Texture2D" path="res://assets/art/characters/dashSlash.png" id="3_tex"]
+[ext_resource type="Script" uid="uid://bkacryxjt1kb0" path="res://scripts/systems/weapon_projectile.gd" id="1_proj"]
+[ext_resource type="Script" uid="uid://t7h60q4dcgp4" path="res://scripts/systems/weapon_data.gd" id="2_data"]
+[ext_resource type="Texture2D" uid="uid://dy86ny2yplgyo" path="res://assets/art/characters/dashSlash.png" id="3_tex"]
+
+[sub_resource type="Resource" id="Resource_data"]
+script = ExtResource("2_data")
+base_damage = 45
+fire_rate = 0.5
+visual_scale = 1.3
+hit_radius = 50.0
+lifetime = 0.3
+speed = 0.0
+pierce = 99
+ammo_capacity = 15
+archetype = 2
+thrust_distance = 180.0
+knockback_force = 0.0
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_1"]
 atlas = ExtResource("3_tex")
@@ -42,36 +56,24 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_5")
 }],
-"loop": true,
+"loop": 1,
 "name": &"moving",
 "speed": 20.0
 }]
 
-[sub_resource type="Resource" id="Resource_data"]
-script = ExtResource("2_data")
-base_damage = 45
-fire_rate = 0.5
-visual_scale = 1.3
-hit_radius = 50.0
-lifetime = 0.3
-speed = 0.0
-pierce = 99
-archetype = 2
-spin_speed = 0.0
-thrust_distance = 180.0
-knockback_force = 0.0
-invuln_duration = 0.0
-
 [sub_resource type="CircleShape2D" id="CircleShape2D_1"]
-radius = 50.0
+radius = 45.0
 
-[node name="Pierce" type="Area2D"]
+[node name="Pierce" type="Area2D" unique_id=956120514]
 script = ExtResource("1_proj")
 data = SubResource("Resource_data")
 
-[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1390307258]
+rotation = -1.5707964
+scale = Vector2(1.625412, 1.625412)
 sprite_frames = SubResource("SpriteFrames_1")
 animation = &"moving"
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1650974921]
+position = Vector2(0, -52)
 shape = SubResource("CircleShape2D_1")

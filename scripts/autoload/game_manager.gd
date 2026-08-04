@@ -22,15 +22,33 @@ var pending_stage: int = -1
 var pending_difficulty: String = "normal"
 var pending_tier: int = 1            # inner difficulty selector, 1 (easy) .. 5 (hard)
 var pending_run_minutes: float = 0.0  # >0 = fixed-length run, 0 = use the stage default
+var last_talked_to : String = ""
 
-## Inner difficulty tier of the active session. Drives spawn rate, enemy cap
-## and how many enemy archetypes the spawner is allowed to roll.
+## Difficulty of the active session: 1 Beginner · 2 Normal · 3 Hard ·
+## 4 Space Cowboy. Drives spawn rate, enemy cap, which archetypes the spawner
+## may roll, and how hard those enemies hit.
 var difficulty_tier: int = 1
-const MAX_TIER := 5
+const MAX_TIER := 4
 
-## How many of the 5 archetypes (chaser/shooter/bomber/slasher/ship) are in
-## play per tier — tier 1 is chasers only, tier 5 is the full roster.
-const TIER_VARIETY := { 1: 1, 2: 2, 3: 3, 4: 4, 5: 5 }
+## Which archetypes each difficulty fields, and how often. Weights are
+## relative, so every tier keeps a spread of enemy types rather than leaning
+## on one — even Beginner mixes three.
+const TIER_ROSTER := {
+	1: { "chaser": 34, "ship": 33, "shooter": 33 },
+	2: { "chaser": 28, "ship": 24, "shooter": 24, "bomber": 24 },
+	3: { "chaser": 22, "ship": 20, "shooter": 19, "bomber": 19, "slasher": 20 },
+	4: { "chaser": 22, "ship": 20, "shooter": 19, "bomber": 19, "slasher": 20 },
+}
+
+## Enemy health and damage multiplier per difficulty. Space Cowboy fields the
+## same roster as Hard — it just hits twice as hard.
+const TIER_STAT_MULT := { 1: 0.9, 2: 1.0, 3: 1.4, 4: 2.0 }
+
+## Background star scale per difficulty — the sun looms larger the worse the
+## contract is.
+const TIER_STAR_SCALE := { 1: 0.85, 2: 1.0, 3: 1.25, 4: 1.55 }
+
+const TIER_NAMES := { 1: "BEGINNER", 2: "NORMAL", 3: "HARD", 4: "SPACE COWBOY" }
 
 # ── Runtime Counters ───────────────────────────────────────────────────────────
 var enemies_killed: int        = 0
@@ -53,6 +71,7 @@ signal game_over_triggered
 signal mission_complete
 signal mission_timer_updated(display_seconds: float, count_up: bool)
 signal currency_changed(gems: int, shards: int, central: int)
+
 
 
 func _process(delta: float) -> void:
@@ -103,15 +122,41 @@ func get_spawner_settings() -> Dictionary:
 	else:
 		s = { "interval": 1.0, "cap": 100 }   # normal
 
-	# Inner tier: tier 1 spawns at ~1.4x the interval (calmer) and caps lower,
-	# tier 5 at ~0.6x (relentless) with the full cap.
+	# Beginner spawns at ~1.35x the interval (calmer) and caps lower;
+	# Space Cowboy at ~0.7x (relentless) with the full cap.
 	var t := clampi(difficulty_tier, 1, MAX_TIER)
-	var interval_mult := 1.4 - (t - 1) * 0.2      # 1.4 · 1.2 · 1.0 · 0.8 · 0.6
-	var cap_mult := 0.5 + (t - 1) * 0.125         # 0.5 · 0.625 · 0.75 · 0.875 · 1.0
+	var interval_mult := 1.35 - (t - 1) * 0.22    # 1.35 · 1.13 · 0.91 · 0.69
+	var cap_mult := 0.55 + (t - 1) * 0.15         # 0.55 · 0.70 · 0.85 · 1.0
 	s["interval"] = float(s["interval"]) * interval_mult
 	s["cap"] = maxi(20, int(float(s["cap"]) * cap_mult))
-	s["variety"] = int(TIER_VARIETY.get(t, 5))
+	s["roster"] = TIER_ROSTER.get(t, TIER_ROSTER[4])
 	return s
+
+
+## Health/damage multiplier applied to every enemy spawned this session.
+func get_enemy_stat_mult() -> float:
+	return float(TIER_STAT_MULT.get(clampi(difficulty_tier, 1, MAX_TIER), 1.0))
+
+
+## Which of the 4 solar systems the active stage belongs to (1-4), or 0 for
+## the hub and the mission stages that aren't tied to one.
+func get_system_index() -> int:
+	if current_stage >= 1 and current_stage <= 4:
+		return current_stage
+	if current_stage >= 11 and current_stage <= 14:
+		return current_stage - 10
+	if current_stage >= 21 and current_stage <= 24:
+		return current_stage - 20
+	return 0
+
+
+## Live hero level, so enemies scale as the run goes on rather than being
+## locked to whatever the save said at load time.
+func get_hero_level() -> int:
+	var players := get_tree().get_nodes_in_group("friendlies")
+	if not players.is_empty() and "level" in players[0]:
+		return int(players[0].level)
+	return int(SaveManager.stats_data.get("baseHeroLevel", 1))
 
 
 # ── Mission timers (attackTimer / endlessTimer / scavageTimer) ────────────────

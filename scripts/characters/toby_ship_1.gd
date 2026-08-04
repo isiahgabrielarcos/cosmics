@@ -4,6 +4,7 @@ signal hp_changed(current: int, maximum: int)
 signal shield_changed(current: float, maximum: int)
 signal ammo_changed(current: int, maximum: int, reloading: bool)
 signal xp_changed(current: int, required: int, level: int)
+signal damaged(amount: int)
 signal player_died
 
 @onready var ship_body: AnimatedSprite2D = $AnimatedSprite2D
@@ -21,12 +22,22 @@ const TURN_RATE        := 5.0
 const DASH_DRAIN_RATE  := 5.0   # shield/sec drained while boosting
 const DASH_UNLOCK_RATIO := 0.2   # must regen to 20% of max before boosting again once empty
 
+# Health regen — a slow trickle that rewards disengaging, not a second health
+# bar. HEAL_PER_TICK hp every (REGEN_INTERVAL / rate) seconds, and only once
+# you've been out of trouble for REGEN_COMBAT_DELAY.
+const HEAL_PER_TICK       := 2
+const REGEN_INTERVAL      := 20.0
+const REGEN_COMBAT_DELAY  := 5.0
+
 const HIT_DEATH_FX := preload("res://scenes/effects/particle_player_hit_death.tscn")
 const LEVEL_UP_FX   := preload("res://scenes/effects/particle_level_up.tscn")
 
 var current_speed  := NORMAL_SPEED
 var is_boosting    := false
 var _shield_locked := false
+
+## Temporary movement buff (Energy Overdrive). 1.0 = normal.
+var speed_multiplier: float = 1.0
 
 # Health / Shield / XP (initialised from SaveManager stats in _ready)
 var max_hp: int     = 100
@@ -49,6 +60,7 @@ var weapon_system: WeaponSystem
 var module_system: ModuleSystem
 
 var _health_regen_timer: Timer
+var _last_damage_msec: int = 0
 
 
 func _ready() -> void:
@@ -70,9 +82,8 @@ func _ready() -> void:
 	shield_regen_timer.timeout.connect(_on_shield_regen_tick)
 	shield_regen_timer.start()
 
-	# Health regen — Lua: +5 hp every (5000 / regener) ms, only below max-5
 	_health_regen_timer = Timer.new()
-	_health_regen_timer.wait_time = 5.0 / minf(health_regen_rate, 20.0)
+	_health_regen_timer.wait_time = REGEN_INTERVAL / minf(health_regen_rate, 20.0)
 	_health_regen_timer.timeout.connect(_on_health_regen_tick)
 	add_child(_health_regen_timer)
 	_health_regen_timer.start()
@@ -118,7 +129,7 @@ func _handle_normal_movement() -> void:
 		Input.get_action_strength("down")  - Input.get_action_strength("up")
 	)
 	if input_dir != Vector2.ZERO:
-		velocity = input_dir.normalized() * current_speed
+		velocity = input_dir.normalized() * current_speed * speed_multiplier
 	else:
 		velocity = Vector2.ZERO
 	move_and_slide()
@@ -133,7 +144,7 @@ func _handle_boost_movement(delta: float) -> void:
 	var to_mouse = (get_global_mouse_position() - global_position).normalized()
 	var cur_dir = velocity.normalized()
 	var new_dir = cur_dir.lerp(to_mouse, TURN_RATE * delta).normalized()
-	velocity = new_dir * current_speed
+	velocity = new_dir * current_speed * speed_multiplier
 	move_and_slide()
 
 func _drain_shield_while_boosting(delta: float) -> void:
@@ -186,7 +197,9 @@ func take_damage(amount: int) -> void:
 
 	if amount > 0:
 		hp -= amount
+		_last_damage_msec = Time.get_ticks_msec()
 		hp_changed.emit(hp, max_hp)
+		damaged.emit(amount)
 		HitText.spawn(get_tree().current_scene, global_position, amount, Color(1, 0.15, 0.15))
 		ParticleEffect.spawn(HIT_DEATH_FX, get_tree().current_scene, global_position)
 
@@ -219,8 +232,10 @@ func _on_shield_regen_tick() -> void:
 func _on_health_regen_tick() -> void:
 	if not is_alive:
 		return
-	if hp <= max_hp - 5:
-		hp += 5   # Lua: +5 per tick
+	if Time.get_ticks_msec() - _last_damage_msec < int(REGEN_COMBAT_DELAY * 1000.0):
+		return
+	if hp <= max_hp - HEAL_PER_TICK:
+		hp += HEAL_PER_TICK
 		hp_changed.emit(hp, max_hp)
 
 func add_experience(amount: int) -> void:

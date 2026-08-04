@@ -14,6 +14,14 @@ class_name WeaponData
 @export var speed: float = 800.0        # 0 for melee archetypes that ride the ship
 @export var pierce: int = 2
 
+## Shots the weapon holds before it has to reload. Per-weapon, so a slow
+## heavy swing doesn't carry as many rounds as the starter laser.
+@export var ammo_capacity: int = 18
+
+## Ceiling on pierce once upgrades start stacking on top of `pierce`.
+## -1 means uncapped — the melee sweeps cut through everything.
+@export var pierce_cap: int = -1
+
 enum Archetype { BOLT, SWEEP, THRUST, SHIELD }
 @export var archetype: Archetype = Archetype.BOLT
 

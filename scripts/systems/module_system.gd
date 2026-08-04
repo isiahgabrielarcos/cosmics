@@ -18,6 +18,17 @@ const HIT5_FX        := preload("res://assets/art/vfx/hitEffect5.png")
 const SHOCK_BOMBS_FX := preload("res://assets/art/vfx/shockBombs.png")
 const BURNING_FX     := preload("res://assets/art/vfx/burning.png")
 const COSMIC_BALL    := preload("res://assets/art/characters/cosmicBall.png")
+const PURPLE_SCENE   := preload("res://scenes/weapons/purple.tscn")
+
+# Skills that scale with the hero: flat base plus this much per level.
+const SKILL_DAMAGE_PER_LEVEL := 5
+const SHOCKWAVE_BASE_DAMAGE := 50
+const PURPLE_BASE_DAMAGE := 100
+
+# Energy Overdrive
+const OVERDRIVE_DURATION := 6.0
+const OVERDRIVE_FIRE_RATE := 0.4    # attack_speed multiplier — x2.5 faster
+const OVERDRIVE_SPEED := 1.3        # +30% movement
 
 var player: CharacterBody2D
 
@@ -113,6 +124,13 @@ func _damage_enemies_in_radius(radius: float, damage: int, knockback: float = 0.
 			enemy.apply_damage(damage)
 		if knockback > 0.0 and is_instance_valid(enemy) and enemy is CharacterBody2D:
 			enemy.velocity += offset.normalized() * knockback
+
+
+## Hero level, used by the skills that scale with it.
+func _player_level() -> int:
+	if player and "level" in player:
+		return int(player.level)
+	return 1
 
 
 func _spawn_effect(tex: Texture2D, frame_size: int, count: int, duration: float,
@@ -263,19 +281,29 @@ func _skill_burst_projectile() -> void:
 
 
 func _skill_screen_shockwave() -> void:
+	var damage := SHOCKWAVE_BASE_DAMAGE + SKILL_DAMAGE_PER_LEVEL * _player_level()
 	_spawn_effect(SHOCKWAVE_FX, 96, 8, 0.6, player, 10.0)
-	_damage_enemies_in_radius(700.0, 40, 600.0)
+	_damage_enemies_in_radius(700.0, damage, 600.0)
 	AudioManager.play_sfx("shockWaveSound")
 
 
 func _skill_energy_overdrive() -> void:
 	var ws: WeaponSystem = player.get_node_or_null("WeaponSystem")
 	if ws:
-		var old_speed := ws.attack_speed
-		ws.attack_speed = old_speed * 0.4
-		get_tree().create_timer(6.0).timeout.connect(func():
+		var old_attack_speed := ws.attack_speed
+		ws.attack_speed = old_attack_speed * OVERDRIVE_FIRE_RATE
+		get_tree().create_timer(OVERDRIVE_DURATION).timeout.connect(func():
 			if is_instance_valid(ws):
-				ws.attack_speed = old_speed)
+				ws.attack_speed = old_attack_speed)
+
+	# Redlining the cannons pushes the drive too — the ship moves quicker
+	# for as long as the overdrive holds.
+	if "speed_multiplier" in player:
+		player.speed_multiplier = OVERDRIVE_SPEED
+		get_tree().create_timer(OVERDRIVE_DURATION).timeout.connect(func():
+			if is_instance_valid(player):
+				player.speed_multiplier = 1.0)
+
 	_spawn_effect(HIT5_FX, 96, 8, 0.5, player, 3.0)
 	AudioManager.play_sfx("skill1Sound")
 
@@ -286,9 +314,15 @@ func _skill_electric_shock() -> void:
 	AudioManager.play_sfx("electricShockSound")
 
 
+## Spawns the Purple and hands off — it charges on the hull for three seconds
+## before launching itself. See purple_projectile.gd.
 func _skill_purple_blast() -> void:
-	_spawn_effect(SHOCK_BOMBS_FX, 96, 8, 0.8, player, 8.0)
-	_damage_enemies_in_radius(450.0, 60, 300.0)
+	var purple: PurpleProjectile = PURPLE_SCENE.instantiate()
+	purple.damage = PURPLE_BASE_DAMAGE + SKILL_DAMAGE_PER_LEVEL * _player_level()
+	purple.player = player
+	purple.global_position = player.global_position
+	purple.rotation = player.ship_body.rotation
+	get_tree().current_scene.add_child(purple)
 	AudioManager.play_sfx("shockWaveSound")
 
 

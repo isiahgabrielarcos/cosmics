@@ -4,6 +4,7 @@
 [ext_resource type="Script" path="res://scripts/systems/parallax_layer.gd" id="2_ictjh"]
 [ext_resource type="Texture2D" uid="uid://dh6edgnxp7sn6" path="res://assets/art/environment/space2.png" id="3_78gbh"]
 [ext_resource type="Texture2D" uid="uid://eqcbko2e1grv" path="res://assets/art/ui/stars.png" id="4_umig0"]
+[ext_resource type="Script" path="res://scripts/levels/background_star.gd" id="5_star"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_st1"]
 atlas = ExtResource("4_umig0")
@@ -29,6 +30,78 @@ region = Rect2(1024, 0, 256, 256)
 atlas = ExtResource("4_umig0")
 region = Rect2(0, 256, 256, 256)
 
+[sub_resource type="AtlasTexture" id="AtlasTexture_abame"]
+atlas = ExtResource("4_umig0")
+region = Rect2(512, 512, 256, 256)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ictjh"]
+atlas = ExtResource("4_umig0")
+region = Rect2(768, 512, 256, 256)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_78gbh"]
+atlas = ExtResource("4_umig0")
+region = Rect2(1024, 512, 256, 256)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_umig0"]
+atlas = ExtResource("4_umig0")
+region = Rect2(0, 768, 256, 256)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_abqpp"]
+atlas = ExtResource("4_umig0")
+region = Rect2(256, 768, 256, 256)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_2nyxx"]
+atlas = ExtResource("4_umig0")
+region = Rect2(512, 768, 256, 256)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_dseb4"]
+atlas = ExtResource("4_umig0")
+region = Rect2(768, 768, 256, 256)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_37hyn"]
+atlas = ExtResource("4_umig0")
+region = Rect2(1024, 768, 256, 256)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_60cg2"]
+atlas = ExtResource("4_umig0")
+region = Rect2(0, 1024, 256, 256)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_knddw"]
+atlas = ExtResource("4_umig0")
+region = Rect2(256, 1024, 256, 256)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_6ejs1"]
+atlas = ExtResource("4_umig0")
+region = Rect2(512, 1024, 256, 256)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_rgbnp"]
+atlas = ExtResource("4_umig0")
+region = Rect2(768, 1024, 256, 256)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_dj2x6"]
+atlas = ExtResource("4_umig0")
+region = Rect2(256, 256, 256, 256)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_jd3hl"]
+atlas = ExtResource("4_umig0")
+region = Rect2(512, 256, 256, 256)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_hufxy"]
+atlas = ExtResource("4_umig0")
+region = Rect2(768, 256, 256, 256)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_32tc4"]
+atlas = ExtResource("4_umig0")
+region = Rect2(1024, 256, 256, 256)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_a288h"]
+atlas = ExtResource("4_umig0")
+region = Rect2(0, 512, 256, 256)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_v7xx6"]
+atlas = ExtResource("4_umig0")
+region = Rect2(256, 512, 256, 256)
+
 [sub_resource type="SpriteFrames" id="SpriteFrames_stars"]
 animations = [{
 "frames": [{
@@ -51,8 +124,77 @@ animations = [{
 "texture": SubResource("AtlasTexture_st6")
 }],
 "loop": 1,
-"name": &"default",
+"name": &"flaschbourn",
+"speed": 8.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_abame")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ictjh")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_78gbh")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_umig0")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_abqpp")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_2nyxx")
+}],
+"loop": 1,
+"name": &"frokenvinter",
 "speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_dseb4")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_37hyn")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_60cg2")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_knddw")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_6ejs1")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_rgbnp")
+}],
+"loop": 1,
+"name": &"squilltrant",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_dj2x6")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_jd3hl")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_hufxy")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_32tc4")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_a288h")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_v7xx6")
+}],
+"loop": 1,
+"name": &"strogghold",
+"speed": 8.0
 }]
 
 [node name="Background" type="ParallaxBackground" unique_id=2070054606]
@@ -85,8 +227,10 @@ texture = ExtResource("3_78gbh")
 [node name="ParallaxLayer2" type="ParallaxLayer" parent="." unique_id=161247838]
 motion_scale = Vector2(0.003, 0.003)
 
-[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="ParallaxLayer2" unique_id=1035169546]
+[node name="star" type="AnimatedSprite2D" parent="ParallaxLayer2" unique_id=1035169546]
 position = Vector2(518, 331)
 scale = Vector2(0.460938, 0.460938)
 sprite_frames = SubResource("SpriteFrames_stars")
-autoplay = "default"
+animation = &"frokenvinter"
+autoplay = "flaschbourn"
+script = ExtResource("5_star")

@@ -1,6 +1,6 @@
-[gd_scene format=3 uid="uid://bmerchpnl2q7x"]
+[gd_scene format=3 uid="uid://crm6fs67isr82"]
 
-[ext_resource type="Script" path="res://scripts/ui/merchant_panel.gd" id="1_script"]
+[ext_resource type="Script" uid="uid://dumo6n4trykg2" path="res://scripts/ui/merchant_panel.gd" id="1_script"]
 [ext_resource type="Texture2D" uid="uid://cxoc0wqqqyntj" path="res://assets/art/ui/cosmicGameMode.png" id="2_backdrop"]
 [ext_resource type="Texture2D" uid="uid://dukklejm5o7fy" path="res://assets/art/ui/close.png" id="3_close"]
 [ext_resource type="Texture2D" uid="uid://damrkcplhuc3" path="res://assets/art/ui/cosmicTraderAvatar.png" id="3_pepw5"]
@@ -35,6 +35,12 @@ outline_color = Color(0.054241963, 0.29207325, 1, 1)
 [sub_resource type="LabelSettings" id="LabelSettings_flwv8"]
 font_size = 21
 
+[sub_resource type="LabelSettings" id="LabelSettings_equipped"]
+font_size = 26
+font_color = Color(0.42, 1, 0.55, 1)
+outline_size = 5
+outline_color = Color(0, 0, 0, 1)
+
 [sub_resource type="LabelSettings" id="LabelSettings_m3ae2"]
 font_size = 69
 outline_color = Color(0.054241963, 0.29207325, 1, 1)
@@ -44,15 +50,6 @@ font_size = 40
 
 [sub_resource type="LabelSettings" id="LabelSettings_r7q3b"]
 font_size = 29
-
-[sub_resource type="LabelSettings" id="LabelSettings_equipped"]
-font_size = 26
-font_color = Color(0.42, 1, 0.55, 1)
-outline_size = 5
-outline_color = Color(0, 0, 0, 1)
-
-[sub_resource type="LabelSettings" id="LabelSettings_a041j"]
-font_size = 27
 
 [node name="MerchantPanel" type="CanvasLayer" unique_id=35720987]
 script = ExtResource("1_script")
@@ -264,14 +261,12 @@ offset_bottom = 392.25067
 scale = Vector2(0.80000055, 0.80000067)
 stretch_mode = 0
 
-
 [node name="EquippedLabel" type="Label" parent="Root/Skills/Skill" unique_id=700000006]
 layout_mode = 0
 offset_left = -6.0
 offset_top = 330.0
 offset_right = 250.0
 offset_bottom = 368.0
-text = ""
 label_settings = SubResource("LabelSettings_equipped")
 horizontal_alignment = 1
 
@@ -324,14 +319,12 @@ offset_bottom = 392.25067
 scale = Vector2(0.80000055, 0.80000067)
 stretch_mode = 0
 
-
 [node name="EquippedLabel" type="Label" parent="Root/Skills/Skill2" unique_id=700000007]
 layout_mode = 0
 offset_left = -6.0
 offset_top = 330.0
 offset_right = 250.0
 offset_bottom = 368.0
-text = ""
 label_settings = SubResource("LabelSettings_equipped")
 horizontal_alignment = 1
 
@@ -384,14 +377,12 @@ offset_bottom = 392.25067
 scale = Vector2(0.80000055, 0.80000067)
 stretch_mode = 0
 
-
 [node name="EquippedLabel" type="Label" parent="Root/Skills/Skill3" unique_id=700000008]
 layout_mode = 0
 offset_left = -6.0
 offset_top = 330.0
 offset_right = 250.0
 offset_bottom = 368.0
-text = ""
 label_settings = SubResource("LabelSettings_equipped")
 horizontal_alignment = 1
 
@@ -444,14 +435,12 @@ offset_bottom = 392.25067
 scale = Vector2(0.80000055, 0.80000067)
 stretch_mode = 0
 
-
 [node name="EquippedLabel" type="Label" parent="Root/Skills/Skill4" unique_id=700000009]
 layout_mode = 0
 offset_left = -6.0
 offset_top = 330.0
 offset_right = 250.0
 offset_bottom = 368.0
-text = ""
 label_settings = SubResource("LabelSettings_equipped")
 horizontal_alignment = 1
 
@@ -504,14 +493,12 @@ offset_bottom = 392.25067
 scale = Vector2(0.80000055, 0.80000067)
 stretch_mode = 0
 
-
 [node name="EquippedLabel" type="Label" parent="Root/Skills/Skill5" unique_id=700000010]
 layout_mode = 0
 offset_left = -6.0
 offset_top = 330.0
 offset_right = 250.0
 offset_bottom = 368.0
-text = ""
 label_settings = SubResource("LabelSettings_equipped")
 horizontal_alignment = 1
 
@@ -571,14 +558,12 @@ offset_bottom = 392.25067
 scale = Vector2(0.80000055, 0.80000067)
 stretch_mode = 0
 
-
 [node name="EquippedLabel" type="Label" parent="Root/Weapons/Weapons1" unique_id=700000001]
 layout_mode = 0
 offset_left = -6.0
 offset_top = 330.0
 offset_right = 250.0
 offset_bottom = 368.0
-text = ""
 label_settings = SubResource("LabelSettings_equipped")
 horizontal_alignment = 1
 
@@ -631,14 +616,12 @@ offset_bottom = 392.25067
 scale = Vector2(0.80000055, 0.80000067)
 stretch_mode = 0
 
-
 [node name="EquippedLabel" type="Label" parent="Root/Weapons/Weapons2" unique_id=700000002]
 layout_mode = 0
 offset_left = -6.0
 offset_top = 330.0
 offset_right = 250.0
 offset_bottom = 368.0
-text = ""
 label_settings = SubResource("LabelSettings_equipped")
 horizontal_alignment = 1
 
@@ -691,14 +674,12 @@ offset_bottom = 392.25067
 scale = Vector2(0.80000055, 0.80000067)
 stretch_mode = 0
 
-
 [node name="EquippedLabel" type="Label" parent="Root/Weapons/Weapons3" unique_id=700000003]
 layout_mode = 0
 offset_left = -6.0
 offset_top = 330.0
 offset_right = 250.0
 offset_bottom = 368.0
-text = ""
 label_settings = SubResource("LabelSettings_equipped")
 horizontal_alignment = 1
 
@@ -751,14 +732,12 @@ offset_bottom = 392.25067
 scale = Vector2(0.80000055, 0.80000067)
 stretch_mode = 0
 
-
 [node name="EquippedLabel" type="Label" parent="Root/Weapons/Weapons4" unique_id=700000004]
 layout_mode = 0
 offset_left = -6.0
 offset_top = 330.0
 offset_right = 250.0
 offset_bottom = 368.0
-text = ""
 label_settings = SubResource("LabelSettings_equipped")
 horizontal_alignment = 1
 
@@ -811,14 +790,12 @@ offset_bottom = 392.25067
 scale = Vector2(0.80000055, 0.80000067)
 stretch_mode = 0
 
-
 [node name="EquippedLabel" type="Label" parent="Root/Weapons/Weapons5" unique_id=700000005]
 layout_mode = 0
 offset_left = -6.0
 offset_top = 330.0
 offset_right = 250.0
 offset_bottom = 368.0
-text = ""
 label_settings = SubResource("LabelSettings_equipped")
 horizontal_alignment = 1
 
@@ -835,6 +812,7 @@ format = 2
 layer_0/tile_data = PackedInt32Array(9, 458753, 9, 8, 458753, 9, 7, 458753, 9, 6, 458753, 9, 5, 458753, 9, 4, 458753, 9, 3, 458753, 9, 2, 458753, 9, 1, 458753, 9, 0, 458753, 9, -65527, 393216, 805306377, -65528, 393216, 805306377, -65529, 393216, 805306377, -65530, 393216, 805306377, -65531, 393216, 805306377, -65532, 393216, 805306377, -65533, 393216, 805306377, -65534, 393216, 805306377, -65535, 393216, 805306377, -65536, 393216, 805306377)
 
 [node name="BottomBorder" type="TileMap" parent="Root/HUD Decor" unique_id=29996242]
+visible = false
 position = Vector2(-46, 324)
 scale = Vector2(5.22, 5.22)
 tile_set = ExtResource("7_lfjxp")
@@ -842,6 +820,7 @@ format = 2
 layer_0/tile_data = PackedInt32Array(262151, 786439, 16, 262150, 1638407, 16, 262149, 1572871, 16, 262148, 851975, 16, 262147, 786439, 16, 262146, 393223, 18, 262145, 1376263, 16, 262144, 1310727, 16, 262155, 1376263, 16, 262154, 1310727, 16, 262153, 393223, 18, 262152, 851975, 16, 327685, 1572871, 17, 327686, 1638407, 17)
 
 [node name="TopBorder" type="TileMap" parent="Root/HUD Decor" unique_id=1639975649]
+visible = false
 position = Vector2(1944.0002, 702.00006)
 rotation = 3.1415927
 scale = Vector2(5.2, 5.2)

@@ -1,34 +1,30 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene format=3 uid="uid://0vtey4phe1m5"]
 
-[ext_resource type="Script" path="res://scripts/systems/weapon_projectile.gd" id="1_proj"]
-[ext_resource type="Script" path="res://scripts/systems/weapon_data.gd" id="2_data"]
-[ext_resource type="Texture2D" path="res://assets/art/characters/laserBeam.png" id="3_tex"]
+[ext_resource type="Script" uid="uid://bkacryxjt1kb0" path="res://scripts/systems/weapon_projectile.gd" id="1_proj"]
+[ext_resource type="Script" uid="uid://t7h60q4dcgp4" path="res://scripts/systems/weapon_data.gd" id="2_data"]
+[ext_resource type="Texture2D" uid="uid://bth82wpuq0k6h" path="res://assets/art/characters/laserBeam.png" id="3_tex"]
 
 [sub_resource type="Resource" id="Resource_data"]
 script = ExtResource("2_data")
 base_damage = 18
 fire_rate = 0.15
-visual_scale = 1.0
 hit_radius = 10.0
-lifetime = 1.0
 speed = 900.0
 pierce = 2
-archetype = 0
-spin_speed = 0.0
+ammo_capacity = 18
 thrust_distance = 0.0
 knockback_force = 0.0
-invuln_duration = 0.0
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_1"]
-radius = 10.0
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_8u0ho"]
+size = Vector2(10, 34)
 
-[node name="LaserBeam" type="Area2D"]
+[node name="LaserBeam" type="Area2D" unique_id=657391615]
 script = ExtResource("1_proj")
 data = SubResource("Resource_data")
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1180493089]
 rotation = 1.5708
 texture = ExtResource("3_tex")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-shape = SubResource("CircleShape2D_1")
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1440533528]
+shape = SubResource("RectangleShape2D_8u0ho")

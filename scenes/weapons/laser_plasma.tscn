@@ -1,8 +1,8 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene format=3 uid="uid://6sgvtd7t0xqt"]
 
-[ext_resource type="Script" path="res://scripts/systems/weapon_projectile.gd" id="1_proj"]
-[ext_resource type="Script" path="res://scripts/systems/weapon_data.gd" id="2_data"]
-[ext_resource type="Texture2D" path="res://assets/art/characters/laserBeam2.png" id="3_tex"]
+[ext_resource type="Script" uid="uid://bkacryxjt1kb0" path="res://scripts/systems/weapon_projectile.gd" id="1_proj"]
+[ext_resource type="Script" uid="uid://t7h60q4dcgp4" path="res://scripts/systems/weapon_data.gd" id="2_data"]
+[ext_resource type="Texture2D" uid="uid://cmpkx3oko42iu" path="res://assets/art/characters/laserBeam2.png" id="3_tex"]
 
 [sub_resource type="Resource" id="Resource_data"]
 script = ExtResource("2_data")
@@ -10,25 +10,22 @@ base_damage = 24
 fire_rate = 0.35
 visual_scale = 1.6
 hit_radius = 24.0
-lifetime = 1.0
 speed = 650.0
-pierce = 3
-archetype = 0
-spin_speed = 0.0
+pierce = 2
+ammo_capacity = 10
 thrust_distance = 0.0
 knockback_force = 0.0
-invuln_duration = 0.0
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_1"]
-radius = 24.0
+radius = 18.110771
 
-[node name="LaserPlasma" type="Area2D"]
+[node name="LaserPlasma" type="Area2D" unique_id=2105098686]
 script = ExtResource("1_proj")
 data = SubResource("Resource_data")
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1954749126]
 rotation = 1.5708
 texture = ExtResource("3_tex")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1052879543]
 shape = SubResource("CircleShape2D_1")
