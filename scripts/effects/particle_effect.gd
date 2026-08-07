@@ -18,3 +18,18 @@ static func spawn(scene: PackedScene, parent: Node, pos: Vector2, scale_mult: fl
 
 func _ready() -> void:
 	finished.connect(queue_free)
+
+	# Several of the burst scenes are saved with emitting off (it's the sane
+	# default to author with, otherwise they fire in the editor). Turning it
+	# on here means a scene can't silently never play — and since `finished`
+	# only fires after a burst actually runs, it's also what lets these free
+	# themselves instead of piling up in the scene.
+	emitting = true
+
+	# Belt and braces: if `finished` never arrives, don't leak the node.
+	# Runs on its own regardless of pause, since bursts fired on the frame a
+	# menu opens would otherwise sit around until it closes.
+	get_tree().create_timer(lifetime * 1.5 + 0.3, true, false, true)\
+		.timeout.connect(func():
+			if is_instance_valid(self):
+				queue_free())

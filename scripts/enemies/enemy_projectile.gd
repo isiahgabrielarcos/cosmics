@@ -27,8 +27,11 @@ func _ready() -> void:
 	add_child(shape)
 
 	rotation = direction.angle() + PI / 2.0
-	collision_layer = 0
+	# On the Bullets layer so weapons that swat projectiles can detect it;
+	# it still only *looks* for the player.
+	collision_layer = 2
 	collision_mask = 1
+	add_to_group("enemy_projectiles")
 	body_entered.connect(_on_body_entered)
 
 
@@ -44,6 +47,11 @@ func _on_body_entered(body: Node) -> void:
 	if body.is_in_group("friendlies") and body.has_method("take_damage"):
 		body.take_damage(damage)
 		_pop()
+
+
+## Shot down by a player weapon rather than by hitting something.
+func destroy() -> void:
+	_pop()
 
 
 func _pop() -> void:

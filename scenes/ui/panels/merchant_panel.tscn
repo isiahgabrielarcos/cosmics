@@ -9,6 +9,7 @@
 [ext_resource type="Texture2D" uid="uid://dsaphitivrwaw" path="res://assets/art/ui/skillArray.png" id="7_t4q7c"]
 [ext_resource type="Texture2D" uid="uid://bodi6oa53d511" path="res://assets/art/ui/WeaponsModule.png" id="8_t4q7c"]
 [ext_resource type="Texture2D" uid="uid://0uckiy8w0bl1" path="res://assets/art/ui/inventoryInterface.png" id="9_svfdy"]
+[ext_resource type="Script" uid="uid://bujvurt7g5nwa" path="res://scripts/ui/avatar_float.gd" id="99_float"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_lyl02"]
 font_size = 67
@@ -180,15 +181,16 @@ grow_vertical = 2
 
 [node name="TextureRect" type="TextureRect" parent="Root/Frame" unique_id=1121061781]
 layout_mode = 0
-offset_left = -562.0
+offset_left = -1120.0
 offset_top = -777.0
-offset_right = 1486.0
+offset_right = 928.0
 offset_bottom = 1271.0
 offset_transform_enabled = true
 offset_transform_scale = Vector2(0.3, 0.3)
 offset_transform_visual_only = false
 texture = ExtResource("3_pepw5")
 expand_mode = 1
+script = ExtResource("99_float")
 
 [node name="CloseButton" type="TextureButton" parent="Root/Frame" unique_id=1007458775]
 visible = false
@@ -205,6 +207,19 @@ texture_normal = ExtResource("3_close")
 ignore_texture_size = true
 stretch_mode = 4
 
+[node name="BackButton" type="Button" parent="Root/Frame" unique_id=368834517]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 1260.0
+offset_top = -918.0
+offset_right = 1420.0
+offset_bottom = -858.0
+grow_vertical = 0
+theme_override_font_sizes/font_size = 28
+text = "BACK"
+
 [node name="Skills" type="Control" parent="Root" unique_id=625106057]
 anchors_preset = 0
 offset_left = 1253.0
@@ -214,11 +229,11 @@ offset_bottom = 485.0
 
 [node name="Skill" type="Control" parent="Root/Skills" unique_id=1792669391]
 anchors_preset = 0
-offset_left = 22.0
-offset_top = 125.0
-offset_right = 255.0
-offset_bottom = 440.0
-scale = Vector2(0.9422476, 0.9422476)
+offset_left = -313.0
+offset_top = 160.0
+offset_right = -80.0
+offset_bottom = 475.0
+scale = Vector2(0.8249708, 0.8249708)
 
 [node name="Skill Module" type="TextureRect" parent="Root/Skills/Skill" unique_id=197772995]
 layout_mode = 0
@@ -272,11 +287,11 @@ horizontal_alignment = 1
 
 [node name="Skill2" type="Control" parent="Root/Skills" unique_id=964663714]
 anchors_preset = 0
-offset_left = 238.0
-offset_top = 125.0
-offset_right = 471.0
-offset_bottom = 440.0
-scale = Vector2(0.9422476, 0.9422476)
+offset_left = -113.0
+offset_top = 160.0
+offset_right = 120.0
+offset_bottom = 475.0
+scale = Vector2(0.8249708, 0.8249708)
 
 [node name="Skill Module" type="TextureRect" parent="Root/Skills/Skill2" unique_id=1706606641]
 layout_mode = 0
@@ -330,11 +345,11 @@ horizontal_alignment = 1
 
 [node name="Skill3" type="Control" parent="Root/Skills" unique_id=1568701582]
 anchors_preset = 0
-offset_left = 457.0
-offset_top = 125.0
-offset_right = 690.0
-offset_bottom = 440.0
-scale = Vector2(0.9422476, 0.9422476)
+offset_left = 83.0
+offset_top = 160.0
+offset_right = 316.0
+offset_bottom = 475.0
+scale = Vector2(0.8249708, 0.8249708)
 
 [node name="Skill Module" type="TextureRect" parent="Root/Skills/Skill3" unique_id=1277242937]
 layout_mode = 0
@@ -388,11 +403,11 @@ horizontal_alignment = 1
 
 [node name="Skill4" type="Control" parent="Root/Skills" unique_id=766879328]
 anchors_preset = 0
-offset_left = 154.0
-offset_top = -226.0
-offset_right = 387.0
-offset_bottom = 89.0
-scale = Vector2(0.9422476, 0.9422476)
+offset_left = 279.0
+offset_top = 160.0
+offset_right = 512.0
+offset_bottom = 475.0
+scale = Vector2(0.8249708, 0.8249708)
 
 [node name="Skill Module" type="TextureRect" parent="Root/Skills/Skill4" unique_id=275919929]
 layout_mode = 0
@@ -446,11 +461,11 @@ horizontal_alignment = 1
 
 [node name="Skill5" type="Control" parent="Root/Skills" unique_id=1938521977]
 anchors_preset = 0
-offset_left = 385.0
-offset_top = -226.0
-offset_right = 618.0
-offset_bottom = 89.0
-scale = Vector2(0.9422476, 0.9422476)
+offset_left = 474.0
+offset_top = 160.0
+offset_right = 707.0
+offset_bottom = 475.0
+scale = Vector2(0.8249708, 0.8249708)
 
 [node name="Skill Module" type="TextureRect" parent="Root/Skills/Skill5" unique_id=1251260495]
 layout_mode = 0

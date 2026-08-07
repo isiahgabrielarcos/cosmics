@@ -162,6 +162,16 @@ func open() -> void:
 	AudioManager.play_sfx("pickedMode1")
 	_hide_panels(false)
 	_rebuild()
+	# Gabriel rises into frame with the loadout screen
+	var portrait := get_node_or_null("Root/Frame/TextureRect")
+	if portrait is AvatarFloat:
+		(portrait as AvatarFloat).play_intro()
+
+
+## Wired to the BACK button in the scene — the close button in the frame is
+## hidden, so this is the visible way out of the loadout screen.
+func _on_back_pressed() -> void:
+	close()
 
 
 func close() -> void:

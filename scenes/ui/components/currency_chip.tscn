@@ -1,0 +1,15 @@
+[gd_scene format=3]
+
+[node name="CurrencyChip" type="HBoxContainer"]
+theme_override_constants/separation = 5
+
+[node name="Icon" type="ColorRect" parent="."]
+custom_minimum_size = Vector2(16, 16)
+layout_mode = 2
+size_flags_vertical = 4
+color = Color(1, 1, 1, 1)
+
+[node name="Amount" type="Label" parent="."]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "0"

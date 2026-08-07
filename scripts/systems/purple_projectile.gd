@@ -13,7 +13,7 @@ class_name PurpleProjectile
 # ModuleSystem sets `damage` (100 + 5 per hero level) and `player` before
 # adding it to the scene.
 
-const CHARGE_TIME := 3.0
+const CHARGE_TIME := 2
 const FLIGHT_SPEED := 3200.0
 const FLIGHT_LIFETIME := 1.5
 
@@ -40,7 +40,7 @@ func _ready() -> void:
 	area_entered.connect(_on_area_entered)
 
 	collision_layer = 2           # Bullets
-	collision_mask  = 0b0111101   # Entities + all 3 enemy layers, not bullets/walls
+	collision_mask  = EnemyUnit.HOSTILE_MASK   # every enemy lane, not bullets/walls
 
 	scale = Vector2.ZERO
 	$AnimatedSprite2D.play("moving")
@@ -49,7 +49,7 @@ func _ready() -> void:
 	if player and player.has_signal("damaged"):
 		player.damaged.connect(_on_player_damaged)
 
-	create_tween().tween_property(self, "scale", Vector2.ONE, CHARGE_TIME)\
+	create_tween().tween_property(self, "scale", Vector2(2, 2), CHARGE_TIME)\
 		.set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN)
 
 

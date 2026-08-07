@@ -22,6 +22,10 @@ class_name WeaponData
 ## -1 means uncapped — the melee sweeps cut through everything.
 @export var pierce_cap: int = -1
 
+## Swats enemy projectiles out of the air on contact. The point of a blade
+## that spins around the hull is that it's a defensive option too.
+@export var destroys_projectiles: bool = false
+
 enum Archetype { BOLT, SWEEP, THRUST, SHIELD }
 @export var archetype: Archetype = Archetype.BOLT
 

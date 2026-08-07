@@ -1,0 +1,22 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3]
+
+[ext_resource type="Shader" path="res://assets/art/shaders/glare_glow.gdshader" id="1_shader"]
+
+[resource]
+shader = ExtResource("1_shader")
+shader_parameter/glow_color = Color(0.65, 0.85, 1, 1)
+shader_parameter/luma_threshold = 0.6
+shader_parameter/luma_softness = 0.3
+shader_parameter/glow_radius = 16.0
+shader_parameter/base_glow = 1.3
+shader_parameter/sweep_glow = 0.0
+shader_parameter/halo_opacity = 1.0
+shader_parameter/core_boost = 1.0
+shader_parameter/hdr_boost = 1.0
+shader_parameter/angle_degrees = 35.0
+shader_parameter/band_width = 0.22
+shader_parameter/band_sharpness = 2.0
+shader_parameter/period = 5.0
+shader_parameter/sweep_fraction = 0.3
+shader_parameter/phase_offset = 0.0
+shader_parameter/screen_space = false

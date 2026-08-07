@@ -6,7 +6,7 @@
 
 [sub_resource type="Resource" id="Resource_data"]
 script = ExtResource("2_data")
-base_damage = 55
+base_damage = 38
 fire_rate = 1.1
 visual_scale = 2.2
 hit_radius = 90.0

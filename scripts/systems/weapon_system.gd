@@ -43,6 +43,10 @@ var is_primary_selected: bool = true
 
 # Stats (from baseStatData.json — enterStats())
 var base_damage: int = 20
+## The damage the run started at. Percentage module picks step off this rather
+## than off the running total, so stacking them adds a fixed amount each time
+## instead of compounding into the millions.
+var starting_damage: int = 20
 var attack_speed: float = 0.25      # baseAttackSpeed 250 ms
 var reload_time: float = 2.0        # baseReloadTime
 var weapon_range: float = 200.0     # baseRange (kept for parity; weapons carry their own lifetime now)
@@ -64,6 +68,24 @@ var _slot_ammo := {1: 18, 2: 18}
 var reloading: bool = false
 var _can_fire: bool = true
 
+# ── "Can the player actually shoot?" watchdog ─────────────────────────────────
+# Every gate in try_shoot() (bursting, reloading, _can_fire, the UI-click
+# guard) is a flag some other piece of code promises to clear. History says
+# that promise gets broken — a paused-tree edge case, a freed node, a timer
+# that never got the chance to fire — and the player is left holding a gun
+# that silently does nothing for the rest of the run with no error to point
+# at why. Rather than trust each call site to always self-heal, this checks
+# periodically whether firing should be possible and forces it back open if
+# something's been stuck well past when it should have cleared on its own.
+const WATCHDOG_INTERVAL := 2.0
+var _bursting_deadline_msec: int = 0
+var _reloading_deadline_msec: int = 0
+
+## Set while the Burst Projectile skill is unloading the magazine. The trigger
+## is locked out for the duration — you can still steer and aim, and the burst
+## follows wherever you point it.
+var bursting: bool = false
+
 # Module hooks (set by ModuleSystem)
 var got_anti_flank_module: bool = false
 var got_side_guns_module: bool = false
@@ -72,6 +94,47 @@ var got_scorching_module: bool = false
 var scorching_chance: int = 3       # out of 10
 var got_electric_module: bool = false
 var electric_chance: int = 3        # out of 10
+
+# ── Legendary / godly shot modifiers ──────────────────────────────────────────
+# These reshape individual rounds rather than adding flat stats, so they're
+# resolved per shot in _shot_modifiers() from the ammo left in the magazine.
+
+## Ultimate Shot — the FIRST round out of a fresh magazine hits far harder,
+## so reloading early to line up an opening strike is worth doing.
+var got_ultimate_shot: bool = false
+const ULTIMATE_SHOT_DAMAGE := 4.0
+const ULTIMATE_SHOT_SIZE := 2.0
+
+## Fluctuating Energy — every odd round in the magazine comes out hotter.
+var got_fluctuating_energy: bool = false
+const FLUCTUATING_MULT := 1.25
+
+## Shrink Device — shrinks the ship itself and speeds it up. Lives on the
+## player, not the rounds; kept here only so the pick can be offered once.
+var got_shrink_device: bool = false
+
+## State of the Art Ship — a flat multiplier on everything the ship deals.
+var overall_damage_mult: float = 1.0
+
+## Super Energy Module — finishing a reload spins the cannons up briefly.
+var got_super_energy_module: bool = false
+const SUPER_ENERGY_MULT := 1.5
+const SUPER_ENERGY_DURATION := 2.0
+var _reload_buff_left: float = 0.0
+
+# ── Volleys ───────────────────────────────────────────────────────────────────
+# A shot is one or more volleys, each of one or more rounds fired abreast.
+#
+#   Repeater Double Shoot widens a volley to two rounds side by side.
+#   Cannon Repeater adds whole extra volleys behind the first.
+#
+# Double Shoot sits first on the stack, so with both you get two abreast now
+# and two more abreast a beat later — four rounds off one trigger pull.
+const REPEATER_SPACING := 26.0
+const VOLLEY_DELAY := 0.2
+
+## Repeater Double Shoot (legendary) — two rounds abreast per volley.
+var got_double_shoot: bool = false
 
 var _fire_timer: Timer
 var _reload_timer: Timer
@@ -98,6 +161,12 @@ func _ready() -> void:
 	_reload_timer.timeout.connect(_on_reload_done)
 	add_child(_reload_timer)
 
+	var watchdog := Timer.new()
+	watchdog.wait_time = WATCHDOG_INTERVAL
+	watchdog.timeout.connect(_check_can_fire_watchdog)
+	add_child(watchdog)
+	watchdog.start()
+
 	# Pull loadout + stats from the save (enterStats + loadPrimAndSecWeapon)
 	var eq: Dictionary = SaveManager.equipped_data
 	primary_weapon   = int(eq.get("weapon1Slot", 1))
@@ -109,6 +178,7 @@ func _ready() -> void:
 
 	var st: Dictionary = SaveManager.stats_data
 	base_damage   = int(st.get("baseDamage", 20))
+	starting_damage = base_damage
 	bonus_ammo    = int(st.get("baseAmmoCapacity", 18)) - BASE_AMMO_CAPACITY
 	weapon_range  = float(st.get("baseRange", 200))
 
@@ -148,6 +218,15 @@ func _load_slot() -> void:
 	current_ammo = mini(int(_slot_ammo[_selected_slot()]), ammo_capacity)
 
 
+## Module pick — bigger magazines on every weapon. Tops up the live slot so
+## the extra rounds are usable immediately rather than after the next reload.
+func add_bonus_ammo(amount: int) -> void:
+	bonus_ammo += amount
+	_slot_ammo[_selected_slot()] = current_ammo + amount
+	_load_slot()
+	_emit_ammo()
+
+
 ## Re-equips both slots (the Ship Status screen changing the loadout) and
 ## racks fresh magazines sized for the new weapons.
 func set_loadout(slot1: int, slot2: int) -> void:
@@ -166,15 +245,29 @@ func _pierce_for(data: WeaponData) -> int:
 	return maxi(1, p)
 
 
-func _physics_process(_delta: float) -> void:
-	if Input.is_action_pressed("shoot"):
-		try_shoot()
+func _physics_process(delta: float) -> void:
+	if _reload_buff_left > 0.0:
+		_reload_buff_left = maxf(0.0, _reload_buff_left - delta)
+
+	# Release clears the "that click was for the UI" flag. This has to happen
+	# out here: try_shoot() only runs while the button is held, so checking
+	# for the release inside it could never fire and the flag stuck on
+	# forever, permanently disabling the guns.
+	if not Input.is_action_pressed("shoot"):
+		GameManager.ui_click_swallowed = false
+		return
+
+	try_shoot()
 
 
 # ── Firing (attack / autoAttack / whichWeapon) ────────────────────────────────
 
 func try_shoot() -> void:
-	if not _can_fire or reloading or get_tree().paused or GameManager.ui_open:
+	# A click that operated the HUD shouldn't also come out of the cannon —
+	# hold fire until that press is released (cleared in _physics_process).
+	if GameManager.ui_click_swallowed:
+		return
+	if bursting or not _can_fire or reloading or get_tree().paused or GameManager.ui_open:
 		return
 
 	var slot := _selected_weapon()
@@ -183,11 +276,29 @@ func try_shoot() -> void:
 	_can_fire = false
 	_fire_timer.start(data.fire_rate * (attack_speed / BASE_ATTACK_SPEED))
 
-	current_ammo -= 1
+	# Volleys of `width` rounds abreast. Every round costs ammo, and the whole
+	# burst is decided up front so a magazine can't run dry mid-volley.
+	var width := 2 if got_double_shoot else 1
+	var volleys := maxi(1, repeater_cannon_amount)
+	var wanted := width * volleys
+	var rounds := mini(wanted, maxi(1, current_ammo))
+
+	var ammo_before := current_ammo
+	current_ammo -= rounds
 	_slot_ammo[_selected_slot()] = current_ammo
 
-	for i in repeater_cannon_amount:
-		_fire_weapon(slot, data)
+	var mods := _shot_modifiers(ammo_before)
+	for i in rounds:
+		@warning_ignore("integer_division")
+		var volley := i / width          # which wave this round belongs to
+		var lane := i % width            # its position within that wave
+		var offset := _barrel_offset(lane, width)
+		if volley == 0:
+			_fire_weapon(slot, data, mods, offset)
+		else:
+			# Later volleys trail the first, so a repeater build reads as a
+			# burst rather than a single fat wall of bullets.
+			_queue_volley(slot, data, mods, offset, volley * VOLLEY_DELAY)
 
 	if got_anti_flank_module:
 		_anti_flank_shoot()
@@ -200,18 +311,113 @@ func try_shoot() -> void:
 		_emit_ammo()
 
 
-func _fire_weapon(slot: int, data: WeaponData) -> void:
+## Per-shot modifiers, decided from the magazine before the round leaves it.
+## Ultimate Shot wins over Fluctuating Energy when the last round is also an
+## odd one — the bigger, more specific effect should be what you feel.
+func _shot_modifiers(ammo_before: int) -> Dictionary:
+	var damage_mult := overall_damage_mult
+	var size_mult := 1.0
+	var speed_mult := 1.0
+
+	# The opening round out of a full magazine. Reloading deliberately to set
+	# one up is the whole point of the pick.
+	if got_ultimate_shot and ammo_before >= ammo_capacity:
+		damage_mult *= ULTIMATE_SHOT_DAMAGE
+		size_mult *= ULTIMATE_SHOT_SIZE
+	elif got_fluctuating_energy and ammo_before % 2 == 1:
+		damage_mult *= FLUCTUATING_MULT
+		size_mult *= FLUCTUATING_MULT
+
+	if _reload_buff_left > 0.0:
+		damage_mult *= SUPER_ENERGY_MULT
+
+	return { "damage": damage_mult, "size": size_mult, "speed": speed_mult }
+
+
+# ── Burst Projectile skill ────────────────────────────────────────────────────
+
+## How much of the weapon's own cadence the burst runs at, and the window the
+## result is held to. A slow, heavy weapon ends up firing noticeably quicker
+## than usual; a fast one only a little quicker, so the burst always reads as
+## the same move rather than "the laser, but silly".
+const BURST_RATE_SCALE := 0.35
+const BURST_MIN_INTERVAL := 0.05
+const BURST_MAX_INTERVAL := 0.12
+
+
+## Empties a full magazine's worth of rounds straight ahead, one after
+## another. Doesn't consume ammo — it's the skill's fantasy, not a reload
+## sink. Returns the number of rounds queued.
+func fire_burst() -> int:
+	if bursting or player == null:
+		return 0
+
+	var slot := _selected_weapon()
+	var data: WeaponData = _weapon_data[slot]
+	var rounds := _capacity_for(slot)
+	var interval := clampf(data.fire_rate * BURST_RATE_SCALE,
+		BURST_MIN_INTERVAL, BURST_MAX_INTERVAL)
+
+	bursting = true
+	# Deadline for the watchdog below — real wall-clock, not "rounds ticks
+	# from now", so a pause that stalls the burst doesn't also stall the
+	# deadline that's supposed to catch it.
+	_bursting_deadline_msec = Time.get_ticks_msec() + int(rounds * interval * 1000.0) + 500
+	for i in rounds:
+		var shot := i
+		get_tree().create_timer(shot * interval).timeout.connect(func():
+			# The trigger-lock has to clear on the last round NO MATTER WHAT —
+			# this used to sit after the paused/invalid checks below, so a
+			# module pick or pause menu opening mid-burst made the callback
+			# return early and left `bursting` stuck true forever, silently
+			# disabling the gun for the rest of the run. Only guard this on
+			# `self` being valid; player/pause don't get a say in it.
+			if is_instance_valid(self) and shot == rounds - 1:
+				bursting = false
+			if not is_instance_valid(self) or not is_instance_valid(player):
+				return
+			if get_tree().paused:
+				return
+			# Aim is read now, not when the burst started, so the stream
+			# sweeps with the ship.
+			_fire_weapon(slot, data, _shot_modifiers(ammo_capacity), Vector2.ZERO))
+	return rounds
+
+
+## Fires a trailing volley after `delay`. The aim is re-read at fire time, so
+## a burst tracks where the ship is pointing rather than where it was.
+func _queue_volley(slot: int, data: WeaponData, mods: Dictionary,
+		offset: Vector2, delay: float) -> void:
+	get_tree().create_timer(delay).timeout.connect(func():
+		if is_instance_valid(self) and is_instance_valid(player) \
+				and not get_tree().paused:
+			_fire_weapon(slot, data, mods, offset))
+
+
+## Spreads volley rounds across the ship's beam so they fly side by side.
+func _barrel_offset(index: int, total: int) -> Vector2:
+	if total <= 1:
+		return Vector2.ZERO
+	var lateral := (index - (total - 1) * 0.5) * REPEATER_SPACING
+	return _aim_dir().rotated(PI / 2.0) * lateral
+
+
+func _fire_weapon(slot: int, data: WeaponData, mods: Dictionary = {},
+		offset: Vector2 = Vector2.ZERO) -> void:
 	var proj: WeaponProjectile = WEAPON_SCENES[slot].instantiate()
 	proj.direction = _aim_dir()
 	proj.rotation = _aim_rotation()
-	proj.damage = int(data.base_damage * (base_damage / BASE_STAT_DAMAGE))
+	proj.damage = maxi(1, int(data.base_damage * (base_damage / BASE_STAT_DAMAGE)
+		* float(mods.get("damage", 1.0))))
+	proj.scale_mult = float(mods.get("size", 1.0))
+	proj.speed_mult = float(mods.get("speed", 1.0))
 	proj.pierce_override = _pierce_for(data)
 	_roll_procs(proj)
 
 	if data.archetype != WeaponData.Archetype.BOLT:
 		proj.follow_target = player
 
-	proj.global_position = player.global_position
+	proj.global_position = player.global_position + offset
 	get_tree().current_scene.add_child(proj)
 
 	if data.archetype == WeaponData.Archetype.THRUST:
@@ -253,26 +459,34 @@ func _roll_procs(proj: WeaponProjectile) -> void:
 
 
 # ── Module extra shots — always the plain laser, regardless of loadout ────────
+# Full-size rounds at reduced damage, so they read as real cannons without
+# outclassing whatever is in the main slot.
 
-func _anti_flank_shoot() -> void:
+const AUX_SCALE := 1.0
+const SIDE_GUN_DAMAGE := 0.75
+const ANTI_FLANK_DAMAGE := 0.75
+
+
+func _aux_shot(angle_offset: float, damage_mult: float) -> void:
 	var data: WeaponData = _weapon_data[1]
 	var proj: WeaponProjectile = WEAPON_SCENES[1].instantiate()
-	proj.direction = -_aim_dir()
-	proj.rotation = _aim_rotation() + PI
-	proj.damage = int(data.base_damage * (base_damage / BASE_STAT_DAMAGE))
+	proj.direction = _aim_dir().rotated(angle_offset)
+	proj.rotation = _aim_rotation() + angle_offset
+	proj.damage = maxi(1, int(data.base_damage * (base_damage / BASE_STAT_DAMAGE) * damage_mult))
+	proj.scale_mult = AUX_SCALE
+	proj.pierce_override = _pierce_for(data)
+	_roll_procs(proj)
 	proj.global_position = player.global_position
 	get_tree().current_scene.add_child(proj)
 
 
+func _anti_flank_shoot() -> void:
+	_aux_shot(PI, ANTI_FLANK_DAMAGE)
+
+
 func _side_shooting() -> void:
-	var data: WeaponData = _weapon_data[1]
 	for side_angle in [-PI / 2.0, PI / 2.0]:
-		var proj: WeaponProjectile = WEAPON_SCENES[1].instantiate()
-		proj.direction = _aim_dir().rotated(side_angle)
-		proj.rotation = _aim_rotation() + side_angle
-		proj.damage = int(data.base_damage * (base_damage / BASE_STAT_DAMAGE))
-		proj.global_position = player.global_position
-		get_tree().current_scene.add_child(proj)
+		_aux_shot(side_angle, SIDE_GUN_DAMAGE)
 
 
 # ── Reload (ammoUsed / reloadCooldown) ─────────────────────────────────────────
@@ -289,6 +503,10 @@ func try_reload() -> void:
 func _start_reload() -> void:
 	reloading = true
 	_reload_timer.start(reload_time)
+	# _reload_timer is a real Timer, which pauses with the tree on its own —
+	# this deadline is only the watchdog's fallback in case it's ever left
+	# stranded some other way (freed and re-added, stat changed mid-flight).
+	_reloading_deadline_msec = Time.get_ticks_msec() + int(reload_time * 1000.0) + 1500
 	_emit_ammo()
 
 	# Animated reload bar above the ship (cosmicReload.png, 20 frames)
@@ -307,10 +525,48 @@ func _on_reload_done() -> void:
 	reloading = false
 	current_ammo = ammo_capacity
 	_slot_ammo[_selected_slot()] = current_ammo
+
+	# Super Energy Module — a fresh magazine spins everything up for a moment
+	if got_super_energy_module:
+		_reload_buff_left = SUPER_ENERGY_DURATION
+		if player and player.has_method("set_damage_surge"):
+			player.set_damage_surge(SUPER_ENERGY_MULT, SUPER_ENERGY_DURATION)
 	if _reload_sprite:
 		_reload_sprite.queue_free()
 		_reload_sprite = null
 	_emit_ammo()
+
+
+## Runs every WATCHDOG_INTERVAL seconds. Each check compares a gate against
+## the wall-clock deadline it was given when it opened, so this never has to
+## guess what "too long" means for a build with different fire rates or
+## reload speeds — it just holds each promise to the schedule it made for
+## itself.
+func _check_can_fire_watchdog() -> void:
+	var now := Time.get_ticks_msec()
+
+	if bursting and now > _bursting_deadline_msec:
+		push_warning("WeaponSystem: burst lock was still set past its own deadline — clearing.")
+		bursting = false
+
+	if reloading and now > _reloading_deadline_msec:
+		push_warning("WeaponSystem: reload was still running past its own deadline — forcing it done.")
+		_on_reload_done()
+
+	# The UI-click guard normally clears itself the moment the mouse button is
+	# released (see _physics_process) — but that only runs while unpaused, so
+	# a click swallowed right before a pause, held through it, could in
+	# principle outlive the physics loop that's supposed to notice the release.
+	if GameManager.ui_click_swallowed and not Input.is_action_pressed("shoot"):
+		GameManager.ui_click_swallowed = false
+
+	# _can_fire is flipped back on by _fire_timer, a real Timer, within one
+	# weapon's fire_rate of being set — always well under WATCHDOG_INTERVAL.
+	# If it's still down with nothing legitimate holding it there, the timer
+	# didn't do its job.
+	if not _can_fire and not reloading and not bursting:
+		push_warning("WeaponSystem: fire lock was stuck with nothing holding it — clearing.")
+		_can_fire = true
 
 
 func _emit_ammo() -> void:

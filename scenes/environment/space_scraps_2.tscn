@@ -1,0 +1,11 @@
+[gd_scene format=4 uid="uid://d1txt42pwlwpa"]
+
+[ext_resource type="TileSet" uid="uid://imkrccq7guwf" path="res://scenes/TileSet/walls1.tres" id="1_4av8p"]
+
+[node name="Space Scraps 2" type="Node2D" unique_id=1927730510]
+scale = Vector2(2, 2)
+
+[node name="Walls" type="TileMapLayer" parent="." unique_id=1749132755]
+position = Vector2(-20, 0)
+tile_map_data = PackedByteArray("AAD/////AgACAAMAAAAAAP//AgACAAIAAAABAAAAAgAAAAMAAAAAAAAAAgABAAMAAAABAP//AgAEAAIAAAD//wAAAgAEAAIAAAD+/wAAAgABAAEAAAACAP//AgABAAEAADA=")
+tile_set = ExtResource("1_4av8p")

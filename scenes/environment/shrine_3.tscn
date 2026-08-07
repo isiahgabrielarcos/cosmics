@@ -1,0 +1,43 @@
+[gd_scene format=4 uid="uid://cdid7sib3n4if"]
+
+[ext_resource type="TileSet" uid="uid://c4tpxd0n3sq0r" path="res://scenes/TileSet/background_tiles.tres" id="1_nnmf5"]
+[ext_resource type="TileSet" uid="uid://imkrccq7guwf" path="res://scenes/TileSet/walls1.tres" id="2_qnh4b"]
+
+[node name="Shrine 3" type="Node2D" unique_id=1601481652]
+scale = Vector2(2, 2)
+
+[node name="Ground4" type="TileMapLayer" parent="." unique_id=1304493123]
+tile_map_data = PackedByteArray("AAD+//7/AAAPAAYAAAD+////AAAPAAYAAAD+/wAAAAAGAAwAAAD+/wEAAAAOAAIAAAD///7/AAAGAAwAAAD/////AAAGAAwAAAD//wAAAAAPAAYAAAD//wEAAAAOAAIAAAAAAP7/AAAGAAwAAAAAAP//AAAGAAwAAAAAAAAAAAAPAAYAAAAAAAEAAAAOAAIAAAABAP7/AAAPAAYAAAABAAAAAAAGAAwAAAABAAEAAAAOAAIAAAD9//7/AAAOAAIAAAD9////AAAOAAIAAAD9/wAAAAAOAAIAAAACAP7/AAAOAAIAAAACAP//AAAOAAIAAAACAAAAAAAOAAIAAAABAP//AAAPAAYAAAABAP3/AAAGAAwAAAAAAP3/AAAPAAYAAAD///3/AAAPAAYAAAD+//3/AAAGAAwAAAD9/wEAAAAOAAIAAAD+/wIAAAAOAAIAAAD//wIAAAAOAAIAAAAAAAIAAAAOAAIAAAABAAIAAAAOAAIAAAACAAEAAAAOAAIAAAD9/wIAAAALAAIAAAD+/wMAAAAOAAIAAAD//wMAAAAOAAIAAAAAAAMAAAAOAAIAAAABAAMAAAAOAAIAAAACAAIAAAALAAIAABACAP3/AAAOAAIAAAABAPz/AAAOAAIAAAAAAPz/AAAOAAIAAAD///z/AAAOAAIAAAD+//z/AAAOAAIAAAD9//3/AAAOAAIAAAADAP7/AAALAAIAABADAP//AAALAAIAABADAAAAAAALAAIAABD8//7/AAALAAIAAAD8////AAALAAIAAAD8/wAAAAALAAIAAAD8/wEAAAALAAIAAAADAAEAAAALAAIAABD8//3/AAALAAIAAAD9//z/AAALAAIAAAD+//v/AAALAAIAAAD///v/AAAOAAIAAAAAAPv/AAAOAAIAAAABAPv/AAALAAIAABACAPz/AAALAAIAABADAP3/AAALAAIAABD9/wMAAAALAAIAAAACAAMAAAALAAIAABABAAQAAAALAAIAABD+/wQAAAALAAIAAAD//wQAAAAOAAIAAAAAAAQAAAAOAAIAAAA=")
+tile_set = ExtResource("1_nnmf5")
+
+[node name="Decor" type="TileMapLayer" parent="." unique_id=467830681]
+position = Vector2(16, 16)
+tile_set = ExtResource("1_nnmf5")
+
+[node name="Walls" type="TileMapLayer" parent="." unique_id=1266390385]
+tile_map_data = PackedByteArray("AAD9//z/AAAAAAsAAAACAPz/AAATAAoAAAD9/wEAAAATAAoAAAACAAEAAAAAAAsAAAA=")
+tile_set = ExtResource("2_qnh4b")
+
+[node name="Shadows" type="TileMapLayer" parent="." unique_id=1242236936]
+modulate = Color(1, 1, 1, 0.4392157)
+tile_map_data = PackedByteArray("AAD//wMAAAAIAAQAAAAAAAMAAAAIAAQAAAD+/wMAAAAIAAQAAAABAAMAAAAIAAQAAAACAAIAAAAIAAQAAAD9/wIAAAAIAAQAAAD8/wEAAAAIAAQAAAADAAEAAAAIAAQAAAD9/wMAAAAIAAQAAAD+/wQAAAAIAAQAAAD//wQAAAAIAAQAAAAAAAQAAAAIAAQAAAABAAQAAAAIAAQAAAACAAMAAAAIAAQAAAA=")
+tile_set = ExtResource("1_nnmf5")
+
+[node name="Walls Overlay" type="TileMapLayer" parent="." unique_id=2119545605]
+tile_map_data = PackedByteArray("AAD9//r/AAAEAAoAAAACAPr/AAACAAoAAAD9//v/AAAEAAoAAAACAPv/AAACAAoAAAD9//n/AAAUAAoAAAACAPn/AAASAAoAAAD9////AAASAAoAAAACAP//AAADAAoAAAD9/wAAAAACAAoAAAACAAAAAAAEAAoAAAA=")
+tile_set = ExtResource("1_nnmf5")
+
+[node name="SpawnChest" type="Node2D" parent="." unique_id=106222871]
+position = Vector2(0, -25)
+
+[node name="enemySpawn" type="Node2D" parent="." unique_id=1177112140]
+position = Vector2(-173, -27)
+
+[node name="enemySpawn2" type="Node2D" parent="." unique_id=620405942]
+position = Vector2(153, -27)
+
+[node name="enemySpawn3" type="Node2D" parent="." unique_id=236710495]
+position = Vector2(0, 142)
+
+[node name="enemySpawn4" type="Node2D" parent="." unique_id=1581519457]
+position = Vector2(-1, -200)

@@ -10,6 +10,10 @@ extends Node
 #   32         = scavenge material
 #   33         = escort asset
 #   34         = attack timer
+## The sandbox stage: every faction, every archetype, one of each boss in
+## rotation. Used by scenes/levels/testing_area.tscn.
+const ALL_IN_ONE_STAGE := 101
+
 var current_stage: int = 1
 var difficulty: String = "normal"   # "normal" | "expert"
 var game_paused: bool = false
@@ -17,12 +21,45 @@ var game_over: bool = false
 var game_done: bool = false
 var ui_open: bool = false           # a hub menu / shop panel is open
 
+## Set when a click lands on an in-run UI control (the inventory tab, an
+## ability icon). The inventory itself doesn't stop you shooting — only the
+## click that operated it does, and only until the button comes back up, so
+## pressing the tab never also fires a shot.
+var ui_click_swallowed: bool = false
+
 # Set by the CCC level selection before launching a battle
 var pending_stage: int = -1
 var pending_difficulty: String = "normal"
 var pending_tier: int = 1            # inner difficulty selector, 1 (easy) .. 5 (hard)
 var pending_run_minutes: float = 0.0  # >0 = fixed-length run, 0 = use the stage default
 var last_talked_to : String = ""
+
+# ── Gameplay loop ─────────────────────────────────────────────────────────────
+# A "loop" is one contract seen through to an end screen. Hub content that
+# should only refresh between runs — NPC dialogue, the trader's stock — keys
+# off this rather than off entering the hub, so backing out of a mission
+# doesn't let you reroll the shop or farm conversations. Quitting costs you
+# the loop; you have to actually finish a run, win or lose, to move on.
+signal run_loop_advanced(loop: int)
+
+var run_loop: int = 0
+
+## Which line each hub NPC is up to in their dialogue bank (HubDialogue).
+## Lives here rather than on the NPC so it survives the hub scene being
+## reloaded after every mission.
+var dialogue_cursor: Dictionary = {}
+
+## NPCs already spoken to this loop — they have nothing new until the next
+## end screen.
+var dialogue_spent: Dictionary = {}
+
+
+## Called when a run reaches an end screen (either outcome). Everything that
+## refreshes "between runs" hangs off this.
+func advance_run_loop() -> void:
+	run_loop += 1
+	dialogue_spent.clear()
+	run_loop_advanced.emit(run_loop)
 
 ## Difficulty of the active session: 1 Beginner · 2 Normal · 3 Hard ·
 ## 4 Space Cowboy. Drives spawn rate, enemy cap, which archetypes the spawner
@@ -56,6 +93,35 @@ var gathered_shards: int       = 0
 var gathered_currency: int     = 0
 var module_upgrade_count: int  = 0
 
+## Run-scoped values module picks can move (currentMaxShardDropRate /
+## currentEnemyExperienceWorthAddition in the Lua). Reset per session.
+var shard_drop_rate: int = 6
+var experience_bonus: int = 0
+
+## Module picks still owed to the player — a chest can grant several in a row.
+var pending_module_picks: int = 0
+
+# ── Module ledger ─────────────────────────────────────────────────────────────
+# The CCC-Guild doesn't let mercenaries hoard salvage: every module fitted
+# during a contract is surrendered on the way out and paid for in Central
+# Cosmic Currency. Complete the contract and you're paid in full; wash out and
+# the guild keeps most of it. The one module you're handed at the start of a
+# run is the free one, and it counts toward the payout like any other.
+var modules_taken: Dictionary = {
+	"common": 0, "rare": 0, "epic": 0, "legendary": 0, "godly": 0,
+}
+
+## Every module fitted this run, in order — { rarity, name, desc }.
+var module_log: Array = []
+
+const MODULE_VALUES := {
+	"common": 25, "rare": 60, "epic": 150, "legendary": 400, "godly": 1000,
+}
+const MODULE_LOSS_RATIO := 0.25   # paid out when the contract fails
+
+## Free module handed over at the start of every contract.
+const STARTING_MODULE_ROUNDS := 1
+
 # ── Mission timer (startMissionTimer) ─────────────────────────────────────────
 var mission_time_left: float = 0.0
 var mission_time_elapsed: float = 0.0
@@ -71,14 +137,17 @@ signal game_over_triggered
 signal mission_complete
 signal mission_timer_updated(display_seconds: float, count_up: bool)
 signal currency_changed(gems: int, shards: int, central: int)
+signal modules_changed
 
 
 
 func _process(delta: float) -> void:
 	if not mission_timer_running or game_paused:
 		return
+	# Elapsed is tracked in both modes — a countdown mission still needs to
+	# know how long the run has been going for the spawner's difficulty curve.
+	mission_time_elapsed += delta
 	if mission_count_up:
-		mission_time_elapsed += delta
 		mission_timer_updated.emit(mission_time_elapsed, true)
 	else:
 		mission_time_left -= delta
@@ -131,6 +200,11 @@ func get_spawner_settings() -> Dictionary:
 	s["cap"] = maxi(20, int(float(s["cap"]) * cap_mult))
 	s["roster"] = TIER_ROSTER.get(t, TIER_ROSTER[4])
 	return s
+
+
+## Minutes since the mission started, in either timer mode.
+func mission_minutes() -> float:
+	return mission_time_elapsed / 60.0
 
 
 ## Health/damage multiplier applied to every enemy spawned this session.
@@ -202,7 +276,36 @@ func start_session(stage: int, diff: String = "normal", tier: int = 1) -> void:
 	enemies_killed = 0
 	gathered_shards = 0
 	gathered_currency = 0
+	shard_drop_rate = 6
+	experience_bonus = 0
+	pending_module_picks = 0
+	module_upgrade_count = 0
+	modules_taken = { "common": 0, "rare": 0, "epic": 0, "legendary": 0, "godly": 0 }
+	module_log.clear()
 	stage_changed.emit(stage)
+
+
+## Called by the pick panel whenever a module is fitted. The log keeps the
+## wording as well as the count, so the inventory can list what you're
+## carrying without re-deriving it from the systems.
+func record_module(rarity: String, module_name: String, description: String) -> void:
+	modules_taken[rarity] = int(modules_taken.get(rarity, 0)) + 1
+	module_upgrade_count += 1
+	module_log.append({ "rarity": rarity, "name": module_name, "desc": description })
+	modules_changed.emit()
+
+
+## Total CCC the fitted modules are worth before the completion ratio.
+func modules_total_value() -> int:
+	var total := 0
+	for rarity in modules_taken:
+		total += int(modules_taken[rarity]) * int(MODULE_VALUES.get(rarity, 0))
+	return total
+
+
+func modules_payout(completed: bool) -> int:
+	var total := modules_total_value()
+	return total if completed else int(round(total * MODULE_LOSS_RATIO))
 
 
 func trigger_game_over() -> void:
@@ -211,7 +314,20 @@ func trigger_game_over() -> void:
 	game_done = true
 	game_over = true
 	stop_mission_timer()
+	# Surrendered salvage still pays, just at the failure rate
+	_surrender_modules(false)
+	advance_run_loop()
 	game_over_triggered.emit()
+
+
+func _surrender_modules(completed: bool) -> void:
+	var payout := modules_payout(completed)
+	if payout <= 0:
+		return
+	SaveManager.player_data["centralCurrency"] = \
+		int(SaveManager.player_data.get("centralCurrency", 0)) + payout
+	SaveManager.save_player_data()
+	_emit_currency()
 
 
 func trigger_mission_complete() -> void:
@@ -220,6 +336,7 @@ func trigger_mission_complete() -> void:
 	game_done = true
 	stop_mission_timer()
 	_grant_mission_rewards()
+	advance_run_loop()
 	mission_complete.emit()
 
 
@@ -234,6 +351,7 @@ func _grant_mission_rewards() -> void:
 		pd["gems"] = int(pd.get("gems", 0)) + 15
 		pd["shards"] = int(pd.get("shards", 0)) + gathered_shards + 50
 		pd["centralCurrency"] = int(pd.get("centralCurrency", 0)) + gathered_currency + 150
+	_surrender_modules(true)
 	SaveManager.save_player_data()
 	_emit_currency()
 
@@ -291,7 +409,8 @@ func goto_battle() -> void:
 	ui_open = false
 	game_over = false
 	game_done = false
-	get_tree().change_scene_to_file("res://scenes/levels/testing_area.tscn")
+	SceneTransition.change_scene(func():
+		get_tree().change_scene_to_file("res://scenes/levels/testing_area.tscn"))
 
 
 ## Called by the CCC level selection — battle_scene picks these up on load.
@@ -308,13 +427,15 @@ func queue_battle(stage: int, diff: String, tier: int = 1, minutes: float = 0.0)
 func goto_main_menu() -> void:
 	resume_game()
 	current_stage = 100
-	get_tree().change_scene_to_file("res://scenes/levels/cosmic_hub.tscn")
+	SceneTransition.change_scene(func():
+		get_tree().change_scene_to_file("res://scenes/levels/cosmic_hub.tscn"))
 
 
 func goto_level_select() -> void:
 	resume_game()
 	ui_open = false
-	get_tree().change_scene_to_file("res://scenes/levels/future_CCC_level_selection.tscn")
+	SceneTransition.change_scene(func():
+		get_tree().change_scene_to_file("res://scenes/levels/future_CCC_level_selection.tscn"))
 
 
 # ── Enemy kill tracking ────────────────────────────────────────────────────────

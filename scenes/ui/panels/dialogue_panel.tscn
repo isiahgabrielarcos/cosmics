@@ -3,7 +3,9 @@
 [ext_resource type="Script" uid="uid://guite5fkvjyk" path="res://scripts/ui/dialogue_panel.gd" id="1_script"]
 [ext_resource type="Texture2D" uid="uid://b4k2grxeab3yv" path="res://assets/art/ui/chatBox.png" id="2_chatbox"]
 [ext_resource type="TileSet" uid="uid://c4tpxd0n3sq0r" path="res://scenes/TileSet/background_tiles.tres" id="2_mfif4"]
+[ext_resource type="Material" path="res://assets/art/shaders/glare_glow_ui.tres" id="2_w7tgc"]
 [ext_resource type="FontFile" uid="uid://df2u10dmiarah" path="res://assets/fonts/RetroGaming.ttf" id="3_font"]
+[ext_resource type="Script" uid="uid://bujvurt7g5nwa" path="res://scripts/ui/avatar_float.gd" id="99_float"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_mfif4"]
 font_size = 51
@@ -38,18 +40,20 @@ grow_vertical = 2
 color = Color(0, 0, 0, 0.45)
 
 [node name="Avatar" type="TextureRect" parent="Root" unique_id=81393505]
+material = ExtResource("2_w7tgc")
 layout_mode = 1
 anchors_preset = 2
 anchor_top = 1.0
 anchor_bottom = 1.0
-offset_left = 52.0
-offset_top = -778.0
-offset_right = 612.0
-offset_bottom = -218.0
+offset_left = 45.0
+offset_top = -617.0
+offset_right = 605.0
+offset_bottom = -57.0
 grow_vertical = 0
 scale = Vector2(1.245, 1.245)
 expand_mode = 1
 stretch_mode = 5
+script = ExtResource("99_float")
 
 [node name="Control2" type="Control" parent="Root" unique_id=1167895600]
 anchors_preset = 0

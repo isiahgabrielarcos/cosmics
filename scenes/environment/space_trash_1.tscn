@@ -1,0 +1,12 @@
+[gd_scene format=3 uid="uid://dhwtott6fpv36"]
+
+[ext_resource type="TileSet" uid="uid://c4tpxd0n3sq0r" path="res://scenes/TileSet/background_tiles.tres" id="1_ov7d0"]
+
+[node name="Space Trash 1" type="Node2D" unique_id=1601481652]
+position = Vector2(-17, -15)
+scale = Vector2(2, 2)
+
+[node name="Ground4" type="TileMapLayer" parent="." unique_id=1304493123]
+position = Vector2(-8, -8)
+tile_map_data = PackedByteArray(0, 0, 0, 0, 0, 0, 2, 0, 2, 0, 4, 0, 0, 0)
+tile_set = ExtResource("1_ov7d0")

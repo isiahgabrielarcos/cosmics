@@ -30,7 +30,7 @@ const CHARACTERS := {
 }
 
 @onready var _dim: ColorRect       = $Root/Dim
-@onready var _avatar: TextureRect  = $Root/Avatar
+@onready var _avatar: AvatarFloat   = $Root/Avatar
 @onready var _chatbox: TextureRect = $Root/ChatBox
 @onready var _name_label: Label    = $Root/ChatBox/NameLabel
 @onready var _role_label: Label    = $Root/ChatBox/RoleLabel
@@ -100,13 +100,10 @@ func _show_line(i: int) -> void:
 	else:
 		_avatar.visible = false
 
-	if speaker != _prev_speaker:
-		_avatar.modulate.a = 0.0
-		_avatar.position.x = 60.0
-		var tw := create_tween()
-		tw.set_parallel(true)
-		tw.tween_property(_avatar, "modulate:a", 1.0, 0.3)
-		tw.tween_property(_avatar, "position:x", 100.0, 0.3)
+	# A new speaker rises into frame; the same speaker carrying on keeps
+	# breathing rather than re-entering mid-conversation.
+	if speaker != _prev_speaker and _avatar is AvatarFloat:
+		(_avatar as AvatarFloat).play_intro()
 
 	_prev_speaker = speaker
 

@@ -24,6 +24,10 @@ func _ready() -> void:
 
 
 func open() -> void:
+	# Toby rises into frame with the panel
+	var portrait := get_node_or_null("Root/Avatar")
+	if portrait is AvatarFloat:
+		(portrait as AvatarFloat).play_intro()
 	visible = true
 
 	_overlay.color.a = 0.0

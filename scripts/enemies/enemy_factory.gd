@@ -26,37 +26,37 @@ const SCENES := {
 const GROUP := EnemyData.PhysicsGroup
 
 # sheet, frame geometry, archetype (behaviour script), physics group
-# (which of the 3 collision layers — see enemy_unit.gd), and stats.
+# (which enemy collision layer — see enemy_unit.gd), and stats.
 const DEFS := {
 	# ── FlaschBourn (stage 1) ──
 	"fb_chaser":  { "sheet": "res://assets/art/enemies/flaschBournChaser.png",     "fw": 32, "fh": 32, "count": 3, "fps": 6.0,  "arch": Archetype.CHASER,  "group": GROUP.CHASERS,  "dmg": 5,  "xp": 5,  "speed": 260.0, "turn": 4.0 },
 	"fb_shooter": { "sheet": "res://assets/art/enemies/flaschBournShooter.png",    "fw": 32, "fh": 32, "count": 3, "fps": 6.0,  "arch": Archetype.SHOOTER, "group": GROUP.SHOOTERS, "dmg": 10, "xp": 4,  "speed": 50.0 },
-	"fb_bomber":  { "sheet": "res://assets/art/enemies/flaschBournBomber.png",     "fw": 32, "fh": 32, "count": 5, "fps": 6.7,  "arch": Archetype.BOMBER,  "group": GROUP.CHASERS,  "dmg": 10, "xp": 5,  "speed": 200.0 },
-	"fb_slasher": { "sheet": "res://assets/art/enemies/flaschBournSlasher.png",    "fw": 32, "fh": 32, "count": 3, "fps": 12.0, "arch": Archetype.SLASHER, "group": GROUP.SHIPS,    "dmg": 12, "xp": 10, "speed": 220.0, "turn": 6.0 },
+	"fb_bomber":  { "sheet": "res://assets/art/enemies/flaschBournBomber.png",     "fw": 32, "fh": 32, "count": 5, "fps": 6.7,  "arch": Archetype.BOMBER,  "group": GROUP.BOMBERS,  "dmg": 10, "xp": 5,  "speed": 200.0 },
+	"fb_slasher": { "sheet": "res://assets/art/enemies/flaschBournSlasher.png",    "fw": 32, "fh": 32, "count": 3, "fps": 12.0, "arch": Archetype.SLASHER, "group": GROUP.SLASHERS, "dmg": 12, "xp": 10, "speed": 220.0, "turn": 6.0 },
 	"fb_ship":    { "sheet": "res://assets/art/enemies/flaschBournShip.png",       "fw": 32, "fh": 32, "count": 3, "fps": 12.0, "arch": Archetype.CHASER,  "group": GROUP.SHIPS,    "dmg": 10, "xp": 10, "speed": 550.0, "turn": 10.0 },
 	# ── Strogghold (stage 2) ──
 	"sh_chaser":  { "sheet": "res://assets/art/enemies/red.png",                   "fw": 32, "fh": 32, "count": 9, "fps": 12.0, "arch": Archetype.CHASER,  "group": GROUP.CHASERS,  "dmg": 5,  "xp": 5,  "speed": 260.0, "turn": 4.0 },
 	"sh_shooter": { "sheet": "res://assets/art/enemies/squidAlien.png",            "fw": 32, "fh": 32, "count": 7, "fps": 7.0,  "arch": Archetype.SHOOTER, "group": GROUP.SHOOTERS, "dmg": 10, "xp": 4,  "speed": 50.0 },
-	"sh_bomber":  { "sheet": "res://assets/art/enemies/bomber.png",                "fw": 32, "fh": 32, "count": 9, "fps": 12.0, "arch": Archetype.BOMBER,  "group": GROUP.CHASERS,  "dmg": 10, "xp": 5,  "speed": 200.0 },
-	"sh_slasher": { "sheet": "res://assets/art/enemies/stroggholdSlasher.png",     "fw": 32, "fh": 32, "count": 3, "fps": 12.0, "arch": Archetype.SLASHER, "group": GROUP.SHIPS,    "dmg": 12, "xp": 10, "speed": 220.0, "turn": 6.0 },
+	"sh_bomber":  { "sheet": "res://assets/art/enemies/bomber.png",                "fw": 32, "fh": 32, "count": 9, "fps": 12.0, "arch": Archetype.BOMBER,  "group": GROUP.BOMBERS,  "dmg": 10, "xp": 5,  "speed": 200.0 },
+	"sh_slasher": { "sheet": "res://assets/art/enemies/stroggholdSlasher.png",     "fw": 32, "fh": 32, "count": 3, "fps": 12.0, "arch": Archetype.SLASHER, "group": GROUP.SLASHERS, "dmg": 12, "xp": 10, "speed": 220.0, "turn": 6.0 },
 	"sh_ship":    { "sheet": "res://assets/art/enemies/stroggholdEnemyShip.png",   "fw": 32, "fh": 32, "count": 3, "fps": 12.0, "arch": Archetype.CHASER,  "group": GROUP.SHIPS,    "dmg": 10, "xp": 10, "speed": 550.0, "turn": 10.0 },
 	# ── Frokenvinter (stage 3) ──
 	"fv_chaser":  { "sheet": "res://assets/art/enemies/frokenvinterChaser.png",    "fw": 32, "fh": 32, "count": 3, "fps": 6.0,  "arch": Archetype.CHASER,  "group": GROUP.CHASERS,  "dmg": 5,  "xp": 5,  "speed": 260.0, "turn": 4.0 },
 	"fv_shooter": { "sheet": "res://assets/art/enemies/octo.png",                  "fw": 32, "fh": 32, "count": 6, "fps": 12.0, "arch": Archetype.SHOOTER, "group": GROUP.SHOOTERS, "dmg": 10, "xp": 4,  "speed": 50.0 },
-	"fv_bomber":  { "sheet": "res://assets/art/enemies/frokenvinterBomber.png",    "fw": 32, "fh": 32, "count": 5, "fps": 6.7,  "arch": Archetype.BOMBER,  "group": GROUP.CHASERS,  "dmg": 10, "xp": 5,  "speed": 200.0 },
-	"fv_slasher": { "sheet": "res://assets/art/enemies/enemyShipFrokenVinter.png", "fw": 32, "fh": 32, "count": 4, "fps": 12.0, "arch": Archetype.SLASHER, "group": GROUP.SHIPS,    "dmg": 12, "xp": 10, "speed": 220.0, "turn": 6.0 },
+	"fv_bomber":  { "sheet": "res://assets/art/enemies/frokenvinterBomber.png",    "fw": 32, "fh": 32, "count": 5, "fps": 6.7,  "arch": Archetype.BOMBER,  "group": GROUP.BOMBERS,  "dmg": 10, "xp": 5,  "speed": 200.0 },
+	"fv_slasher": { "sheet": "res://assets/art/enemies/enemyShipFrokenVinter.png", "fw": 32, "fh": 32, "count": 4, "fps": 12.0, "arch": Archetype.SLASHER, "group": GROUP.SLASHERS, "dmg": 12, "xp": 10, "speed": 220.0, "turn": 6.0 },
 	"fv_ship":    { "sheet": "res://assets/art/enemies/frokenvinterShip.png",      "fw": 32, "fh": 32, "count": 3, "fps": 12.0, "arch": Archetype.CHASER,  "group": GROUP.SHIPS,    "dmg": 10, "xp": 10, "speed": 550.0, "turn": 10.0 },
 	# ── Squilltrant (stage 4) ──
 	"st_mama":    { "sheet": "res://assets/art/enemies/slime.png",                "fw": 32, "fh": 32, "count": 5, "fps": 10.0, "arch": Archetype.CHASER,  "group": GROUP.CHASERS,  "dmg": 5,  "xp": 5,  "speed": 200.0, "turn": 4.0, "mama": true },
 	"st_shooter": { "sheet": "res://assets/art/enemies/squilltrantShooter.png",    "fw": 32, "fh": 32, "count": 4, "fps": 8.0,  "arch": Archetype.SHOOTER, "group": GROUP.SHOOTERS, "dmg": 10, "xp": 4,  "speed": 50.0 },
-	"st_bomber":  { "sheet": "res://assets/art/enemies/squilltrantBomber.png",     "fw": 32, "fh": 32, "count": 5, "fps": 6.7,  "arch": Archetype.BOMBER,  "group": GROUP.CHASERS,  "dmg": 10, "xp": 5,  "speed": 200.0 },
-	"st_slasher": { "sheet": "res://assets/art/enemies/squilltrantSlasher.png",    "fw": 32, "fh": 32, "count": 3, "fps": 12.0, "arch": Archetype.SLASHER, "group": GROUP.SHIPS,    "dmg": 12, "xp": 10, "speed": 220.0, "turn": 6.0 },
+	"st_bomber":  { "sheet": "res://assets/art/enemies/squilltrantBomber.png",     "fw": 32, "fh": 32, "count": 5, "fps": 6.7,  "arch": Archetype.BOMBER,  "group": GROUP.BOMBERS,  "dmg": 10, "xp": 5,  "speed": 200.0 },
+	"st_slasher": { "sheet": "res://assets/art/enemies/squilltrantSlasher.png",    "fw": 32, "fh": 32, "count": 3, "fps": 12.0, "arch": Archetype.SLASHER, "group": GROUP.SLASHERS, "dmg": 12, "xp": 10, "speed": 220.0, "turn": 6.0 },
 	"st_ship":    { "sheet": "res://assets/art/enemies/enemyShipSqiulltrant.png",  "fw": 32, "fh": 32, "count": 3, "fps": 12.0, "arch": Archetype.CHASER,  "group": GROUP.SHIPS,    "dmg": 10, "xp": 10, "speed": 550.0, "turn": 10.0 },
 	# ── Baby slime (spawned when a mama slime dies) ──
 	"baby_slime": { "sheet": "res://assets/art/enemies/slime1.png",               "fw": 64, "fh": 64, "count": 5, "fps": 10.0, "arch": Archetype.CHASER,  "group": GROUP.CHASERS,  "dmg": 2,  "xp": 3,  "speed": 340.0, "turn": 5.0, "baby": true },
 	# ── Bosses (every 50th spawn) — all fundamentally chasers, each with a twist ──
 	"boss_strogghold":   { "sheet": "res://assets/art/enemies/cosmicBoss1.png", "fw": 128, "fh": 128, "count": 7, "fps": 8.75, "arch": Archetype.CHASER,  "group": GROUP.CHASERS,  "dmg": 30, "xp": 100, "speed": 200.0, "turn": 3.0, "boss": true },
-	"boss_frokenvinter": { "sheet": "res://assets/art/enemies/cosmicBoss2.png", "fw": 128, "fh": 128, "count": 3, "fps": 6.0,  "arch": Archetype.SLASHER, "group": GROUP.SHIPS,    "dmg": 25, "xp": 100, "speed": 220.0, "turn": 6.0, "boss": true },
+	"boss_frokenvinter": { "sheet": "res://assets/art/enemies/cosmicBoss2.png", "fw": 128, "fh": 128, "count": 3, "fps": 6.0,  "arch": Archetype.SLASHER, "group": GROUP.SLASHERS, "dmg": 25, "xp": 100, "speed": 220.0, "turn": 6.0, "boss": true },
 	"boss_flaschbourn":  { "sheet": "res://assets/art/enemies/cosmicBoss3.png", "fw": 128, "fh": 128, "count": 3, "fps": 6.0,  "arch": Archetype.CHASER,  "group": GROUP.SHOOTERS, "dmg": 20, "xp": 100, "speed": 160.0, "turn": 3.0, "boss": true, "shoots": true },
 	"boss_squilltrant":  { "sheet": "res://assets/art/enemies/cosmicBoss4.png", "fw": 128, "fh": 128, "count": 3, "fps": 6.0,  "arch": Archetype.CHASER,  "group": GROUP.CHASERS,  "dmg": 20, "xp": 100, "speed": 220.0, "turn": 4.0, "boss": true, "split": true },
 }
@@ -128,6 +128,7 @@ static func _build_data(id: String) -> EnemyData:
 	d.speed             = def["speed"]
 	d.turn_rate         = def.get("turn", 5.0)
 	d.is_boss           = def.get("boss", false)
+	d.immune_to_status  = d.is_boss
 	d.fires_projectiles = def.get("shoots", def["arch"] == Archetype.SHOOTER)
 	d.physics_group     = def["group"]
 
@@ -137,12 +138,13 @@ static func _build_data(id: String) -> EnemyData:
 	# than the ones that came before.
 	if d.is_boss:
 		d.max_hp = 1000 if id == "boss_strogghold" else 800
-		d.hp_per_hero_level = 200
+		d.hp_per_hero_level = 140
 	elif def.get("mama", false):
 		d.max_hp = 100
 	elif def.get("baby", false):
 		d.max_hp = 25
-		d.hp_per_hero_level = 5
+		d.hp_per_hero_level = 4
+		d.drops_loot = false   # the mama already paid out for these
 	else:
 		d.max_hp = 50
 

@@ -1,0 +1,54 @@
+[gd_scene load_steps=7 format=3]
+
+[ext_resource type="Script" path="res://scripts/systems/module_effect.gd" id="1_fx"]
+[ext_resource type="Texture2D" uid="uid://ddtv6rh0j3l00" path="res://assets/art/characters/cosmicBall.png" id="2_tex"]
+
+[sub_resource type="AtlasTexture" id="Atlas_0"]
+atlas = ExtResource("2_tex")
+region = Rect2(0, 0, 128, 64)
+
+[sub_resource type="AtlasTexture" id="Atlas_1"]
+atlas = ExtResource("2_tex")
+region = Rect2(128, 0, 128, 64)
+
+[sub_resource type="AtlasTexture" id="Atlas_2"]
+atlas = ExtResource("2_tex")
+region = Rect2(0, 64, 128, 64)
+
+[sub_resource type="AtlasTexture" id="Atlas_3"]
+atlas = ExtResource("2_tex")
+region = Rect2(128, 64, 128, 64)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_1"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("Atlas_0")
+}, {
+"duration": 1.0,
+"texture": SubResource("Atlas_1")
+}, {
+"duration": 1.0,
+"texture": SubResource("Atlas_2")
+}, {
+"duration": 1.0,
+"texture": SubResource("Atlas_3")
+}],
+"loop": 1,
+"name": &"moving",
+"speed": 10.0
+}]
+
+[node name="Comet" type="Area2D"]
+script = ExtResource("1_fx")
+kind = 1
+lifetime = 2.5
+speed = 1200.0
+retick_interval = 0.0
+scale_sprite_to_radius = false
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_1")
+animation = &"moving"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]

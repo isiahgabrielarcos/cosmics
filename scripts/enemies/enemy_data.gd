@@ -20,12 +20,22 @@ class_name EnemyData
 ## Stats. `max_hp` is the base only — EnemyUnit adds `hp_per_hero_level` for
 ## every hero level and then applies the difficulty multiplier at spawn.
 @export var max_hp: int = 50
-@export var hp_per_hero_level: int = 20
+@export var hp_per_hero_level: int = 14
+
+## Whether killing this drops shards/XP at all. Off for enemies that are
+## themselves a drop — baby slimes come out of a mama that already paid out,
+## so letting each of the three pay again turned one kill into a shard shower.
+@export var drops_loot: bool = true
 @export var contact_damage: int = 5
 @export var experience_value: int = 5
 @export var speed: float = 260.0
 @export var turn_rate: float = 5.0
 @export var is_boss: bool = false
+
+## Immune to burning and paralysis. Bosses are the fight, not something to be
+## locked down by a cheap proc — a chain of electric rounds would otherwise
+## hold one still for its entire health bar.
+@export var immune_to_status: bool = false
 
 ## Ranged attack (shooters, and the FlaschBourn boss chaser+shooter hybrid)
 @export var fires_projectiles: bool = false
@@ -34,7 +44,9 @@ class_name EnemyData
 @export var projectile_damage: int = 5
 
 ## Slasher lunge
-@export var slash_range: float = 100.0
+## How close a slasher has to get before it commits to a lunge — far enough
+## to read as a dive, close enough that it isn't lunging from off-screen.
+@export var slash_range: float = 190.0
 @export var slash_speed: float = 1400.0
 @export var slash_cooldown: float = 1.5
 
@@ -48,7 +60,9 @@ class_name EnemyData
 @export var self_split_scale_mult: float = 0.6
 @export var self_split_hp_mult: float = 0.5
 
-## Physics grouping — which of the 3 enemy layers this archetype lives on,
-## so different groups can overlap instead of everything clumping together.
-enum PhysicsGroup { CHASERS, SHIPS, SHOOTERS }
+## Physics grouping — which enemy layer this archetype lives on. Each type
+## only collides with its own kind, so a crowd interleaves instead of six
+## archetypes all shoving each other into one mass. Six groups rather than
+## three means bombers, fast ships and bosses each get their own lane too.
+enum PhysicsGroup { CHASERS, SHIPS, SHOOTERS, SLASHERS, BOMBERS, BOSSES }
 @export var physics_group: PhysicsGroup = PhysicsGroup.CHASERS

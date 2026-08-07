@@ -53,7 +53,7 @@ static func create(cfg: Dictionary) -> HeroProjectile:
 	p.spin_speed    = cfg.get("spin_speed", 0.0)
 
 	p.collision_layer = 2   # Bullets
-	p.collision_mask  = 0b111101  # everything but bullets
+	p.collision_mask  = EnemyUnit.HOSTILE_MASK  # every enemy lane, not bullets/walls
 	return p
 
 

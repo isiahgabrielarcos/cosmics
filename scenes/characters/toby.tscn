@@ -159,12 +159,14 @@ sprite_frames = SubResource("SpriteFrames_wkthd")
 animation = &"down"
 
 [node name="TopOrder" type="Area2D" parent="." unique_id=480132526]
+collision_mask = 65
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="TopOrder" unique_id=750828155]
 position = Vector2(0, -18.75)
 shape = SubResource("RectangleShape2D_nsspx")
 
 [node name="Low Order" type="Area2D" parent="." unique_id=1627804267]
+collision_mask = 65
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Low Order" unique_id=1354233802]
 position = Vector2(0, 18.75)

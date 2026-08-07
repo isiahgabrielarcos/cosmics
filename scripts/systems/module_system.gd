@@ -32,37 +32,76 @@ const OVERDRIVE_SPEED := 1.3        # +30% movement
 
 var player: CharacterBody2D
 
-# ── Module flags (upgrades picked up in a run) ────────────────────────────────
-@export var got_shockwave_module: bool = false
-@export var got_electric_aura_module: bool = false
+# ── Module state ──────────────────────────────────────────────────────────────
+# Ports upgradeModulesBaseInformation(). Every number here is something a
+# module pick can move; ModuleRegistry owns the caps and the wording, this
+# just holds the live values and runs them.
+
+const COMET_SCENE           := preload("res://scenes/modules/comet.tscn")
+const SHOCKWAVE_SCENE       := preload("res://scenes/modules/shockwave.tscn")
+const ELECTRIC_AURA_SCENE   := preload("res://scenes/modules/electric_aura.tscn")
+const ELECTRO_BUBBLE_SCENE  := preload("res://scenes/modules/electro_bubble.tscn")
+const ENERGY_OUTBURST_SCENE := preload("res://scenes/modules/energy_outburst.tscn")
+const DASH_SHOCKWAVE_SCENE  := preload("res://scenes/modules/dash_shockwave.tscn")
+
+# Enemy health runs (50 + 20 per hero level) before difficulty, so a flat
+# module damage number falls off a cliff as a run goes on. Every module's
+# damage gets this added per level, which keeps a passive taken at level 2
+# still worth its slot at level 20.
+const MODULE_DAMAGE_PER_LEVEL := 3.0
+
+
+## Module damage at the current hero level.
+func _scaled(base_damage: int, per_level_mult: float = 1.0) -> int:
+	return maxi(1, int(round(base_damage
+		+ MODULE_DAMAGE_PER_LEVEL * per_level_mult * GameManager.get_hero_level())))
+
+
 @export var got_comet_module: bool = false
+@export var comet_cooldown: float = 8.0
+@export var comet_damage: int = 30
+@export var comet_amount: int = 3
+
+@export var got_shockwave_module: bool = false
+@export var shockwave_cooldown: float = 8.0
+@export var shockwave_stun: float = 1.0
+@export var shockwave_range: float = 150.0
+
+@export var got_electric_aura_module: bool = false
+@export var electric_aura_damage: int = 6
+@export var electric_aura_range: float = 150.0
+
 @export var got_force_field_module: bool = false
+@export var force_field_cooldown: float = 10.0
+@export var force_field_stacks: int = 1
+
+@export var got_electro_shield: bool = false
+@export var electro_shield_duration: float = 5.0
+
 @export var got_electro_bubbles_module: bool = false
+@export var electro_bubbles_cooldown: float = 5.0
+@export var electro_bubbles_damage: int = 25
+@export var electro_bubbles_duration: float = 2.0
+
 @export var got_energy_outburst_module: bool = false
+@export var energy_outburst_cooldown: float = 8.0
+@export var energy_outburst_damage: int = 60
+@export var energy_outburst_range: float = 200.0
+
 @export var got_dash_shockwave_module: bool = false
+@export var dash_shockwave_damage: int = 25
 
-# ── Module tuning ──────────────────────────────────────────────────────────────
-@export var shockwave_cooldown: float = 5.0
-@export var shockwave_range: float = 200.0
-@export var shockwave_damage: int = 15
+## Retaliation — fires back at whatever just hurt you (rare 4 / rare 5).
+@export var shield_thorns_damage: int = 0
+@export var health_thorns_damage: int = 0
 
-@export var electric_aura_range: float = 120.0
-@export var electric_aura_damage: int = 4      # every 0.5 s
-
-@export var comet_cooldown: float = 6.0
-@export var comet_amount: int = 2
-@export var comet_damage: int = 25
-
-@export var force_field_cooldown: float = 15.0
-
-@export var electro_bubbles_cooldown: float = 8.0
-@export var electro_bubbles_damage: int = 10
-
-@export var energy_outburst_cooldown: float = 7.0
-@export var energy_outburst_range: float = 250.0
-@export var energy_outburst_damage: int = 20
+## Super Shield Module (godly) — a scheduled window of invulnerability.
+@export var got_super_shield_module: bool = false
+const SUPER_SHIELD_COOLDOWN := 30.0
+const SUPER_SHIELD_DURATION := 5.0
 
 var is_force_field_up: bool = false
+var force_field_charges: int = 0
 
 # ── Skill state (whichSkill) ───────────────────────────────────────────────────
 var skill_slot: int = 1
@@ -87,6 +126,7 @@ func _ready() -> void:
 	_make_module_timer("force_field", force_field_cooldown, _do_force_field)
 	_make_module_timer("electro_bubbles", electro_bubbles_cooldown, _do_electro_bubbles)
 	_make_module_timer("energy_outburst", energy_outburst_cooldown, _do_energy_outburst)
+	_make_module_timer("super_shield", SUPER_SHIELD_COOLDOWN, _do_super_shield)
 
 
 func _make_module_timer(key: String, wait: float, fn: Callable) -> void:
@@ -96,6 +136,35 @@ func _make_module_timer(key: String, wait: float, fn: Callable) -> void:
 	add_child(t)
 	t.start()
 	_timers[key] = t
+
+
+## Cooldown upgrades have to reach the running timer, not just the variable.
+func retune_timer(key: String, wait: float) -> void:
+	var t: Timer = _timers.get(key)
+	if t:
+		t.wait_time = maxf(0.1, wait)
+		t.start()
+
+
+# ── Effect spawning ───────────────────────────────────────────────────────────
+
+## Drops one of the scenes/modules/ effects into the world with this module's
+## current numbers. `cfg` overrides whatever the scene defaults to.
+func _spawn_module_effect(scene: PackedScene, at: Vector2, cfg: Dictionary = {}) -> ModuleEffect:
+	var fx: ModuleEffect = scene.instantiate()
+	fx.damage = int(cfg.get("damage", 0))
+	fx.radius = float(cfg.get("radius", 100.0))
+	fx.direction = cfg.get("direction", Vector2.RIGHT)
+	fx.pierce = int(cfg.get("pierce", 99))
+	fx.paralysis_duration = float(cfg.get("paralysis", 0.0))
+	fx.burn_ticks = int(cfg.get("burn_ticks", 0))
+	fx.burn_damage = int(cfg.get("burn_damage", 0))
+	fx.follow_target = cfg.get("follow", null)
+	if cfg.has("lifetime"):
+		fx.lifetime = float(cfg["lifetime"])
+	fx.global_position = at
+	get_tree().current_scene.add_child(fx)
+	return fx
 
 
 func _process(delta: float) -> void:
@@ -153,19 +222,22 @@ func _spawn_effect(tex: Texture2D, frame_size: int, count: int, duration: float,
 
 # ── Passive modules ────────────────────────────────────────────────────────────
 
+## Paralysing pulse around the ship. Deals no damage — its job is the stun.
 func _do_shockwave() -> void:
 	if not got_shockwave_module or get_tree().paused:
 		return
-	_spawn_effect(SHOCKWAVE_FX, 96, 8, 0.5, player, (shockwave_range / 100.0) * 2.0)
-	_damage_enemies_in_radius(shockwave_range, shockwave_damage, 400.0)
+	_spawn_module_effect(SHOCKWAVE_SCENE, player.global_position, {
+		"radius": shockwave_range, "paralysis": shockwave_stun, "follow": player,
+	})
 	AudioManager.play_sfx("electricShockSound")
 
 
 func _do_electric_aura() -> void:
 	if not got_electric_aura_module or get_tree().paused:
 		return
-	_spawn_effect(ELECTRIC_FX, 96, 8, 0.5, player, (electric_aura_range / 100.0) * 2.0, true)
-	_damage_enemies_in_radius(electric_aura_range, electric_aura_damage)
+	_spawn_module_effect(ELECTRIC_AURA_SCENE, player.global_position, {
+		"damage": _scaled(electric_aura_damage, 0.5), "radius": electric_aura_range, "follow": player,
+	})
 
 
 func _do_comets() -> void:
@@ -173,68 +245,88 @@ func _do_comets() -> void:
 		return
 	for i in comet_amount:
 		var start := player.global_position + Vector2(-1400, randf_range(-400, 400))
-		var proj := HeroProjectile.create({
-			"frames": _sheet_frames(COSMIC_BALL, 128, 64, 4, 10.0),
-			"direction": Vector2.RIGHT, "speed": 1200.0,
-			"damage": comet_damage, "pierce": 99,
-			"lifetime": 2.5, "radius": 26.0, "visual_scale": 1.0,
-			"rotation": PI / 2.0,
+		_spawn_module_effect(COMET_SCENE, start, {
+			"damage": _scaled(comet_damage, 1.5), "radius": 26.0, "direction": Vector2.RIGHT,
 		})
-		proj.global_position = start
-		get_tree().current_scene.add_child(proj)
 	AudioManager.play_sfx("cometProjectile")
 
 
 func _do_force_field() -> void:
-	if not got_force_field_module or is_force_field_up or get_tree().paused:
+	if not got_force_field_module or get_tree().paused:
 		return
+	if force_field_charges >= force_field_stacks:
+		return
+	force_field_charges += 1
 	is_force_field_up = true
-	var fx := _spawn_effect(BURNING_FX, 32, 3, 999.0, player, 3.0, true)
-	fx.modulate.a = 0.5
-	fx.name = "ForceFieldFX"
+	if get_node_or_null("ForceFieldFX") == null:
+		var fx := _spawn_effect(BURNING_FX, 32, 3, 999.0, player, 3.0, true)
+		fx.modulate.a = 0.5
+		fx.name = "ForceFieldFX"
 
 
 ## Called by the player when a force-field absorbs a hit.
 func consume_force_field() -> bool:
-	if not is_force_field_up:
+	if force_field_charges <= 0:
 		return false
-	is_force_field_up = false
-	var fx := get_node_or_null("ForceFieldFX")
-	if fx:
-		fx.queue_free()
+	force_field_charges -= 1
+	is_force_field_up = force_field_charges > 0
+	if not is_force_field_up:
+		var fx := get_node_or_null("ForceFieldFX")
+		if fx:
+			fx.queue_free()
 	return true
 
 
 func _do_electro_bubbles() -> void:
 	if not got_electro_bubbles_module or get_tree().paused:
 		return
-	var dir := Vector2.UP.rotated(player.ship_body.rotation)
-	var proj := HeroProjectile.create({
-		"frames": _sheet_frames(SHOCK_BOMBS_FX, 96, 96, 8, 8.0),
-		"direction": dir, "speed": 250.0,
-		"damage": electro_bubbles_damage, "pierce": 99,
-		"lifetime": 3.0, "radius": 40.0, "visual_scale": 1.5,
+	# A big, slow drifting field rather than a projectile — it re-ticks so
+	# anything that wanders into it while it's passing still gets hit.
+	_spawn_module_effect(ELECTRO_BUBBLE_SCENE, player.global_position, {
+		"damage": _scaled(electro_bubbles_damage, 1.0), "radius": 160.0,
+		"direction": Vector2.UP.rotated(player.ship_body.rotation),
+		"lifetime": electro_bubbles_duration,
 	})
-	proj.global_position = player.global_position
-	get_tree().current_scene.add_child(proj)
 	AudioManager.play_sfx("shockWaveSound")
 
 
 func _do_energy_outburst() -> void:
 	if not got_energy_outburst_module or get_tree().paused:
 		return
-	_spawn_effect(HIT5_FX, 96, 8, 0.5, player, (energy_outburst_range / 100.0) * 2.0)
-	_damage_enemies_in_radius(energy_outburst_range, energy_outburst_damage)
+	_spawn_module_effect(ENERGY_OUTBURST_SCENE, player.global_position, {
+		"damage": _scaled(energy_outburst_damage, 2.0), "radius": energy_outburst_range,
+	})
 	AudioManager.play_sfx("shockWaveSound")
 
 
-## Called by the player on boost when the dash-shockwave module is owned.
+## Fired once at the start of a dash — damage only, no knockback.
 func do_dash_shockwave() -> void:
 	if not got_dash_shockwave_module:
 		return
-	_spawn_effect(HIT5_FX, 96, 8, 0.2, player, 3.0)
-	_damage_enemies_in_radius(200.0, energy_outburst_damage, 500.0)
+	_spawn_module_effect(DASH_SHOCKWAVE_SCENE, player.global_position, {
+		"damage": _scaled(dash_shockwave_damage, 1.0), "radius": 200.0,
+	})
 	AudioManager.play_sfx("shockWaveSound")
+
+
+func _do_super_shield() -> void:
+	if not got_super_shield_module or get_tree().paused:
+		return
+	if player and player.has_method("grant_invincibility"):
+		player.grant_invincibility(SUPER_SHIELD_DURATION)
+	AudioManager.play_sfx("invincibleSkill")
+
+
+## Retaliation (Electro Shield / thorns) — the player calls this with whatever
+## just damaged it, if it can be identified.
+func retaliate(attacker: Node, shield_absorbed: bool) -> void:
+	var damage := shield_thorns_damage if shield_absorbed else health_thorns_damage
+	if attacker and is_instance_valid(attacker) and attacker.is_in_group("enemies"):
+		if damage > 0 and attacker.has_method("apply_damage"):
+			attacker.apply_damage(damage)
+		if got_electro_shield and is_instance_valid(attacker) \
+				and attacker.has_method("apply_paralysis"):
+			attacker.apply_paralysis(electro_shield_duration)
 
 
 # ── Skills (whichSkill — Space key) ────────────────────────────────────────────
@@ -266,17 +358,14 @@ func use_skill() -> void:
 		7: _skill_invincible_frame()
 
 
+## Dumps a whole magazine forward in one rapid stream, using whatever weapon
+## is equipped. The trigger is locked out until it finishes — you can steer
+## and aim through it, and the stream follows where you point.
 func _skill_burst_projectile() -> void:
-	for i in 12:
-		var ang := TAU * i / 12.0
-		var proj := HeroProjectile.create({
-			"texture": preload("res://assets/art/characters/laserBeam.png"),
-			"rotation": ang + PI / 2.0, "direction": Vector2.UP.rotated(ang + PI / 2.0),
-			"speed": 800.0, "damage": 25, "pierce": 3,
-			"lifetime": 1.0, "radius": 12.0,
-		})
-		proj.global_position = player.global_position
-		get_tree().current_scene.add_child(proj)
+	var ws: WeaponSystem = player.get_node_or_null("WeaponSystem")
+	if ws == null:
+		return
+	ws.fire_burst()
 	AudioManager.play_sfx("skill1Sound")
 
 

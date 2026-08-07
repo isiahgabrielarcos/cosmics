@@ -32,6 +32,13 @@ func _ready() -> void:
 func _unhandled_input(event: InputEvent) -> void:
 	if not event.is_action_pressed("pause"):
 		return
+	toggle_pause()
+
+
+## Same effect as pressing Esc — shared by the key binding and the on-screen
+## pause button in the HUD, so the two can never fall out of sync with each
+## other's rules about when pausing is (and isn't) allowed.
+func toggle_pause() -> void:
 	if GameManager.game_done or GameManager.ui_open:
 		return
 	if GameManager.game_paused:

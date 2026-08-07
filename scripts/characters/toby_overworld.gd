@@ -6,10 +6,10 @@ extends CharacterBody2D
 
 const SPEED := 300.0
 
-# Fake depth against the wall tilemaps. Two probes straddle the sprite: when
-# the head probe is inside a wall, Toby is standing in front of it and draws
-# over the top; when the feet probe is, he's standing behind it and drops
-# under. Clear of both, he sits at the default.
+# Fake depth against the walls and the NPCs. Two probes straddle the sprite:
+# when the head probe is inside something solid, Toby is standing in front of
+# it and draws over the top; when the feet probe is, he's standing behind it
+# and drops under. Clear of both, he sits at the default.
 #
 # The walls are TileMapLayer collision, which reports as *bodies* — overlaps
 # are polled each frame rather than signalled, so leaving a wall restores the
@@ -41,17 +41,18 @@ func _physics_process(_delta: float) -> void:
 
 
 func _update_draw_order() -> void:
-	if _touching_wall(top_order):
+	if _touching_occluder(top_order):
 		z_index = Z_IN_FRONT
-	elif _touching_wall(low_order):
+	elif _touching_occluder(low_order):
 		z_index = Z_BEHIND
 	else:
 		z_index = Z_DEFAULT
 
 
-## The wall tiles sit on the same physics layer as Toby himself and the NPCs,
-## so the probe has to discount anything that isn't scenery.
-func _touching_wall(probe: Area2D) -> bool:
+## Anything solid that Toby can stand in front of or behind: the wall tiles
+## (physics layer 1, shared with Toby himself) and the NPCs' blocking bodies
+## (layer 7). The probes mask both, so this only has to discount Toby.
+func _touching_occluder(probe: Area2D) -> bool:
 	for body in probe.get_overlapping_bodies():
 		if body == self or body.is_in_group("friendlies"):
 			continue

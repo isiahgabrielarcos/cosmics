@@ -32,13 +32,13 @@ func _create_first_time_data() -> void:
 	}
 
 	weapon_data = {
-		"w1value": true,  "w2value": false, "w3value": false, "w4value": false,
+		"w1value": true,  "w2value": true, "w3value": false, "w4value": false,
 		"w5value": false, "w6value": false, "w7value": false,
 	}
 
 	equipped_data = {
-		"weapon1Slot": 1,
-		"weapon2Slot": 1,
+		"weapon1Slot": 1,   # Laser
+		"weapon2Slot": 2,   # Plasma Ball
 		"skillSlot": 1,
 		"heroSkin": 1,
 	}

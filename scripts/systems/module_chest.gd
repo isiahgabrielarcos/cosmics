@@ -2,36 +2,38 @@ extends Area2D
 class_name ModuleChest
 
 # Ports dropModuleChests() — a chest that floats in the world; flying into it
-# grants a random module upgrade (turns on a ModuleSystem flag or buffs one).
+# opens the module pick screen. The chest's rarity decides how many hands you
+# get dealt, not what's in them (the Lua's howManyModuleUpgrade).
 
 const CHEST_SHEET := preload("res://assets/art/environment/moduleChests.png")
 
 const RARITY_REGIONS := {
-	"common": Rect2(0, 0, 128, 128),
-	"rare":   Rect2(128, 0, 128, 128),
-	"epic":   Rect2(0, 128, 128, 128),
-	"godly":  Rect2(128, 128, 128, 128),
+	"common":    Rect2(0, 0, 128, 128),
+	"rare":      Rect2(128, 0, 128, 128),
+	"epic":      Rect2(0, 128, 128, 128),
+	"legendary": Rect2(128, 128, 128, 128),
 }
 
-# Module flags a chest can unlock, weighted by rarity tier
-const COMMON_MODULES := ["got_shockwave_module", "got_electric_aura_module"]
-const RARE_MODULES   := ["got_comet_module", "got_electro_bubbles_module", "got_energy_outburst_module"]
-const EPIC_MODULES   := ["got_force_field_module", "got_dash_shockwave_module"]
+## Rounds of modules the chest is worth. The run resumes only once every
+## round has been picked.
+const ROUNDS := { "common": 1, "rare": 2, "epic": 3, "legendary": 4 }
 
 var rarity: String = "common"
 
 
 static func spawn(parent: Node, pos: Vector2) -> ModuleChest:
 	var chest := ModuleChest.new()
+	# common 66% · rare 25% · epic 7% · legendary 2%. A legendary chest is four
+	# whole rounds of picks, so it has to stay a genuine event.
 	var roll := randi_range(1, 100)
-	if roll <= 55:
+	if roll <= 66:
 		chest.rarity = "common"
-	elif roll <= 85:
+	elif roll <= 91:
 		chest.rarity = "rare"
-	elif roll <= 97:
+	elif roll <= 98:
 		chest.rarity = "epic"
 	else:
-		chest.rarity = "godly"
+		chest.rarity = "legendary"
 	chest.global_position = pos
 	parent.add_child(chest)
 	return chest
@@ -60,31 +62,20 @@ func _ready() -> void:
 func _on_body_entered(body: Node) -> void:
 	if not body.is_in_group("friendlies"):
 		return
-	var module_system = body.get_node_or_null("ModuleSystem")
-	if module_system:
-		_grant_upgrade(module_system)
+
+	var panel := _find_pick_panel()
+	if panel == null:
+		return   # no pick screen in this scene — leave the chest be
+
+	# One round opens the panel; the rest queue behind it.
+	GameManager.pending_module_picks += maxi(0, int(ROUNDS.get(rarity, 1)) - 1)
 	AudioManager.play_sfx("moduleChest")
 	queue_free()
+	panel.open()
 
 
-func _grant_upgrade(ms: Node) -> void:
-	var pool: Array
-	match rarity:
-		"common": pool = COMMON_MODULES
-		"rare":   pool = COMMON_MODULES + RARE_MODULES
-		"epic":   pool = RARE_MODULES + EPIC_MODULES
-		_:        pool = COMMON_MODULES + RARE_MODULES + EPIC_MODULES  # godly
-
-	# Prefer a module the player doesn't own yet
-	pool.shuffle()
-	for flag in pool:
-		if flag in ms and not ms.get(flag):
-			ms.set(flag, true)
-			GameManager.module_upgrade_count += 1
-			print("Module unlocked: ", flag)
-			return
-
-	# Already owns everything in the pool — buff an owned module instead
-	ms.shockwave_damage += 5
-	ms.electric_aura_damage += 1
-	print("Modules maxed — damage buffed")
+func _find_pick_panel() -> ModulePickPanel:
+	for node in get_tree().current_scene.get_children():
+		if node is ModulePickPanel:
+			return node
+	return null

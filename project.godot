@@ -17,19 +17,22 @@ compatibility/default_parent_skeleton_in_mesh_instance_3d=true
 config/name="Cosmics"
 run/main_scene="uid://dgelgpq4puvxf"
 config/features=PackedStringArray("4.7", "Forward Plus")
-config/icon="res://icon.svg"
+config/icon="res://assets/art/icon.png"
 
 [autoload]
 
 SaveManager="*res://scripts/autoload/save_manager.gd"
 AudioManager="*res://scripts/autoload/audio_manager.gd"
 GameManager="*res://scripts/autoload/game_manager.gd"
+SceneTransition="*res://scripts/autoload/scene_transition.gd"
 
 [display]
 
 window/size/viewport_width=1920
 window/size/viewport_height=1080
 window/size/borderless=true
+window/stretch/mode="canvas_items"
+window/stretch/aspect="expand"
 
 [global_group]
 
@@ -113,11 +116,13 @@ inventory={
 
 2d_physics/layer_1="Entities"
 2d_physics/layer_2="Bullets"
-2d_physics/layer_3="enemy_layer_chasers"
-2d_physics/layer_4="enemy_layer_ships"
-2d_physics/layer_5="enemy_layer_slashers"
-2d_physics/layer_6="shooters"
+2d_physics/layer_3="enemy_chasers"
+2d_physics/layer_4="enemy_ships"
+2d_physics/layer_5="enemy_slashers"
+2d_physics/layer_6="enemy_shooters"
 2d_physics/layer_7="walls"
+2d_physics/layer_8="enemy_bombers"
+2d_physics/layer_9="enemy_bosses"
 
 [rendering]
 

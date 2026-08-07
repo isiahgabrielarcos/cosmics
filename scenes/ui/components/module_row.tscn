@@ -1,0 +1,6 @@
+[gd_scene format=3]
+
+[node name="ModuleRow" type="Button"]
+theme_override_font_sizes/font_size = 14
+text = "Module"
+alignment = 0

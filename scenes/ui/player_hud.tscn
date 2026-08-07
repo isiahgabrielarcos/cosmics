@@ -1,12 +1,30 @@
 [gd_scene format=3 uid="uid://hv6h1ux32yxc"]
 
-[ext_resource type="Texture2D" uid="uid://cnfvsa06nvr30" path="res://assets/art/ui/miniMap.png" id="3_osipw"]
 [ext_resource type="PackedScene" uid="uid://b2p5cqrmci107" path="res://scenes/ui/inventory.tscn" id="4_3cn05"]
 [ext_resource type="Script" uid="uid://c2qycaas048ia" path="res://scripts/ui/player_hud.gd" id="5_hudhd"]
 [ext_resource type="Texture2D" uid="uid://dd35eae864y7d" path="res://assets/art/ui/healthBar.png" id="6_hpbar"]
+[ext_resource type="Texture2D" uid="uid://drfsfnhy1iw3u" path="res://assets/art/ui/pauseButton.png" id="7_nh6vl"]
 [ext_resource type="Texture2D" uid="uid://c2hd6v3ixmeoe" path="res://assets/art/ui/shieldBar.png" id="7_shbar"]
 [ext_resource type="Texture2D" uid="uid://ft20q8mmj8am" path="res://assets/art/ui/expBar.png" id="8_expbar"]
 [ext_resource type="FontFile" uid="uid://df2u10dmiarah" path="res://assets/fonts/RetroGaming.ttf" id="9_font"]
+
+[sub_resource type="Gradient" id="Gradient_nh6vl"]
+colors = PackedColorArray(0, 0, 0, 1, 1.8951484e-07, 0.23018044, 0.008009607, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_3cn05"]
+gradient = SubResource("Gradient_nh6vl")
+
+[sub_resource type="Gradient" id="Gradient_3cn05"]
+colors = PackedColorArray(0, 0, 0, 1, 0, 0.15148735, 0.40003532, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_bhaj2"]
+gradient = SubResource("Gradient_3cn05")
+
+[sub_resource type="Gradient" id="Gradient_bhaj2"]
+colors = PackedColorArray(0, 0, 0, 1, 0.32311803, 9.3854965e-07, 0.19901589, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_c78lu"]
+gradient = SubResource("Gradient_bhaj2")
 
 [sub_resource type="LabelSettings" id="LabelSettings_bhaj2"]
 font_size = 25
@@ -17,13 +35,11 @@ font_size = 32
 [sub_resource type="LabelSettings" id="LabelSettings_t61g4"]
 font_size = 20
 
-[sub_resource type="LabelSettings" id="LabelSettings_nh6vl"]
-font_size = 29
-
 [sub_resource type="LabelSettings" id="LabelSettings_3cn05"]
 font_size = 38
 
 [sub_resource type="LabelSettings" id="LabelSettings_nsspx"]
+line_spacing = -14.275
 font_size = 19
 
 [node name="Player_HUD" type="CanvasLayer" unique_id=168399030]
@@ -38,148 +54,128 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 
-[node name="MiniMap" type="Sprite2D" parent="Battle_HUD" unique_id=867836882]
-position = Vector2(1800.9999, 114.49999)
-scale = Vector2(2.9843748, 2.9843748)
-texture = ExtResource("3_osipw")
-
 [node name="Inventory2" parent="Battle_HUD" unique_id=876152341 instance=ExtResource("4_3cn05")]
 layout_mode = 1
 
 [node name="HealthBar" type="TextureProgressBar" parent="Battle_HUD" unique_id=1785019978]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = -0.1015625
-anchor_top = -0.022222223
-anchor_right = -0.050520834
-anchor_bottom = -0.0074074073
-offset_left = 218.0
-offset_top = 50.0
-offset_right = 418.0
-offset_bottom = 70.0
+offset_left = 23.0
+offset_top = 26.0
+offset_right = 411.0
+offset_bottom = 67.0
 value = 100.0
 nine_patch_stretch = true
+texture_under = SubResource("GradientTexture1D_3cn05")
 texture_progress = ExtResource("6_hpbar")
-metadata/_edit_use_anchors_ = true
 
 [node name="ShieldBar" type="TextureProgressBar" parent="Battle_HUD" unique_id=2072254699]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = -0.1015625
-anchor_right = -0.050520834
-anchor_bottom = 0.0129629625
-offset_left = 218.0
+offset_left = 23.0
 offset_top = 73.0
-offset_right = 418.0
-offset_bottom = 93.0
+offset_right = 410.0
+offset_bottom = 109.0
 max_value = 50.0
 value = 50.0
 nine_patch_stretch = true
+texture_under = SubResource("GradientTexture1D_bhaj2")
 texture_progress = ExtResource("7_shbar")
-metadata/_edit_use_anchors_ = true
 
 [node name="ExpBar" type="TextureProgressBar" parent="Battle_HUD" unique_id=1071344489]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = -0.09947917
-anchor_top = 0.015740741
-anchor_right = -0.053125
-anchor_bottom = 0.016666668
-offset_left = 218.0
-offset_top = 99.0
-offset_right = 418.0
-offset_bottom = 111.0
+offset_left = 23.0
+offset_top = 116.0
+offset_right = 410.0
+offset_bottom = 149.0
 max_value = 30.0
 nine_patch_stretch = true
+texture_under = SubResource("GradientTexture1D_c78lu")
 texture_progress = ExtResource("8_expbar")
-metadata/_edit_use_anchors_ = true
+
+[node name="HealthLabel" type="Label" parent="Battle_HUD" unique_id=920000001]
+layout_mode = 0
+offset_left = 32.0
+offset_top = 36.0
+offset_right = 252.0
+offset_bottom = 60.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("9_font")
+theme_override_font_sizes/font_size = 18
+text = "100 / 100"
+vertical_alignment = 1
+
+[node name="DashLabel" type="Label" parent="Battle_HUD" unique_id=920000002]
+layout_mode = 0
+offset_left = 33.0
+offset_top = 80.0
+offset_right = 253.0
+offset_bottom = 104.0
+theme_override_colors/font_color = Color(0.65, 0.9, 1, 1)
+theme_override_fonts/font = ExtResource("9_font")
+theme_override_font_sizes/font_size = 18
+text = "DASH 50 / 50"
+vertical_alignment = 1
+
+[node name="ExpLabel" type="Label" parent="Battle_HUD" unique_id=920000003]
+layout_mode = 0
+offset_left = 33.0
+offset_top = 123.0
+offset_right = 253.0
+offset_bottom = 144.0
+theme_override_colors/font_color = Color(0.85, 0.95, 0.7, 1)
+theme_override_fonts/font = ExtResource("9_font")
+theme_override_font_sizes/font_size = 16
+text = "XP 0 / 30"
+vertical_alignment = 1
 
 [node name="LevelLabel" type="Label" parent="Battle_HUD" unique_id=407473824]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = -0.0984375
-anchor_top = 0.058333334
-anchor_right = -0.0984375
-anchor_bottom = 0.0712963
-offset_left = 218.0
-offset_top = 81.0
-offset_right = 318.0
-offset_bottom = 99.0
+offset_left = 279.0
+offset_top = 117.0
+offset_right = 404.0
+offset_bottom = 149.0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_fonts/font = ExtResource("9_font")
 theme_override_font_sizes/font_size = 14
 text = "LVL 1"
 label_settings = SubResource("LabelSettings_bhaj2")
-metadata/_edit_use_anchors_ = true
+horizontal_alignment = 2
 
 [node name="AmmoLabel" type="Label" parent="Battle_HUD" unique_id=79216499]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = -0.1390625
-anchor_top = 0.7925926
-anchor_right = -0.08958333
-anchor_bottom = 0.8333333
-offset_left = 218.0
-offset_top = 115.0
-offset_right = 318.0
-offset_bottom = 133.0
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 28.0
+offset_top = -57.0
+offset_right = 223.0
+offset_bottom = -11.0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_fonts/font = ExtResource("9_font")
 theme_override_font_sizes/font_size = 14
 text = "18 / 18"
 label_settings = SubResource("LabelSettings_x1m7o")
-horizontal_alignment = 2
-metadata/_edit_use_anchors_ = true
 
 [node name="ReloadLabel" type="Label" parent="Battle_HUD" unique_id=419132173]
 visible = false
 modulate = Color(1, 0.55, 0, 1)
-layout_mode = 0
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 1.0
+anchor_bottom = 1.0
 offset_left = 168.0
-offset_top = 983.0
+offset_top = -46.0
 offset_right = 368.0
-offset_bottom = 1009.0
+offset_bottom = -20.0
+grow_vertical = 0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_fonts/font = ExtResource("9_font")
 theme_override_font_sizes/font_size = 14
 text = "RELOADING..."
 label_settings = SubResource("LabelSettings_t61g4")
-
-[node name="WeaponLabel" type="Label" parent="Battle_HUD" unique_id=1078856004]
-layout_mode = 1
-anchors_preset = -1
-anchor_left = -0.104166664
-anchor_top = 0.75
-anchor_right = -0.104166664
-anchor_bottom = 0.75
-offset_left = 218.0
-offset_top = 135.0
-offset_right = 318.0
-offset_bottom = 153.0
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_fonts/font = ExtResource("9_font")
-theme_override_font_sizes/font_size = 14
-text = "PRI W1"
-metadata/_edit_use_anchors_ = true
-
-[node name="SkillLabel" type="Label" parent="Battle_HUD" unique_id=2142679768]
-modulate = Color(0.5, 1, 0.6, 1)
-layout_mode = 1
-anchors_preset = -1
-anchor_left = -0.104166664
-anchor_top = 0.79907405
-anchor_right = -0.08645833
-anchor_bottom = 0.81203705
-offset_left = 218.0
-offset_top = 155.0
-offset_right = 380.0
-offset_bottom = 173.0
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_fonts/font = ExtResource("9_font")
-theme_override_font_sizes/font_size = 14
-text = "SKILL READY"
-label_settings = SubResource("LabelSettings_nh6vl")
-metadata/_edit_use_anchors_ = true
 
 [node name="TimerLabel" type="Label" parent="Battle_HUD" unique_id=325934674]
 layout_mode = 1
@@ -215,58 +211,43 @@ horizontal_alignment = 1
 metadata/_edit_use_anchors_ = true
 
 [node name="CurrencyLabel" type="Label" parent="Battle_HUD" unique_id=2118718851]
+visible = false
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.98541665
-anchor_top = 0.19351852
-anchor_right = 0.98541665
-anchor_bottom = 0.19351852
-offset_left = -330.0
-offset_top = 16.0
-offset_bottom = 40.0
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -358.0
+offset_top = 225.0
+offset_bottom = 249.0
 grow_horizontal = 0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_fonts/font = ExtResource("9_font")
 theme_override_font_sizes/font_size = 16
-metadata/_edit_use_anchors_ = true
 
 [node name="Label" type="Label" parent="Battle_HUD" unique_id=707986768]
-layout_mode = 0
-offset_left = 23.0
-offset_top = 437.0
-offset_right = 537.0
-offset_bottom = 616.0
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 1639.0
+offset_top = -1001.0
+offset_right = 1903.0
+offset_bottom = -866.0
+grow_vertical = 0
 text = "Movement: WASD
 Shoot: Left Click
 Skill: Spacebar
 Dash: Shift (hold)
-
-Pause: Esc"
+Switch Weapon: Q
+"
 label_settings = SubResource("LabelSettings_nsspx")
+horizontal_alignment = 2
 
-[node name="Hub_HUD" type="Control" parent="." unique_id=2084233367]
-visible = false
-layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-
-[node name="InventoryHint" type="Label" parent="Hub_HUD" unique_id=1553827020]
-modulate = Color(1, 1, 1, 0.7)
+[node name="PauseButton" type="TextureButton" parent="Battle_HUD" unique_id=1148629930]
 layout_mode = 0
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
-anchor_bottom = 1.0
-offset_left = -80.0
-offset_top = -46.0
-offset_right = 80.0
-offset_bottom = -26.0
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_fonts/font = ExtResource("9_font")
-theme_override_font_sizes/font_size = 14
-text = "[ I ] Inventory"
-horizontal_alignment = 1
+offset_left = 1857.0
+offset_top = 13.0
+offset_right = 1909.0
+offset_bottom = 65.0
+texture_normal = ExtResource("7_nh6vl")
+stretch_mode = 0

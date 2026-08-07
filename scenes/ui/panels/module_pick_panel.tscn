@@ -1,0 +1,77 @@
+[gd_scene format=3 uid="uid://b8wfig4p3i6xg"]
+
+[ext_resource type="Script" uid="uid://dyidnb6121351" path="res://scripts/ui/module_pick_panel.gd" id="1_pick"]
+[ext_resource type="PackedScene" path="res://scenes/ui/components/module_card.tscn" id="2_card"]
+[ext_resource type="FontFile" uid="uid://df2u10dmiarah" path="res://assets/fonts/RetroGaming.ttf" id="3_font"]
+
+[node name="ModulePickPanel" type="CanvasLayer" unique_id=693556813]
+layer = 95
+script = ExtResource("1_pick")
+
+[node name="Root" type="Control" parent="." unique_id=1947692933]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Dim" type="ColorRect" parent="Root" unique_id=1590519820]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0)
+
+[node name="Title" type="Label" parent="Root" unique_id=483653388]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -400.0
+offset_top = 90.0
+offset_right = 400.0
+offset_bottom = 150.0
+grow_horizontal = 2
+theme_override_fonts/font = ExtResource("3_font")
+theme_override_font_sizes/font_size = 42
+text = "SELECT A MODULE"
+horizontal_alignment = 1
+
+[node name="Cards" type="Control" parent="Root" unique_id=884752548]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Card1" parent="Root/Cards" unique_id=794313639 instance=ExtResource("2_card")]
+layout_mode = 0
+offset_left = -510.0
+offset_top = -210.0
+offset_right = -210.0
+offset_bottom = 210.0
+stretch_mode = 0
+
+[node name="Card2" parent="Root/Cards" unique_id=1017306071 instance=ExtResource("2_card")]
+layout_mode = 0
+offset_left = -150.0
+offset_top = -210.0
+offset_right = 150.0
+offset_bottom = 210.0
+stretch_mode = 0
+
+[node name="Card3" parent="Root/Cards" unique_id=234609568 instance=ExtResource("2_card")]
+layout_mode = 0
+offset_left = 210.0
+offset_top = -210.0
+offset_right = 510.0
+offset_bottom = 210.0
+stretch_mode = 0

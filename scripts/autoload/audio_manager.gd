@@ -137,6 +137,13 @@ func stop_ambient() -> void:
 
 # ── SFX ────────────────────────────────────────────────────────────────────────
 
+## Randomised per play so a sound fired dozens of times a second — every
+## shot, every hit — doesn't turn into one flat machine-gun tone. The spread
+## is small enough to read as the same sound, not a different one.
+const SFX_PITCH_SPREAD := 0.12    # +/- 12% pitch
+const SFX_VOLUME_SPREAD := 0.14   # +/- 14% linear volume
+
+
 func play_sfx(name: String) -> void:
 	if not SFX.has(name):
 		push_warning("AudioManager: unknown sfx '%s'" % name)
@@ -144,7 +151,11 @@ func play_sfx(name: String) -> void:
 	var p := _sfx_pool[_sfx_next]
 	_sfx_next = (_sfx_next + 1) % SFX_POOL_SIZE
 	p.stream = _get_stream(SFX[name])
-	p.volume_db = linear_to_db(maxf(master_volume * sfx_volume, 0.0001))
+
+	var level := master_volume * sfx_volume \
+		* (1.0 + randf_range(-SFX_VOLUME_SPREAD, SFX_VOLUME_SPREAD))
+	p.volume_db = linear_to_db(clampf(level, 0.0001, 1.0))
+	p.pitch_scale = 1.0 + randf_range(-SFX_PITCH_SPREAD, SFX_PITCH_SPREAD)
 	p.play()
 
 

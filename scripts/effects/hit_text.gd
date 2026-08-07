@@ -8,17 +8,30 @@ class_name HitText
 const RISE_DISTANCE := 60.0
 const DURATION := 0.6
 
+const BURN_COLOR := Color(1.0, 0.45, 0.15)
+const PARALYSIS_COLOR := Color(1.0, 0.95, 0.35)
+
 
 static func spawn(parent: Node, pos: Vector2, amount: int, color: Color = Color.WHITE) -> HitText:
+	return _make(parent, pos, str(amount), color)
+
+
+## Status callout ("BURN!", "PARALYZED!") — spawns higher than damage numbers
+## so it doesn't collide with the tick damage landing on the same enemy.
+static func spawn_status(parent: Node, pos: Vector2, label: String, color: Color) -> HitText:
+	return _make(parent, pos + Vector2(0.0, -34.0), label, color)
+
+
+static func _make(parent: Node, pos: Vector2, label: String, color: Color) -> HitText:
 	var txt: HitText = preload("res://scenes/effects/hit_text.tscn").instantiate()
 	txt.global_position = pos + Vector2(-70.0 + randf_range(-14.0, 14.0), -50.0)
 	parent.add_child(txt)
-	txt._play(amount, color)
+	txt._play(label, color)
 	return txt
 
 
-func _play(amount: int, color: Color) -> void:
-	text = str(amount)
+func _play(label: String, color: Color) -> void:
+	text = label
 	modulate = color
 
 	var tw := create_tween()

@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://c8pu2rp1ledal"]
 
-[ext_resource type="Script" path="res://scripts/systems/purple_projectile.gd" id="1_purple"]
+[ext_resource type="Script" uid="uid://conb5m0sctbuo" path="res://scripts/systems/purple_projectile.gd" id="1_purple"]
 [ext_resource type="Texture2D" uid="uid://ca15khe38xt8q" path="res://assets/art/characters/purple.png" id="2_tex"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_1"]
@@ -42,14 +42,15 @@ animations = [{
 [sub_resource type="CircleShape2D" id="CircleShape2D_1"]
 radius = 52.0
 
-[node name="Purple" type="Area2D"]
+[node name="Purple" type="Area2D" unique_id=287621243]
 z_index = 2
+scale = Vector2(2, 2)
 script = ExtResource("1_purple")
 
-[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=517556313]
 rotation = -1.5707964
 sprite_frames = SubResource("SpriteFrames_1")
 animation = &"moving"
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1147602790]
 shape = SubResource("CircleShape2D_1")

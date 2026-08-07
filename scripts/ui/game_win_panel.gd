@@ -22,6 +22,10 @@ func _ready() -> void:
 
 
 func open(rewards_text: String) -> void:
+	# Toby rises into frame with the panel
+	var portrait := get_node_or_null("Root/Avatar")
+	if portrait is AvatarFloat:
+		(portrait as AvatarFloat).play_intro()
 	visible = true
 	_rewards.text = rewards_text
 

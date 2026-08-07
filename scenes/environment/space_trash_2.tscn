@@ -1,0 +1,26 @@
+[gd_scene format=3 uid="uid://cy0fqm0ob0fcf"]
+
+[ext_resource type="TileSet" uid="uid://c4tpxd0n3sq0r" path="res://scenes/TileSet/background_tiles.tres" id="1_eagib"]
+[ext_resource type="TileSet" uid="uid://imkrccq7guwf" path="res://scenes/TileSet/walls1.tres" id="2_i46lr"]
+
+[node name="Space Trash 2" type="Node2D" unique_id=627769048]
+position = Vector2(-15, 13)
+scale = Vector2(2, 2)
+
+[node name="Ground4" type="TileMapLayer" parent="." unique_id=471857617]
+tile_map_data = PackedByteArray(0, 0, 0, 0, 255, 255, 2, 0, 3, 0, 2, 0, 0, 0)
+tile_set = ExtResource("1_eagib")
+
+[node name="Decor" type="TileMapLayer" parent="." unique_id=1468503199]
+position = Vector2(16, 16)
+tile_set = ExtResource("1_eagib")
+
+[node name="Walls" type="TileMapLayer" parent="." unique_id=145603981]
+tile_set = ExtResource("2_i46lr")
+
+[node name="Shadows" type="TileMapLayer" parent="." unique_id=240228769]
+modulate = Color(1, 1, 1, 0.4392157)
+tile_set = ExtResource("1_eagib")
+
+[node name="Walls Overlay" type="TileMapLayer" parent="." unique_id=892454269]
+tile_set = ExtResource("1_eagib")
