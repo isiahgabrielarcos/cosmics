@@ -1,0 +1,489 @@
+[gd_scene format=3 uid="uid://8qfj6iewah6x"]
+
+[ext_resource type="Script" uid="uid://cosevaj8u6t27" path="res://scripts/ui/main_menu.gd" id="1_script"]
+[ext_resource type="PackedScene" uid="uid://osds7svbypug" path="res://scenes/ui/background.tscn" id="2_bg"]
+[ext_resource type="Texture2D" uid="uid://b7lhvo6k1c4oy" path="res://assets/art/ui/cosmicFiendsMenuUFO.png" id="3_ufo"]
+[ext_resource type="FontFile" uid="uid://df2u10dmiarah" path="res://assets/fonts/RetroGaming.ttf" id="4_font"]
+[ext_resource type="PackedScene" path="res://scenes/ui/panels/settings_panel.tscn" id="5_settings"]
+[ext_resource type="Texture2D" uid="uid://dukklejm5o7fy" path="res://assets/art/ui/close.png" id="6_close"]
+[ext_resource type="Texture2D" uid="uid://b4y722xb0mchb" path="res://assets/art/ui/cosmicFiendsMenuUFODash1.png" id="7_dash"]
+[ext_resource type="Texture2D" uid="uid://qpvbrcbt4b74" path="res://assets/art/ui/cosmicFiendsMenuToby.png" id="8_toby"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_dash0"]
+atlas = ExtResource("7_dash")
+region = Rect2(0, 0, 600, 540)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_dash1"]
+atlas = ExtResource("7_dash")
+region = Rect2(600, 0, 600, 540)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_dash2"]
+atlas = ExtResource("7_dash")
+region = Rect2(1200, 0, 600, 540)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_dash3"]
+atlas = ExtResource("7_dash")
+region = Rect2(0, 540, 600, 540)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_dash4"]
+atlas = ExtResource("7_dash")
+region = Rect2(600, 540, 600, 540)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_dash5"]
+atlas = ExtResource("7_dash")
+region = Rect2(1200, 540, 600, 540)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_dash6"]
+atlas = ExtResource("7_dash")
+region = Rect2(0, 1080, 600, 540)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_dash7"]
+atlas = ExtResource("7_dash")
+region = Rect2(600, 1080, 600, 540)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_dash"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_dash0")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_dash1")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_dash2")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_dash3")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_dash4")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_dash5")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_dash6")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_dash7")
+}],
+"loop": 1,
+"name": &"dashing",
+"speed": 10.667
+}]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_toby1"]
+atlas = ExtResource("8_toby")
+region = Rect2(250, 0, 250, 200)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_toby2"]
+atlas = ExtResource("8_toby")
+region = Rect2(500, 0, 250, 200)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_toby3"]
+atlas = ExtResource("8_toby")
+region = Rect2(0, 200, 250, 200)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_toby4"]
+atlas = ExtResource("8_toby")
+region = Rect2(250, 200, 250, 200)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_toby5"]
+atlas = ExtResource("8_toby")
+region = Rect2(500, 200, 250, 200)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_toby6"]
+atlas = ExtResource("8_toby")
+region = Rect2(0, 400, 250, 200)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_toby7"]
+atlas = ExtResource("8_toby")
+region = Rect2(250, 400, 250, 200)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_toby0"]
+atlas = ExtResource("8_toby")
+region = Rect2(0, 0, 250, 200)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_toby"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_toby1")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_toby2")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_toby3")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_toby4")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_toby5")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_toby6")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_toby7")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_toby6")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_toby5")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_toby4")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_toby3")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_toby2")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_toby1")
+}],
+"loop": 1,
+"name": &"idle",
+"speed": 8.667
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_toby0")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_toby1")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_toby2")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_toby3")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_toby4")
+}],
+"loop": 0,
+"name": &"start",
+"speed": 5.0
+}]
+
+[sub_resource type="LabelSettings" id="LabelSettings_wb0q5"]
+font_size = 97
+
+[node name="MainMenu" type="Node2D" unique_id=1586546138]
+script = ExtResource("1_script")
+
+[node name="Background" parent="." unique_id=93027695 instance=ExtResource("2_bg")]
+
+[node name="Drifters" type="Node2D" parent="." unique_id=786551461]
+
+[node name="Ufo" type="Node2D" parent="." unique_id=2116516893]
+z_index = 20
+position = Vector2(500, 562)
+scale = Vector2(1.15, 1.15)
+
+[node name="Dash" type="AnimatedSprite2D" parent="Ufo" unique_id=2093998170]
+sprite_frames = SubResource("SpriteFrames_dash")
+animation = &"dashing"
+autoplay = "dashing"
+
+[node name="Body" type="Node2D" parent="Ufo" unique_id=1656382917]
+
+[node name="Hull" type="Sprite2D" parent="Ufo/Body" unique_id=2133634338]
+texture = ExtResource("3_ufo")
+
+[node name="Toby" type="AnimatedSprite2D" parent="Ufo/Body" unique_id=1965388591]
+position = Vector2(-10, -70)
+sprite_frames = SubResource("SpriteFrames_toby")
+animation = &"start"
+autoplay = "start"
+
+[node name="MenuUI" type="CanvasLayer" parent="." unique_id=1965606681]
+layer = 2
+
+[node name="Root" type="Control" parent="MenuUI" unique_id=1633141558]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Menu" type="VBoxContainer" parent="MenuUI/Root" unique_id=946344958]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -151.0
+offset_top = -68.0
+offset_right = -80.0
+offset_bottom = -68.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/separation = 14
+alignment = 1
+
+[node name="Title" type="Label" parent="MenuUI/Root/Menu" unique_id=1853375405]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("4_font")
+theme_override_font_sizes/font_size = 92
+text = "STELLARBOUND"
+horizontal_alignment = 1
+
+[node name="Title2" type="Label" parent="MenuUI/Root/Menu" unique_id=231026389]
+layout_mode = 2
+offset_transform_enabled = true
+offset_transform_position = Vector2(0, -42.02)
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("4_font")
+theme_override_font_sizes/font_size = 92
+text = "MERCERNARY"
+label_settings = SubResource("LabelSettings_wb0q5")
+horizontal_alignment = 1
+
+[node name="Subtitle" type="Label" parent="MenuUI/Root/Menu" unique_id=1108417562]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.741176, 0.827451, 1, 1)
+theme_override_fonts/font = ExtResource("4_font")
+theme_override_font_sizes/font_size = 30
+horizontal_alignment = 1
+
+[node name="Gap" type="Control" parent="MenuUI/Root/Menu" unique_id=471091113]
+custom_minimum_size = Vector2(0, 60)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="PlayButton" type="Button" parent="MenuUI/Root/Menu" unique_id=780902258]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(0.454902, 0.933333, 1, 1)
+theme_override_colors/font_hover_color = Color(0.454902, 0.933333, 1, 1)
+theme_override_fonts/font = ExtResource("4_font")
+theme_override_font_sizes/font_size = 64
+text = "Play"
+flat = true
+
+[node name="SettingsButton" type="Button" parent="MenuUI/Root/Menu" unique_id=1233720863]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(0.454902, 0.933333, 1, 1)
+theme_override_colors/font_hover_color = Color(0.454902, 0.933333, 1, 1)
+theme_override_fonts/font = ExtResource("4_font")
+theme_override_font_sizes/font_size = 44
+text = "Settings"
+flat = true
+
+[node name="QuitButton" type="Button" parent="MenuUI/Root/Menu" unique_id=1111478006]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(1, 0.470588, 0.470588, 1)
+theme_override_colors/font_hover_color = Color(1, 0.470588, 0.470588, 1)
+theme_override_fonts/font = ExtResource("4_font")
+theme_override_font_sizes/font_size = 44
+text = "Quit"
+flat = true
+
+[node name="CreditsButton" type="Button" parent="MenuUI/Root" unique_id=573672439]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -50.0
+offset_top = -104.0
+offset_right = -170.0
+offset_bottom = -44.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(0.454902, 0.933333, 1, 1)
+theme_override_colors/font_hover_color = Color(0.454902, 0.933333, 1, 1)
+theme_override_fonts/font = ExtResource("4_font")
+theme_override_font_sizes/font_size = 30
+text = "Credits"
+flat = true
+
+[node name="Version" type="Label" parent="MenuUI/Root" unique_id=1298525502]
+layout_mode = 1
+offset_left = 26.0
+offset_top = 20.0
+offset_right = 340.0
+offset_bottom = 52.0
+theme_override_colors/font_color = Color(1, 1, 1, 0.588235)
+theme_override_fonts/font = ExtResource("4_font")
+theme_override_font_sizes/font_size = 20
+text = "Version 2.0"
+
+[node name="Overlay" type="Control" parent="MenuUI/Root" unique_id=1188401546]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Dim" type="ColorRect" parent="MenuUI/Root/Overlay" unique_id=1911958027]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.8)
+
+[node name="CreditsPage" type="Control" parent="MenuUI/Root/Overlay" unique_id=903363514]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="CreditsTitle" type="Label" parent="MenuUI/Root/Overlay/CreditsPage" unique_id=840356590]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+offset_top = 44.0
+offset_bottom = 116.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("4_font")
+theme_override_font_sizes/font_size = 50
+text = "Credits"
+horizontal_alignment = 1
+
+[node name="Scroll" type="ScrollContainer" parent="MenuUI/Root/Overlay/CreditsPage" unique_id=1506547455]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -480.0
+offset_top = 150.0
+offset_right = 480.0
+offset_bottom = -70.0
+grow_horizontal = 2
+grow_vertical = 2
+horizontal_scroll_mode = 0
+
+[node name="CreditsLabel" type="Label" parent="MenuUI/Root/Overlay/CreditsPage/Scroll" unique_id=1520373700]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("4_font")
+theme_override_font_sizes/font_size = 26
+text = "Shout out to my freshman section, Cosm1CS, for the inspiration for the theme of the game
+
+
+Game programmer: Furiouscat
+Game designer: Furiouscat
+Sound Design: Furiouscat
+
+Game Imports:
+Cyberpunk Interior Tileset by DyLESTorm:
+https://livingtheindie.itch.io/pixel-cyberpunk-interior
+
+Ferrum Tileset; Dieselpunk Slums 2 by Haydeos:
+https://haydeos.itch.io/ferrum-tileset-dieselpunk-slums-2
+
+Cyberpunk City Exterior Tileset by Flambo19:
+https://flambo19.itch.io/cyberpunk-city-exterior
+
+
+Big Thanks To:
+My family
+Friends
+Classmates
+
+
+Special Thanks To:
+Lamina Studios, LLC - That allowed me to pitch my game concept and develop it throughout my 200 hours internship  
+Ma'am April - Who has been an amazing supervisor throughout my internship.
+Julia - Who has been an amazing help in UI/UX assessment.
+
+
+Special Thanks To My Lovely Studio NAIS One Gang:
+Sean
+Alron
+Julia
+
+
+Special Thanks to Old Early Access Players That Made the Mobile Release Possible:
+Yhasmen
+Jevin
+Franchesca
+Lance
+Edrian
+Mikhaela
+Sherwin
+Tito Ryan
+Kiara
+Inchoy
+Jepoy
+Ivan
+Nyolan
+Angelo
+Elijah
+Maury
+Youjin
+Christian
+Luis
+Gab
+Jero
+Charisse
+Gladwin
+Julianne
+Intet
+Aira
+Franz
+Russel
+Cedric
+Ayel 
+Jem
+Khate
+Malaica"
+autowrap_mode = 3
+
+[node name="SettingsPage" type="Control" parent="MenuUI/Root/Overlay" unique_id=1516987033]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="SettingsPanel" parent="MenuUI/Root/Overlay/SettingsPage" unique_id=1303353725 instance=ExtResource("5_settings")]
+layout_mode = 1
+offset_left = -300.0
+offset_top = -340.0
+offset_right = -300.0
+offset_bottom = -340.0
+
+[node name="CloseButton" type="TextureButton" parent="MenuUI/Root/Overlay" unique_id=9247949]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -156.0
+offset_top = 44.0
+offset_right = -60.0
+offset_bottom = 140.0
+grow_horizontal = 0
+texture_normal = ExtResource("6_close")
+ignore_texture_size = true
+stretch_mode = 5

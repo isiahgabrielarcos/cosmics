@@ -34,10 +34,10 @@ animations = [{
 }]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_1"]
-radius = 160.0
+radius = 145.71428
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_2"]
-radius = 60.0
+radius = 47.16449
 
 [node name="Guard2" type="Area2D" unique_id=1703502162]
 scale = Vector2(0.7, 0.7)

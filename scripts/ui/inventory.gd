@@ -39,19 +39,20 @@ const COOLDOWN_PASSIVES := [
 	  "name": "Super Shield", "tint": Color(1.0, 0.5, 0.55) },
 ]
 
-const RARITY_ORDER := ["common", "rare", "epic", "legendary", "godly"]
-
-## Order matters — _refresh_stats writes each row by index.
+## Order matters — _refresh_stats writes each row by index. "Dash" is the
+## shield stat: it doubles as dash fuel and that's what the player spends it
+## on, so it's named for what it does.
 const STAT_LABELS := [
-	"Health", "Shield", "Damage", "Ammo", "Pierce", "Speed", "Fire Rate", "Reload",
+	"Health", "Dash", "Damage", "Ammo", "Pierce", "Speed", "Fire Rate", "Reload",
 ]
 
 const MODULE_ROW := preload("res://scenes/ui/components/module_row.tscn")
 
 @onready var panel: Control = $Inventory
-@onready var _stats_box: VBoxContainer = $Inventory/Content/Stats
+## Two columns: the stat name, then its value. Aligning them in a grid beats
+## padding one label, which only lines up while the font is monospaced.
+@onready var _stats_box: GridContainer = $Inventory/Content/Stats
 @onready var _currencies: HBoxContainer = $Inventory/Content/Currencies
-@onready var _rarity_counts: HBoxContainer = $Inventory/Content/RarityCounts
 @onready var _surrender: Label = $Inventory/Content/SurrenderValue
 @onready var _module_list: VBoxContainer = $Inventory/Content/ModuleScroll/ModuleList
 @onready var _sidebar: VBoxContainer = $Inventory/Sidebar
@@ -78,6 +79,8 @@ func _ready() -> void:
 	_build_stat_rows()
 	call_deferred("_connect_to_player")
 	GameManager.modules_changed.connect(_refresh_modules)
+	# The haul updates on pickup, not only when a module is fitted.
+	GameManager.run_currency_changed.connect(func(_g, _s, _c): _refresh_modules())
 	_refresh_modules()
 
 
@@ -244,12 +247,20 @@ func _show_tooltip(title: String, desc: String) -> void:
 
 # ── Stats ─────────────────────────────────────────────────────────────────────
 
+## One name label and one value label per stat, filling the grid left to
+## right. Only the value label is kept — the name never changes.
 func _build_stat_rows() -> void:
 	for i in STAT_LABELS.size():
-		var row := Label.new()
-		row.add_theme_font_size_override("font_size", 15)
-		_stats_box.add_child(row)
-		_stat_rows.append(row)
+		var name_label := Label.new()
+		name_label.add_theme_font_size_override("font_size", 15)
+		name_label.add_theme_color_override("font_color", Color(0.72, 0.75, 0.8))
+		name_label.text = STAT_LABELS[i]
+		_stats_box.add_child(name_label)
+
+		var value_label := Label.new()
+		value_label.add_theme_font_size_override("font_size", 15)
+		_stats_box.add_child(value_label)
+		_stat_rows.append(value_label)
 
 
 ## Rows are written in place. This runs every frame while the panel is open,
@@ -270,11 +281,12 @@ func _refresh_stats() -> void:
 	_stat_float(7, _weapon_system.reload_time, 2.0, true)
 
 
-## "Health   140 (100 + 40)" — the summed value first, then where it came from.
+## "140  (100 + 40)" — the summed value first, then where it came from. The
+## name sits in the grid's left column, written once at build time.
 func _stat_int(index: int, total: int, base: int) -> void:
 	var row: Label = _stat_rows[index]
 	var added := total - base
-	row.text = "%-11s %d  (%d + %d)" % [STAT_LABELS[index], total, base, added]
+	row.text = "%d  (%d + %d)" % [total, base, added]
 	row.add_theme_color_override("font_color",
 		Color(0.72, 0.75, 0.8) if added == 0 else Color(0.6, 1.0, 0.7))
 
@@ -282,8 +294,8 @@ func _stat_int(index: int, total: int, base: int) -> void:
 func _stat_float(index: int, total: float, base: float, lower_is_better := false) -> void:
 	var row: Label = _stat_rows[index]
 	var delta := total - base
-	row.text = "%-11s %.2f  (%.2f %s %.2f)" % [
-		STAT_LABELS[index], total, base, "-" if delta < 0.0 else "+", absf(delta)]
+	row.text = "%.2f  (%.2f %s %.2f)" % [
+		total, base, "-" if delta < 0.0 else "+", absf(delta)]
 	var tint := Color(0.72, 0.75, 0.8)
 	if not is_zero_approx(delta):
 		tint = Color(0.6, 1.0, 0.7) if (delta < 0.0) == lower_is_better else Color(1.0, 0.7, 0.6)
@@ -296,19 +308,14 @@ func _refresh_modules() -> void:
 	if _currencies == null:
 		return
 
-	# Currency icons are placeholder ColorRects until the real art exists
-	var pd: Dictionary = SaveManager.player_data
-	_set_chip(_currencies.get_node("Gems"), Color(0.6, 1.0, 0.85), int(pd.get("gems", 0)))
-	_set_chip(_currencies.get_node("Shards"), Color(0.75, 0.6, 1.0), int(pd.get("shards", 0)))
+	# What this run has picked up, not the lifetime balance — the bank total
+	# barely moves during a contract, so it told the player nothing about how
+	# the contract was going. Currency icons are placeholder ColorRects until
+	# the real art exists.
+	_set_chip(_currencies.get_node("Gems"), Color(0.6, 1.0, 0.85), GameManager.gathered_gems)
+	_set_chip(_currencies.get_node("Shards"), Color(0.75, 0.6, 1.0), GameManager.gathered_shards)
 	_set_chip(_currencies.get_node("Central"), Color(1.0, 0.85, 0.4),
-		int(pd.get("centralCurrency", 0)))
-
-	for i in RARITY_ORDER.size():
-		var rarity: String = RARITY_ORDER[i]
-		var label := _rarity_counts.get_child(i) as Label
-		label.text = "%s %d" % [rarity.substr(0, 3).to_upper(),
-			int(GameManager.modules_taken.get(rarity, 0))]
-		label.add_theme_color_override("font_color", ModuleRegistry.RARITY_COLORS[rarity])
+		GameManager.gathered_currency)
 
 	_surrender.text = "Surrender value: %d CC  (%d on failure)" % [
 		GameManager.modules_payout(true), GameManager.modules_payout(false)]

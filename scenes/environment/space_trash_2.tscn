@@ -3,6 +3,9 @@
 [ext_resource type="TileSet" uid="uid://c4tpxd0n3sq0r" path="res://scenes/TileSet/background_tiles.tres" id="1_eagib"]
 [ext_resource type="TileSet" uid="uid://imkrccq7guwf" path="res://scenes/TileSet/walls1.tres" id="2_i46lr"]
 
+[sub_resource type="CircleShape2D" id="CircleShape2D_eagib"]
+radius = 12.509996
+
 [node name="Space Trash 2" type="Node2D" unique_id=627769048]
 position = Vector2(-15, 13)
 scale = Vector2(2, 2)
@@ -24,3 +27,9 @@ tile_set = ExtResource("1_eagib")
 
 [node name="Walls Overlay" type="TileMapLayer" parent="." unique_id=892454269]
 tile_set = ExtResource("1_eagib")
+
+[node name="Area2D" type="Area2D" parent="." unique_id=1689250145]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D" unique_id=1040090004]
+position = Vector2(15.5, -15)
+shape = SubResource("CircleShape2D_eagib")

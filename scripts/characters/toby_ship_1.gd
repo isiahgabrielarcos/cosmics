@@ -1,5 +1,7 @@
 extends CharacterBody2D
 
+const GeometryEscape := preload("res://scripts/systems/geometry_escape.gd")
+
 signal hp_changed(current: int, maximum: int)
 signal shield_changed(current: float, maximum: int)
 signal ammo_changed(current: int, maximum: int, reloading: bool)
@@ -165,6 +167,9 @@ func _physics_process(delta: float) -> void:
 		_handle_normal_movement()
 	_rotate_ship()
 	_update_draw_order()
+	# Backstop for ending up *inside* an asteroid rather than against it.
+	if GeometryEscape.eject(self):
+		velocity = Vector2.ZERO
 
 	# Polled rather than using is_action_just_released: while the module pick
 	# screen has the tree paused this function doesn't run, so the release
@@ -186,12 +191,25 @@ const Z_BEHIND   := 0
 func _update_draw_order() -> void:
 	if _top_order == null or _low_order == null:
 		return
-	if _top_order.has_overlapping_bodies():
+	if _probe_hit(_top_order):
 		z_index = Z_IN_FRONT
-	elif _low_order.has_overlapping_bodies():
+	elif _probe_hit(_low_order):
 		z_index = Z_BEHIND
 	else:
 		z_index = Z_DEFAULT
+
+
+## Shrines are deliberately excluded from the flip. Their geometry is tall and
+## irregular, so flying past one had the ship popping in front of and behind it
+## every few frames — the ordering read as a glitch rather than as depth.
+## Everything else on the walls layer still orders normally.
+func _probe_hit(probe: Area2D) -> bool:
+	for body in probe.get_overlapping_bodies():
+		var prop := body.get_parent()
+		if prop != null and str(prop.get_meta("prop_category", "")) == "shrine":
+			continue
+		return true
+	return false
 
 
 # ── Movement ──────────────────────────────────────────────────────────────────

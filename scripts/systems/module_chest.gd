@@ -18,6 +18,11 @@ const RARITY_REGIONS := {
 ## round has been picked.
 const ROUNDS := { "common": 1, "rare": 2, "epic": 3, "legendary": 4 }
 
+## Gems paid out for cracking the chest, by how good it was. This is the run's
+## gem income — the modules themselves are still surrendered for Central
+## Cosmic Currency at the end screen, so a chest pays twice in two currencies.
+const GEM_VALUES := { "common": 5, "rare": 12, "epic": 30, "legendary": 80 }
+
 var rarity: String = "common"
 
 
@@ -69,6 +74,7 @@ func _on_body_entered(body: Node) -> void:
 
 	# One round opens the panel; the rest queue behind it.
 	GameManager.pending_module_picks += maxi(0, int(ROUNDS.get(rarity, 1)) - 1)
+	GameManager.collect_gems(int(GEM_VALUES.get(rarity, 0)))
 	AudioManager.play_sfx("moduleChest")
 	queue_free()
 	panel.open()

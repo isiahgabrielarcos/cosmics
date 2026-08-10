@@ -421,12 +421,33 @@ func _fire_weapon(slot: int, data: WeaponData, mods: Dictionary = {},
 	get_tree().current_scene.add_child(proj)
 
 	if data.archetype == WeaponData.Archetype.THRUST:
-		# Pierce — the ship itself lunges forward, blade leading
-		create_tween().tween_property(player, "global_position",
-			player.global_position + _aim_dir() * data.thrust_distance, 0.2)\
-			.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+		_thrust_player(data.thrust_distance)
 
 	AudioManager.play_sfx(WEAPON_SFX[slot])
+
+
+## Pierce — the ship itself lunges forward, blade leading.
+##
+## This used to tween `global_position` straight to the destination, which
+## bypasses physics entirely: the ship teleported through asteroid and shrine
+## walls and ended up embedded inside them. The lunge now advances in steps
+## through move_and_collide, so it covers the same distance and reads the same
+## but stops dead against solid geometry like any other movement.
+func _thrust_player(distance: float) -> void:
+	if not is_instance_valid(player):
+		return
+	var dir := _aim_dir()
+	# A Dictionary rather than a plain float: GDScript lambdas capture locals
+	# by value, so the running total has to live somewhere shared.
+	var progress := { "moved": 0.0 }
+	create_tween().tween_method(func(travelled: float):
+		if not is_instance_valid(player):
+			return
+		var step: float = travelled - float(progress["moved"])
+		progress["moved"] = travelled
+		player.move_and_collide(dir * step),
+		0.0, distance, 0.2)\
+		.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 
 
 ## Swapping slots racks a fresh magazine, so you pay the reload either way
@@ -560,11 +581,15 @@ func _check_can_fire_watchdog() -> void:
 	if GameManager.ui_click_swallowed and not Input.is_action_pressed("shoot"):
 		GameManager.ui_click_swallowed = false
 
-	# _can_fire is flipped back on by _fire_timer, a real Timer, within one
-	# weapon's fire_rate of being set — always well under WATCHDOG_INTERVAL.
-	# If it's still down with nothing legitimate holding it there, the timer
-	# didn't do its job.
-	if not _can_fire and not reloading and not bursting:
+	# _can_fire is flipped back on by _fire_timer, a real Timer. "Stuck" means
+	# the flag is down and that timer ISN'T running — if it is running, the
+	# cooldown is simply in progress and this must keep its hands off.
+	#
+	# Checking only the flag (as this used to) meant that any watchdog tick
+	# landing mid-cooldown — which, while the trigger is held, is most of them
+	# — cleared the lock early and let an extra round out of cadence. That read
+	# in-game as the gun randomly double-firing without a Double Shoot module.
+	if not _can_fire and _fire_timer.is_stopped() and not reloading and not bursting:
 		push_warning("WeaponSystem: fire lock was stuck with nothing holding it — clearing.")
 		_can_fire = true
 

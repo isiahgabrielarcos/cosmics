@@ -34,10 +34,10 @@ animations = [{
 }]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_1"]
-radius = 160.0
+radius = 130.00783
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_2"]
-radius = 109.17875
+radius = 60.067986
 
 [node name="Blacksmith" type="Area2D" unique_id=727863698]
 scale = Vector2(0.7, 0.7)

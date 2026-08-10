@@ -61,6 +61,24 @@ layout_mode = 2
 theme_override_fonts/font = ExtResource("2_font")
 theme_override_font_sizes/font_size = 18
 
+[node name="MasterRow" type="VBoxContainer" parent="Content"]
+custom_minimum_size = Vector2(600, 0)
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="MasterLabel" type="Label" parent="Content/MasterRow"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 20
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "Master Volume: 75"
+
+[node name="MasterSlider" type="HSlider" parent="Content/MasterRow"]
+custom_minimum_size = Vector2(600, 30)
+layout_mode = 2
+max_value = 100.0
+value = 75.0
+
 [node name="MusicRow" type="VBoxContainer" parent="Content"]
 custom_minimum_size = Vector2(600, 0)
 layout_mode = 2

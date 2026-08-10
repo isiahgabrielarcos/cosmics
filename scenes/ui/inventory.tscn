@@ -101,15 +101,17 @@ theme_override_colors/font_color = Color(0.55, 0.78, 1, 1)
 theme_override_font_sizes/font_size = 16
 text = "SHIP STATUS"
 
-[node name="Stats" type="VBoxContainer" parent="Inventory/Content" unique_id=910000003]
+[node name="Stats" type="GridContainer" parent="Inventory/Content" unique_id=910000003]
 layout_mode = 2
+theme_override_constants/h_separation = 16
 theme_override_constants/separation = 2
+columns = 2
 
 [node name="HoldHeader" type="Label" parent="Inventory/Content" unique_id=910000004]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.55, 0.78, 1, 1)
 theme_override_font_sizes/font_size = 16
-text = "HOLD"
+text = "COLLECTED THIS RUN"
 
 [node name="Currencies" type="HBoxContainer" parent="Inventory/Content" unique_id=910000005]
 layout_mode = 2
@@ -129,35 +131,6 @@ layout_mode = 2
 theme_override_colors/font_color = Color(0.55, 0.78, 1, 1)
 theme_override_font_sizes/font_size = 16
 text = "MODULES"
-
-[node name="RarityCounts" type="HBoxContainer" parent="Inventory/Content" unique_id=910000010]
-layout_mode = 2
-theme_override_constants/separation = 14
-
-[node name="Common" type="Label" parent="Inventory/Content/RarityCounts" unique_id=910000011]
-layout_mode = 2
-theme_override_font_sizes/font_size = 15
-text = "COM 0"
-
-[node name="Rare" type="Label" parent="Inventory/Content/RarityCounts" unique_id=910000012]
-layout_mode = 2
-theme_override_font_sizes/font_size = 15
-text = "RAR 0"
-
-[node name="Epic" type="Label" parent="Inventory/Content/RarityCounts" unique_id=910000013]
-layout_mode = 2
-theme_override_font_sizes/font_size = 15
-text = "EPI 0"
-
-[node name="Legendary" type="Label" parent="Inventory/Content/RarityCounts" unique_id=910000014]
-layout_mode = 2
-theme_override_font_sizes/font_size = 15
-text = "LEG 0"
-
-[node name="Godly" type="Label" parent="Inventory/Content/RarityCounts" unique_id=910000015]
-layout_mode = 2
-theme_override_font_sizes/font_size = 15
-text = "GOD 0"
 
 [node name="SurrenderValue" type="Label" parent="Inventory/Content" unique_id=910000016]
 layout_mode = 2

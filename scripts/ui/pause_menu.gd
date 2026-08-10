@@ -2,16 +2,21 @@ extends CanvasLayer
 class_name PauseMenu
 
 # Ports pauseTheGame() from globalFunctions.lua. Esc toggles the pause menu.
-# Resume / Settings / Abandon + master volume; Settings swaps in a
-# resolution/fullscreen/music/ambient/sfx sub-page (settings_panel.tscn).
+# Resume / Settings / leave; Settings swaps in a resolution/fullscreen/volume
+# sub-page (settings_panel.tscn), which is also where master volume lives —
+# this menu used to carry a second slider for the same value.
+#
+# The leave button means different things in the two places the pause menu
+# appears, so it re-labels itself each time it opens: in the hub there's no
+# run to give up, so it walks all the way out to the title screen; mid-run it
+# abandons the run and drops you back at the hub, which is the Solar2D
+# behaviour and keeps your session.
 
 @onready var _pause_panel: Control          = $Root/PausePanel
 @onready var _settings_panel: SettingsPanel = $Root/SettingsPanel
 @onready var _resume_btn: Button            = $Root/PausePanel/VBox/ResumeButton
 @onready var _settings_btn: Button          = $Root/PausePanel/VBox/SettingsButton
-@onready var _abandon_btn: Button           = $Root/PausePanel/VBox/AbandonButton
-@onready var _master_slider: HSlider        = $Root/PausePanel/VBox/MasterVolumeSlider
-@onready var _master_label: Label           = $Root/PausePanel/VBox/MasterVolumeLabel
+@onready var _leave_btn: Button             = $Root/PausePanel/VBox/LeaveButton
 
 
 func _ready() -> void:
@@ -21,12 +26,8 @@ func _ready() -> void:
 
 	_resume_btn.pressed.connect(_resume)
 	_settings_btn.pressed.connect(_open_settings)
-	_abandon_btn.pressed.connect(_abandon)
-	_master_slider.value_changed.connect(_on_master_volume_changed)
+	_leave_btn.pressed.connect(_leave)
 	_settings_panel.back_pressed.connect(_close_settings)
-
-	_master_slider.value = AudioManager.master_volume * 100
-	_master_label.text = "Master Volume: %02d" % int(AudioManager.master_volume * 100)
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -53,6 +54,9 @@ func toggle_pause() -> void:
 func _open() -> void:
 	AudioManager.play_sfx("pauseSoundEffect")
 	GameManager.pause_game()
+	# Re-read each time rather than once in _ready: the pause menu is built
+	# with its scene, and nothing guarantees the stage was already set then.
+	_leave_btn.text = "Return to Main Menu" if GameManager.is_hub() else "Abandon"
 	visible = true
 	_pause_panel.visible = true
 	_settings_panel.visible = false
@@ -63,9 +67,12 @@ func _resume() -> void:
 	visible = false
 
 
-func _abandon() -> void:
+func _leave() -> void:
 	_resume()
-	GameManager.goto_main_menu()
+	if GameManager.is_hub():
+		GameManager.goto_title_screen()
+	else:
+		GameManager.goto_main_menu()   # back to the hub, run abandoned
 
 
 func _open_settings() -> void:
@@ -77,8 +84,3 @@ func _open_settings() -> void:
 func _close_settings() -> void:
 	_settings_panel.visible = false
 	_pause_panel.visible = true
-
-
-func _on_master_volume_changed(value: float) -> void:
-	AudioManager.set_master_volume(value / 100.0)
-	_master_label.text = "Master Volume: %02d" % int(value)

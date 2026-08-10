@@ -15,6 +15,19 @@ extends CanvasLayer
 @onready var kills_label: Label              = $Battle_HUD/KillsLabel
 @onready var currency_label: Label           = $Battle_HUD/CurrencyLabel
 @onready var pause_button: TextureButton     = $Battle_HUD/PauseButton
+@onready var hub_hud: Control = $Hub_HUD
+
+# Mute lives on both HUD variants — only one is ever visible, but the button
+# has to be in whichever one you're looking at.
+#
+# PLACEHOLDER ART: both currently reuse pauseButton.png with a blue tint, just
+# to hold the slot. Drop the real speaker icon into texture_normal on both
+# MuteButton nodes and delete their `modulate` override; MUTED_TINT below is
+# the only other thing that needs to go once there's a distinct muted icon.
+@onready var _mute_buttons := [$Battle_HUD/MuteButton, $Hub_HUD/MuteButton]
+
+const UNMUTED_TINT := Color(0.55, 0.85, 1.0)
+const MUTED_TINT := Color(0.5, 0.5, 0.5)
 
 var _player: Node = null
 var _weapon_system: Node = null
@@ -37,10 +50,10 @@ func _ready() -> void:
 	
 	
 	if GameManager.is_hub():
-		battle_hud.visible = true
-		$Battle_HUD/Inventory2.hide()
+		battle_hud.visible = false
+		hub_hud.visible = true
 	else:
-		
+		hub_hud.visible = false
 		battle_hud.visible = true
 		GameManager.mission_timer_updated.connect(_on_mission_timer)
 		GameManager.enemy_killed_signal.connect(_on_enemy_killed)
@@ -51,6 +64,11 @@ func _ready() -> void:
 	_layout_for_viewport()
 
 	pause_button.pressed.connect(_on_pause_button_pressed)
+
+	for button: TextureButton in _mute_buttons:
+		button.pressed.connect(_on_mute_button_pressed)
+	AudioManager.mute_changed.connect(_refresh_mute_button)
+	_refresh_mute_button(AudioManager.muted)
 
 	call_deferred("_connect_to_player")
 
@@ -71,6 +89,21 @@ func _on_pause_button_pressed() -> void:
 		pause_menu.toggle_pause()
 	else:
 		push_warning("PlayerHUD: pause button pressed but no PauseMenu found in the tree.")
+
+
+## Silences everything — music, ambience and sfx — without touching the
+## volume levels the player set, so unmuting comes back exactly where it was.
+func _on_mute_button_pressed() -> void:
+	# Same as the pause button: this is a UI click, not a trigger pull.
+	GameManager.ui_click_swallowed = true
+	AudioManager.toggle_mute()
+
+
+## Driven off AudioManager's signal rather than the click, so the button still
+## reads correctly if anything else mutes the game.
+func _refresh_mute_button(is_muted: bool) -> void:
+	for button: TextureButton in _mute_buttons:
+		button.modulate = MUTED_TINT if is_muted else UNMUTED_TINT
 
 
 ## Re-places any nodes that can't anchor themselves (Sprite2D, etc.) whenever

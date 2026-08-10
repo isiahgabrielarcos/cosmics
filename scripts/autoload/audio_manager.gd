@@ -58,6 +58,13 @@ const SFX_POOL_SIZE := 12
 
 # Master multiplies every category below; each category multiplies its own
 # player's volume. No engine audio buses needed — just linear multipliers.
+## Global mute, driven by the HUD's mute button. Deliberately separate from
+## master_volume rather than just zeroing it: unmuting has to come back to the
+## level the player actually chose, and the settings slider should keep
+## showing that level while muted rather than reading 0.
+var muted: bool = false
+signal mute_changed(is_muted: bool)
+
 var master_volume: float  = 0.75   # `volume = .75` in main.lua
 var music_volume: float   = 0.5    # channel-1 volume in main.lua
 var ambient_volume: float = 0.75
@@ -148,6 +155,8 @@ func play_sfx(name: String) -> void:
 	if not SFX.has(name):
 		push_warning("AudioManager: unknown sfx '%s'" % name)
 		return
+	if muted:
+		return
 	var p := _sfx_pool[_sfx_next]
 	_sfx_next = (_sfx_next + 1) % SFX_POOL_SIZE
 	p.stream = _get_stream(SFX[name])
@@ -181,9 +190,33 @@ func set_sfx_volume(value: float) -> void:
 	sfx_volume = clampf(value, 0.0, 1.0)
 
 
+## Master level as everything actually hears it — 0 while muted. Every volume
+## calculation goes through here so there is exactly one place mute applies.
+func _effective_master() -> float:
+	return 0.0 if muted else master_volume
+
+
 func _refresh_music_volume() -> void:
-	_music_player.volume_db = linear_to_db(maxf(master_volume * music_volume, 0.0001))
+	_music_player.volume_db = linear_to_db(maxf(_effective_master() * music_volume, 0.0001))
 
 
 func _refresh_ambient_volume() -> void:
-	_ambient_player.volume_db = linear_to_db(maxf(master_volume * ambient_volume, 0.0001))
+	_ambient_player.volume_db = linear_to_db(maxf(_effective_master() * ambient_volume, 0.0001))
+
+
+# ── Mute ───────────────────────────────────────────────────────────────────────
+
+func set_muted(value: bool) -> void:
+	if muted == value:
+		return
+	muted = value
+	_refresh_music_volume()
+	_refresh_ambient_volume()
+	mute_changed.emit(muted)
+
+
+## Flips mute and hands back the new state, so a button can update its own
+## icon from the return value without also listening to the signal.
+func toggle_mute() -> bool:
+	set_muted(not muted)
+	return muted

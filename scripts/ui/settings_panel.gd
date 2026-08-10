@@ -1,8 +1,11 @@
 extends Control
 class_name SettingsPanel
 
-# Resolution / fullscreen / per-category volume. Nested inside pause_menu.tscn
-# as a sub-page — PauseMenu toggles this panel's visibility against its own.
+# Resolution / fullscreen / master + per-category volume. Instanced as a
+# sub-page by both pause_menu.tscn and main_menu.tscn, which toggle its
+# visibility against their own and listen for back_pressed. Master volume
+# lives here and nowhere else — the pause menu used to carry its own copy of
+# the slider, which meant two controls for one value.
 
 signal back_pressed
 
@@ -14,6 +17,8 @@ const RESOLUTIONS := [
 
 @onready var _resolution_option: OptionButton = $Content/ResolutionRow/ResolutionOption
 @onready var _fullscreen_check: CheckBox      = $Content/FullscreenRow/FullscreenCheck
+@onready var _master_slider: HSlider          = $Content/MasterRow/MasterSlider
+@onready var _master_label: Label             = $Content/MasterRow/MasterLabel
 @onready var _music_slider: HSlider           = $Content/MusicRow/MusicSlider
 @onready var _music_label: Label              = $Content/MusicRow/MusicLabel
 @onready var _ambient_slider: HSlider         = $Content/AmbientRow/AmbientSlider
@@ -29,6 +34,7 @@ func _ready() -> void:
 
 	_resolution_option.item_selected.connect(_on_resolution_selected)
 	_fullscreen_check.toggled.connect(_on_fullscreen_toggled)
+	_master_slider.value_changed.connect(_on_master_changed)
 	_music_slider.value_changed.connect(_on_music_changed)
 	_ambient_slider.value_changed.connect(_on_ambient_changed)
 	_sfx_slider.value_changed.connect(_on_sfx_changed)
@@ -43,6 +49,8 @@ func refresh() -> void:
 	var idx := RESOLUTIONS.find(get_window().size)
 	_resolution_option.selected = idx
 
+	_master_slider.value = AudioManager.master_volume * 100
+	_master_label.text = "Master Volume: %02d" % int(AudioManager.master_volume * 100)
 	_music_slider.value = AudioManager.music_volume * 100
 	_music_label.text = "Music: %02d" % int(AudioManager.music_volume * 100)
 	_ambient_slider.value = AudioManager.ambient_volume * 100
@@ -58,6 +66,11 @@ func _on_resolution_selected(idx: int) -> void:
 func _on_fullscreen_toggled(pressed: bool) -> void:
 	get_window().mode = Window.MODE_FULLSCREEN if pressed else Window.MODE_WINDOWED
 	_resolution_option.disabled = pressed
+
+
+func _on_master_changed(value: float) -> void:
+	AudioManager.set_master_volume(value / 100.0)
+	_master_label.text = "Master Volume: %02d" % int(value)
 
 
 func _on_music_changed(value: float) -> void:

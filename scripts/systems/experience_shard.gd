@@ -9,11 +9,13 @@ const SHARD_SHEET := preload("res://assets/art/characters/experienceShards.png")
 
 # Frame coords in the 64x64 sheet (from the Lua sequence mapping:
 # common=frame1, rare=frame2, godly=frame3, epic=frame4)
+## `worth` is experience. `shards` is the shard currency the pickup also pays
+## into the run's haul — a rarer shard is worth more of both.
 const RARITY_DATA := {
-	"common": { "region": Rect2(0, 0, 32, 32),   "worth": 5  },
-	"rare":   { "region": Rect2(32, 0, 32, 32),  "worth": 10 },
-	"godly":  { "region": Rect2(0, 32, 32, 32),  "worth": 50 },
-	"epic":   { "region": Rect2(32, 32, 32, 32), "worth": 20 },
+	"common": { "region": Rect2(0, 0, 32, 32),   "worth": 5,  "shards": 1  },
+	"rare":   { "region": Rect2(32, 0, 32, 32),  "worth": 10, "shards": 3  },
+	"godly":  { "region": Rect2(0, 32, 32, 32),  "worth": 50, "shards": 20 },
+	"epic":   { "region": Rect2(32, 32, 32, 32), "worth": 20, "shards": 8  },
 }
 
 const MAGNET_RANGE := 180.0
@@ -90,5 +92,6 @@ func _on_body_entered(body: Node) -> void:
 		return
 	if body.has_method("add_experience"):
 		body.add_experience(worth)
+	GameManager.collect_shards(int(RARITY_DATA[rarity]["shards"]))
 	AudioManager.play_sfx("cosmicShards")
 	queue_free()

@@ -33,8 +33,8 @@ animations = [{
 "speed": 3.75
 }]
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_1"]
-radius = 195.0
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_evb2l"]
+size = Vector2(154.28577, 301.42862)
 
 [node name="Receptionist" type="Area2D" unique_id=902704943]
 scale = Vector2(0.7, 0.7)
@@ -45,7 +45,9 @@ sprite_frames = SubResource("SpriteFrames_1")
 animation = &"idle"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=432391964]
-shape = SubResource("CircleShape2D_1")
+position = Vector2(0, 32.142876)
+scale = Vector2(0.9999996, 0.9999996)
+shape = SubResource("RectangleShape2D_evb2l")
 
 [node name="Prompt" type="Sprite2D" parent="." unique_id=1083678748]
 position = Vector2(0, -74)

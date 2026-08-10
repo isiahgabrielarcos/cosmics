@@ -89,9 +89,34 @@ const TIER_NAMES := { 1: "BEGINNER", 2: "NORMAL", 3: "HARD", 4: "SPACE COWBOY" }
 
 # ── Runtime Counters ───────────────────────────────────────────────────────────
 var enemies_killed: int        = 0
+var module_upgrade_count: int  = 0
+
+# ── Currency collected THIS run ───────────────────────────────────────────────
+# Kept apart from the lifetime totals in the save. These are what the run
+# actually earned — the inventory shows them so the player can see what this
+# contract is worth so far, rather than a bank balance that barely moves.
+# They're banked into the save when the contract completes; wash out and the
+# haul is lost, same as the shards always were.
+var gathered_gems: int         = 0
 var gathered_shards: int       = 0
 var gathered_currency: int     = 0
-var module_upgrade_count: int  = 0
+
+
+## Gems come out of module chests, scaled by how good the chest was.
+func collect_gems(amount: int) -> void:
+	gathered_gems += amount
+	run_currency_changed.emit(gathered_gems, gathered_shards, gathered_currency)
+
+
+## Shard currency comes off experience shards, scaled by shard rarity.
+func collect_shards(amount: int) -> void:
+	gathered_shards += amount
+	run_currency_changed.emit(gathered_gems, gathered_shards, gathered_currency)
+
+
+func collect_currency(amount: int) -> void:
+	gathered_currency += amount
+	run_currency_changed.emit(gathered_gems, gathered_shards, gathered_currency)
 
 ## Run-scoped values module picks can move (currentMaxShardDropRate /
 ## currentEnemyExperienceWorthAddition in the Lua). Reset per session.
@@ -137,6 +162,8 @@ signal game_over_triggered
 signal mission_complete
 signal mission_timer_updated(display_seconds: float, count_up: bool)
 signal currency_changed(gems: int, shards: int, central: int)
+## Lifetime totals moved; this one is the haul of the run in progress.
+signal run_currency_changed(gems: int, shards: int, central: int)
 signal modules_changed
 
 
@@ -274,6 +301,7 @@ func start_session(stage: int, diff: String = "normal", tier: int = 1) -> void:
 	game_over = false
 	game_done = false
 	enemies_killed = 0
+	gathered_gems = 0
 	gathered_shards = 0
 	gathered_currency = 0
 	shard_drop_rate = 6
@@ -344,11 +372,11 @@ func trigger_mission_complete() -> void:
 func _grant_mission_rewards() -> void:
 	var pd: Dictionary = SaveManager.player_data
 	if difficulty == "expert":
-		pd["gems"] = int(pd.get("gems", 0)) + 50
+		pd["gems"] = int(pd.get("gems", 0)) + gathered_gems + 50
 		pd["shards"] = int(pd.get("shards", 0)) + gathered_shards + 150
 		pd["centralCurrency"] = int(pd.get("centralCurrency", 0)) + gathered_currency + 250
 	else:
-		pd["gems"] = int(pd.get("gems", 0)) + 15
+		pd["gems"] = int(pd.get("gems", 0)) + gathered_gems + 15
 		pd["shards"] = int(pd.get("shards", 0)) + gathered_shards + 50
 		pd["centralCurrency"] = int(pd.get("centralCurrency", 0)) + gathered_currency + 150
 	_surrender_modules(true)
@@ -404,6 +432,8 @@ func resume_game() -> void:
 
 # ── Scene transitions (mirrors composer.gotoScene) ─────────────────────────────
 
+const TITLE_SCENE := "res://scenes/ui/main_menu.tscn"
+
 func goto_battle() -> void:
 	resume_game()
 	ui_open = false
@@ -424,11 +454,34 @@ func queue_battle(stage: int, diff: String, tier: int = 1, minutes: float = 0.0)
 	goto_battle()
 
 
+## The hub — "main menu" in Solar2D's sense, where you are between missions.
+## The actual title screen is goto_title_screen().
 func goto_main_menu() -> void:
 	resume_game()
 	current_stage = 100
 	SceneTransition.change_scene(func():
 		get_tree().change_scene_to_file("res://scenes/levels/cosmic_hub.tscn"))
+
+
+## All the way out to the title screen. Distinct from goto_main_menu(): that
+## drops you at the hub with your session intact, this ends the session.
+func goto_title_screen() -> void:
+	resume_game()
+	ui_open = false
+	game_over = false
+	game_done = false
+	current_stage = 100
+	SceneTransition.change_scene(func():
+		get_tree().change_scene_to_file(TITLE_SCENE))
+
+
+## Generic routed scene change, so a scene can be picked in the inspector
+## rather than hard-coded here.
+func goto_scene(path: String) -> void:
+	resume_game()
+	ui_open = false
+	SceneTransition.change_scene(func():
+		get_tree().change_scene_to_file(path))
 
 
 func goto_level_select() -> void:

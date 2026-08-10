@@ -460,6 +460,6 @@ static func _compact(pool: Array) -> Array:
 ## can't drift apart.
 static func grant_scrap(scrap: Dictionary) -> void:
 	if scrap.has("currency"):
-		GameManager.gathered_currency += int(scrap["currency"])
+		GameManager.collect_currency(int(scrap["currency"]))
 	if scrap.has("shards"):
-		GameManager.gathered_shards += int(scrap["shards"])
+		GameManager.collect_shards(int(scrap["shards"]))

@@ -13,6 +13,8 @@ const LAYER_SHIPS    := 8     # layer 4 — fast chasers
 const LAYER_SLASHERS := 16    # layer 5
 const LAYER_SHOOTERS := 32    # layer 6
 const LAYER_WALLS    := 64    # layer 7
+
+const GeometryEscape := preload("res://scripts/systems/geometry_escape.gd")
 const LAYER_BOMBERS  := 128   # layer 8
 const LAYER_BOSSES   := 256   # layer 9
 
@@ -92,6 +94,13 @@ func _ready() -> void:
 
 func _physics_process(delta: float) -> void:
 	_tick_status(delta)
+
+	# Enemies collide with asteroid walls the same way the ship does, so they
+	# get stuck inside them the same way — a rock drifting onto one, or a
+	# knockback punting one through a wall, leaves it embedded and flailing
+	# for the rest of the run. Same escape as the player's.
+	if GeometryEscape.eject(self):
+		velocity = Vector2.ZERO
 
 	_player = _find_player()
 	if _player == null:
