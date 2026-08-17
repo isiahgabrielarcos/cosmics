@@ -7,6 +7,7 @@ extends Node2D
 const PauseMenuScene := preload("res://scenes/ui/pause_menu.tscn")
 const MissionEndScreenScene := preload("res://scenes/ui/mission_end_screen.tscn")
 const ModulePickPanelScene := preload("res://scenes/ui/panels/module_pick_panel.tscn")
+const ContractSystemScene := preload("res://scenes/ui/contract_system.tscn")
 
 var _module_picks: ModulePickPanel
 
@@ -33,12 +34,21 @@ func _enter_tree() -> void:
 		GameManager.pending_run_minutes = 0.0
 	GameManager.start_session(stage, stage_difficulty, _tier)
 
+	# Record the run as it actually resolved, not as it was requested. Restart
+	# used to replay only what queue_battle had been told, so a run started any
+	# other way — straight from the editor, or after the pending values had
+	# been consumed — restarted into the sandbox stage at its default length
+	# instead of the contract the player was actually in.
+	GameManager.remember_run(stage, stage_difficulty, _tier, _run_minutes)
+
 
 func _ready() -> void:
 	AudioManager.play_music("lightSpeedChase")
 
 	add_child(PauseMenuScene.instantiate())
 	add_child(MissionEndScreenScene.instantiate())
+	# Owns both contract panels; the calls start on its own timer.
+	add_child(ContractSystemScene.instantiate())
 
 	_module_picks = ModulePickPanelScene.instantiate()
 	add_child(_module_picks)

@@ -78,7 +78,7 @@ var _can_fire: bool = true
 # periodically whether firing should be possible and forces it back open if
 # something's been stuck well past when it should have cleared on its own.
 const WATCHDOG_INTERVAL := 2.0
-var _bursting_deadline_msec: int = 0
+var _burst_time_left: float = 0.0
 var _reloading_deadline_msec: int = 0
 
 ## Set while the Burst Projectile skill is unloading the magazine. The trigger
@@ -246,6 +246,8 @@ func _pierce_for(data: WeaponData) -> int:
 
 
 func _physics_process(delta: float) -> void:
+	if bursting:
+		_burst_time_left = maxf(0.0, _burst_time_left - delta)
 	if _reload_buff_left > 0.0:
 		_reload_buff_left = maxf(0.0, _reload_buff_left - delta)
 
@@ -359,24 +361,25 @@ func fire_burst() -> int:
 		BURST_MIN_INTERVAL, BURST_MAX_INTERVAL)
 
 	bursting = true
-	# Deadline for the watchdog below — real wall-clock, not "rounds ticks
-	# from now", so a pause that stalls the burst doesn't also stall the
-	# deadline that's supposed to catch it.
-	_bursting_deadline_msec = Time.get_ticks_msec() + int(rounds * interval * 1000.0) + 500
+	# Budget in unpaused seconds, ticked down in _physics_process. A wall-clock
+	# deadline would keep running while the tree is paused and the watchdog
+	# would then decide the burst had overrun the moment you unpaused.
+	_burst_time_left = rounds * interval + 0.5
 	for i in rounds:
 		var shot := i
-		get_tree().create_timer(shot * interval).timeout.connect(func():
+		# process_always = false, so these timers stop with the tree. Pausing
+		# mid-burst used to let every remaining timer fire on schedule anyway
+		# while the callback threw its round away for being paused, so a burst
+		# interrupted by a module pick simply lost the rest of its magazine.
+		# Now the burst freezes with everything else and picks up on resume.
+		get_tree().create_timer(shot * interval, false).timeout.connect(func():
 			# The trigger-lock has to clear on the last round NO MATTER WHAT —
-			# this used to sit after the paused/invalid checks below, so a
-			# module pick or pause menu opening mid-burst made the callback
-			# return early and left `bursting` stuck true forever, silently
-			# disabling the gun for the rest of the run. Only guard this on
-			# `self` being valid; player/pause don't get a say in it.
+			# this used to sit after the validity checks below, so a callback
+			# returning early left `bursting` stuck true forever, silently
+			# disabling the gun for the rest of the run.
 			if is_instance_valid(self) and shot == rounds - 1:
 				bursting = false
 			if not is_instance_valid(self) or not is_instance_valid(player):
-				return
-			if get_tree().paused:
 				return
 			# Aim is read now, not when the burst started, so the stream
 			# sweeps with the ship.
@@ -388,9 +391,10 @@ func fire_burst() -> int:
 ## a burst tracks where the ship is pointing rather than where it was.
 func _queue_volley(slot: int, data: WeaponData, mods: Dictionary,
 		offset: Vector2, delay: float) -> void:
-	get_tree().create_timer(delay).timeout.connect(func():
-		if is_instance_valid(self) and is_instance_valid(player) \
-				and not get_tree().paused:
+	# process_always = false, so a trailing volley freezes with the tree and
+	# fires on resume instead of being thrown away for arriving during a pause.
+	get_tree().create_timer(delay, false).timeout.connect(func():
+		if is_instance_valid(self) and is_instance_valid(player):
 			_fire_weapon(slot, data, mods, offset))
 
 
@@ -566,7 +570,7 @@ func _on_reload_done() -> void:
 func _check_can_fire_watchdog() -> void:
 	var now := Time.get_ticks_msec()
 
-	if bursting and now > _bursting_deadline_msec:
+	if bursting and _burst_time_left <= 0.0:
 		push_warning("WeaponSystem: burst lock was still set past its own deadline — clearing.")
 		bursting = false
 

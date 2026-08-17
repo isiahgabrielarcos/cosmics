@@ -11,6 +11,7 @@ const MUSIC := {
 	"outsideTheVillage":    "res://assets/audio/music/outsideTheVillageFinal.mp3",
 	"gameOverMusic":        "res://assets/audio/music/gameOverMusic.mp3",
 	"missionCompleteMusic": "res://assets/audio/music/missionDoneMusic.mp3",
+	"cosmicLobby2Music":    "res://assets/audio/music/Hums of the Cosmic Bird.mp3",
 }
 
 const SFX := {
@@ -42,6 +43,16 @@ const SFX := {
 	"dashSoundEffect":       "res://assets/audio/sfx/dashSoundEffect.mp3",
 	"tobyEscaped":           "res://assets/audio/sfx/tobyEscaped.mp3",
 	"UFOsoaring":            "res://assets/audio/sfx/UFOsoaring.mp3",
+	# Character voice bites — one short sting per speaking turn
+	"voiceChesca":           "res://assets/audio/sfx/jasmineSound.mp3",
+	"voiceToby":             "res://assets/audio/sfx/tobySound.mp3",
+	"voiceCody":             "res://assets/audio/sfx/arthurSound.mp3",
+	"voiceMary":             "res://assets/audio/sfx/marySound.mp3",
+	"voiceJulie":            "res://assets/audio/sfx/julieSound.mp3",
+	"voiceEveland":          "res://assets/audio/sfx/evelandSound.mp3",
+	"voiceGabriel":          "res://assets/audio/sfx/gabrielSound.mp3",
+	"voicePrincess":         "res://assets/audio/sfx/princessSound.mp3",
+	"voiceLorraine":         "res://assets/audio/sfx/lorraineSound.mp3",
 	# UI
 	"pauseSoundEffect":      "res://assets/audio/sfx/pauseSoundEffect.mp3",
 	"pickedMode1":           "res://assets/audio/sfx/pickedMode.mp3",

@@ -10,9 +10,15 @@ extends Node
 #   32         = scavenge material
 #   33         = escort asset
 #   34         = attack timer
-## The sandbox stage: every faction, every archetype, one of each boss in
-## rotation. Used by scenes/levels/testing_area.tscn.
+## The Citadel: every faction, every archetype, one of each boss in rotation,
+## fought at the structure in the middle of the cluster rather than inside any
+## one solar system. Was the developer sandbox; it is a real stage now, picked
+## by clicking the citadel on the level selection.
 const ALL_IN_ONE_STAGE := 101
+const CITADEL_STAGE := 101
+## Endless variant. The 21-24 endless block belongs to the four systems, so the
+## Citadel needs its own id outside it.
+const CITADEL_ENDLESS_STAGE := 121
 
 var current_stage: int = 1
 var difficulty: String = "normal"   # "normal" | "expert"
@@ -32,6 +38,13 @@ var pending_stage: int = -1
 var pending_difficulty: String = "normal"
 var pending_tier: int = 1            # inner difficulty selector, 1 (easy) .. 5 (hard)
 var pending_run_minutes: float = 0.0  # >0 = fixed-length run, 0 = use the stage default
+
+# The last contract actually launched, so Restart repeats it rather than
+# dumping the player into the sandbox.
+var last_stage: int = -1
+var last_difficulty: String = "normal"
+var last_tier: int = 1
+var last_run_minutes: float = 0.0
 var last_talked_to : String = ""
 
 # ── Gameplay loop ─────────────────────────────────────────────────────────────
@@ -105,12 +118,14 @@ var gathered_currency: int     = 0
 ## Gems come out of module chests, scaled by how good the chest was.
 func collect_gems(amount: int) -> void:
 	gathered_gems += amount
+	advance_contracts("collect_gems", amount)
 	run_currency_changed.emit(gathered_gems, gathered_shards, gathered_currency)
 
 
 ## Shard currency comes off experience shards, scaled by shard rarity.
 func collect_shards(amount: int) -> void:
 	gathered_shards += amount
+	advance_contracts("collect_shards", amount)
 	run_currency_changed.emit(gathered_gems, gathered_shards, gathered_currency)
 
 
@@ -139,6 +154,121 @@ var modules_taken: Dictionary = {
 ## Every module fitted this run, in order — { rarity, name, desc }.
 var module_log: Array = []
 
+# ── Contracts ─────────────────────────────────────────────────────────────────
+# Side jobs called in mid-run by the hub staff and accepted on the spot. The
+# list lives here rather than on the panel so it survives the UI being rebuilt,
+# and so the objectives that will eventually read it have one place to look.
+#
+# Run scoped: a contract is an agreement for this contract only, and the board
+# is wiped when the next session starts.
+
+## Accepted offers, in the order they were taken. Entries are whatever
+## ContractRegistry.roll() produced.
+var active_contracts: Array = []
+
+
+# ── Narrative objectives ──────────────────────────────────────────────────────
+# What the story wants from you in the hub, as opposed to the contracts you
+# take mid-run. "Talk to Cody", "See Chesca at reception", and so on.
+#
+# Kept here rather than in the hub scene so a step ticked off before a mission
+# is still ticked off when the hub reloads afterwards, and so the panel can
+# read it without caring which scene is up.
+
+## { "id": String, "text": String, "done": bool }, in the order they should be
+## worked through.
+var narrative_objectives: Array = []
+
+signal objectives_changed
+
+
+## Adds a step if it isn't already listed. Safe to call every time the hub
+## loads, which is how the default list is seeded.
+func add_objective(id: String, text: String) -> void:
+	for entry in narrative_objectives:
+		if str(entry.get("id", "")) == id:
+			return
+	narrative_objectives.append({ "id": id, "text": text, "done": false })
+	objectives_changed.emit()
+
+
+func complete_objective(id: String) -> void:
+	for entry in narrative_objectives:
+		if str(entry.get("id", "")) == id and not bool(entry.get("done", false)):
+			entry["done"] = true
+			objectives_changed.emit()
+			return
+
+
+func objectives_remaining() -> int:
+	var open := 0
+	for entry in narrative_objectives:
+		if not bool(entry.get("done", false)):
+			open += 1
+	return open
+
+
+func add_contract(contract: Dictionary) -> void:
+	contract["progress"] = 0
+	contract["complete"] = false
+	active_contracts.append(contract)
+	contract_taken.emit(contract)
+	contracts_changed.emit()
+
+
+func clear_contracts() -> void:
+	active_contracts.clear()
+	contracts_changed.emit()
+
+
+## Adds to every open contract watching `task_id`. This is the one entry point
+## for progress, so a new objective only has to find the right place to call it
+## rather than reach into the contract list itself.
+func advance_contracts(task_id: String, amount: int = 1) -> void:
+	_apply_progress(task_id, func(current, target): return mini(target, current + amount))
+
+
+## For objectives that are a live reading rather than a running total — the
+## number of fiends on screen right now, say. The best reading so far is kept,
+## so drifting back below the target doesn't undo the contract.
+func report_contract_gauge(task_id: String, value: int) -> void:
+	_apply_progress(task_id, func(current, _target): return maxi(current, value))
+
+
+func _apply_progress(task_id: String, resolve: Callable) -> void:
+	var changed := false
+	for contract in active_contracts:
+		if bool(contract.get("complete", false)):
+			continue
+		if str(contract.get("task_id", "")) != task_id:
+			continue
+
+		var target := int(contract.get("target", 1))
+		var updated: int = clampi(
+			resolve.call(int(contract.get("progress", 0)), target), 0, target)
+		if updated == int(contract.get("progress", 0)):
+			continue
+
+		contract["progress"] = updated
+		changed = true
+		if updated >= target:
+			contract["complete"] = true
+			contract_completed.emit(contract)
+			AudioManager.play_sfx("playGame")
+	if changed:
+		contracts_changed.emit()
+
+
+## Open contracts asking for `task_id`. Used by the escort objectives, which
+## need to know whether to put a haul on the ship at all.
+func contracts_for(task_id: String) -> Array:
+	var out: Array = []
+	for contract in active_contracts:
+		if str(contract.get("task_id", "")) == task_id \
+				and not bool(contract.get("complete", false)):
+			out.append(contract)
+	return out
+
 const MODULE_VALUES := {
 	"common": 25, "rare": 60, "epic": 150, "legendary": 400, "godly": 1000,
 }
@@ -165,6 +295,10 @@ signal currency_changed(gems: int, shards: int, central: int)
 ## Lifetime totals moved; this one is the haul of the run in progress.
 signal run_currency_changed(gems: int, shards: int, central: int)
 signal modules_changed
+## A contract was accepted or the board was cleared.
+signal contracts_changed
+signal contract_taken(contract: Dictionary)
+signal contract_completed(contract: Dictionary)
 
 
 
@@ -200,7 +334,15 @@ func is_normal_stage() -> bool:
 
 
 func is_endless_stage() -> bool:
+	if current_stage == CITADEL_ENDLESS_STAGE:
+		return true
 	return current_stage >= 21 and current_stage <= 24
+
+
+## True in either Citadel mode. The background swaps the burning star out for
+## the citadel itself on the strength of this.
+func is_citadel() -> bool:
+	return current_stage == CITADEL_STAGE or current_stage == CITADEL_ENDLESS_STAGE
 
 
 ## Spawner tuning per mission (enemySpawner variants in globalFunctions.lua).
@@ -310,6 +452,8 @@ func start_session(stage: int, diff: String = "normal", tier: int = 1) -> void:
 	module_upgrade_count = 0
 	modules_taken = { "common": 0, "rare": 0, "epic": 0, "legendary": 0, "godly": 0 }
 	module_log.clear()
+	active_contracts.clear()
+	contracts_changed.emit()
 	stage_changed.emit(stage)
 
 
@@ -320,6 +464,7 @@ func record_module(rarity: String, module_name: String, description: String) -> 
 	modules_taken[rarity] = int(modules_taken.get(rarity, 0)) + 1
 	module_upgrade_count += 1
 	module_log.append({ "rarity": rarity, "name": module_name, "desc": description })
+	advance_contracts("collect_modules")
 	modules_changed.emit()
 
 
@@ -434,13 +579,33 @@ func resume_game() -> void:
 
 const TITLE_SCENE := "res://scenes/ui/main_menu.tscn"
 
+## Records the run currently being played. Called by battle_scene once it has
+## worked out which stage it is actually running, so Restart replays that
+## rather than whatever was last requested through queue_battle.
+func remember_run(stage: int, diff: String, tier: int, minutes: float) -> void:
+	if stage == 100:
+		return   # the hub is not a run
+	last_stage = stage
+	last_difficulty = diff
+	last_tier = tier
+	last_run_minutes = minutes
+
+
+## Replays the contract you were just in, at the same difficulty and length.
+func restart_battle() -> void:
+	if last_stage <= 0:
+		goto_battle()
+		return
+	queue_battle(last_stage, last_difficulty, last_tier, last_run_minutes)
+
+
 func goto_battle() -> void:
 	resume_game()
 	ui_open = false
 	game_over = false
 	game_done = false
 	SceneTransition.change_scene(func():
-		get_tree().change_scene_to_file("res://scenes/levels/testing_area.tscn"))
+		get_tree().change_scene_to_file("res://scenes/levels/battle_area.tscn"))
 
 
 ## Called by the CCC level selection — battle_scene picks these up on load.
@@ -450,6 +615,13 @@ func queue_battle(stage: int, diff: String, tier: int = 1, minutes: float = 0.0)
 	pending_difficulty = diff
 	pending_tier = clampi(tier, 1, MAX_TIER)
 	pending_run_minutes = minutes
+	# Remembered so Restart can put you back into the SAME contract. It used to
+	# call goto_battle() bare, which dropped you into the sandbox stage at its
+	# default length regardless of which system you had actually been in.
+	last_stage = pending_stage
+	last_difficulty = pending_difficulty
+	last_tier = pending_tier
+	last_run_minutes = pending_run_minutes
 	AudioManager.play_sfx("playGame")
 	goto_battle()
 
@@ -493,6 +665,14 @@ func goto_level_select() -> void:
 
 # ── Enemy kill tracking ────────────────────────────────────────────────────────
 
-func on_enemy_killed(experience: int) -> void:
+## `kind` is the contract-facing category, not the archetype: "chaser",
+## "shooter", "slasher", "bomber" or "boss". Fast ships count as chasers,
+## because a contract for "chasers" reading as two different things depending
+## on which faction spawned is not a distinction a player would ever make.
+func on_enemy_killed(experience: int, kind: String = "") -> void:
 	enemies_killed += 1
 	enemy_killed_signal.emit(experience)
+
+	advance_contracts("kill_any")
+	if kind != "":
+		advance_contracts("kill_%s" % kind)

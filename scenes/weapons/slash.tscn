@@ -71,12 +71,14 @@ script = ExtResource("1_proj")
 data = SubResource("Resource_data")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=645926916]
-position = Vector2(0, -33)
+position = Vector2(0, -49)
+scale = Vector2(1.5, 1.5)
 sprite_frames = SubResource("SpriteFrames_1")
 animation = &"moving"
 frame = 1
 frame_progress = 0.9341412
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1230664995]
-position = Vector2(0, -33)
+position = Vector2(0, -47)
+scale = Vector2(1.5, 1.5)
 shape = SubResource("ConvexPolygonShape2D_4e422")

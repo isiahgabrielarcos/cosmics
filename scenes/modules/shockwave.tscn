@@ -1,6 +1,6 @@
-[gd_scene load_steps=11 format=3]
+[gd_scene format=3 uid="uid://c6di7ftpgchia"]
 
-[ext_resource type="Script" path="res://scripts/systems/module_effect.gd" id="1_fx"]
+[ext_resource type="Script" uid="uid://11mhdpu81egn" path="res://scripts/systems/module_effect.gd" id="1_fx"]
 [ext_resource type="Texture2D" uid="uid://rv50lw36ije5" path="res://assets/art/vfx/shockwave.png" id="2_tex"]
 
 [sub_resource type="AtlasTexture" id="Atlas_0"]
@@ -62,20 +62,23 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("Atlas_7")
 }],
-"loop": 1,
+"loop": 0,
 "name": &"moving",
 "speed": 16.0
 }]
 
-[node name="Shockwave" type="Area2D"]
-script = ExtResource("1_fx")
-kind = 0
-lifetime = 0.55
-speed = 0.0
-retick_interval = 0.0
+[sub_resource type="CircleShape2D" id="CircleShape2D_vlff3"]
 
-[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+[node name="Shockwave" type="Area2D" unique_id=927028045]
+script = ExtResource("1_fx")
+lifetime = 0.55
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=238485718]
+scale = Vector2(1.9407389, 1.9407389)
 sprite_frames = SubResource("SpriteFrames_1")
 animation = &"moving"
+autoplay = "moving"
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1938989509]
+scale = Vector2(9.149856, 9.149856)
+shape = SubResource("CircleShape2D_vlff3")

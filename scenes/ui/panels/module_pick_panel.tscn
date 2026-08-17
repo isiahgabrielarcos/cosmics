@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://b8wfig4p3i6xg"]
 
 [ext_resource type="Script" uid="uid://dyidnb6121351" path="res://scripts/ui/module_pick_panel.gd" id="1_pick"]
-[ext_resource type="PackedScene" path="res://scenes/ui/components/module_card.tscn" id="2_card"]
+[ext_resource type="PackedScene" uid="uid://uihqdn66oxaj" path="res://scenes/ui/components/module_card.tscn" id="2_card"]
 [ext_resource type="FontFile" uid="uid://df2u10dmiarah" path="res://assets/fonts/RetroGaming.ttf" id="3_font"]
 
 [node name="ModulePickPanel" type="CanvasLayer" unique_id=693556813]
@@ -58,7 +58,6 @@ offset_left = -510.0
 offset_top = -210.0
 offset_right = -210.0
 offset_bottom = 210.0
-stretch_mode = 0
 
 [node name="Card2" parent="Root/Cards" unique_id=1017306071 instance=ExtResource("2_card")]
 layout_mode = 0
@@ -66,7 +65,6 @@ offset_left = -150.0
 offset_top = -210.0
 offset_right = 150.0
 offset_bottom = 210.0
-stretch_mode = 0
 
 [node name="Card3" parent="Root/Cards" unique_id=234609568 instance=ExtResource("2_card")]
 layout_mode = 0
@@ -74,4 +72,9 @@ offset_left = 210.0
 offset_top = -210.0
 offset_right = 510.0
 offset_bottom = 210.0
-stretch_mode = 0
+
+[node name="PickingTimer" type="Timer" parent="." unique_id=1260426031]
+wait_time = 0.7
+one_shot = true
+
+[connection signal="timeout" from="PickingTimer" to="." method="_on_picking_timer_timeout"]

@@ -7,6 +7,10 @@
 [ext_resource type="Texture2D" uid="uid://c2hd6v3ixmeoe" path="res://assets/art/ui/shieldBar.png" id="7_shbar"]
 [ext_resource type="Texture2D" uid="uid://ft20q8mmj8am" path="res://assets/art/ui/expBar.png" id="8_expbar"]
 [ext_resource type="FontFile" uid="uid://df2u10dmiarah" path="res://assets/fonts/RetroGaming.ttf" id="9_font"]
+[ext_resource type="Texture2D" uid="uid://dc5xvkcag0ips" path="res://assets/art/ui/muteButton.png" id="10_7l16x"]
+[ext_resource type="PackedScene" uid="uid://dul56r0my1e2q" path="res://scenes/ui/panels/contracts_panel.tscn" id="10_contracts"]
+[ext_resource type="PackedScene" uid="uid://b24pwguhx0x35" path="res://scenes/ui/panels/contract_call_panel.tscn" id="11_call"]
+[ext_resource type="PackedScene" uid="uid://bryfon75ibaib" path="res://scenes/ui/panels/objectives_panel.tscn" id="12_objectives"]
 
 [sub_resource type="Gradient" id="Gradient_nh6vl"]
 colors = PackedColorArray(0, 0, 0, 1, 1.8951484e-07, 0.23018044, 0.008009607, 1)
@@ -39,7 +43,7 @@ font_size = 20
 font_size = 38
 
 [sub_resource type="LabelSettings" id="LabelSettings_nsspx"]
-line_spacing = 5.56
+line_spacing = 0.925
 font_size = 19
 
 [node name="Player_HUD" type="CanvasLayer" unique_id=168399030]
@@ -230,9 +234,9 @@ anchors_preset = -1
 anchor_top = 1.0
 anchor_bottom = 1.0
 offset_left = 1639.0
-offset_top = -1001.0
+offset_top = -212.0
 offset_right = 1903.0
-offset_bottom = -740.0
+offset_bottom = 49.0
 grow_vertical = 0
 text = "Movement: WASD
 Shoot: Left Click
@@ -240,7 +244,8 @@ Skill: Spacebar
 Dash: Shift (hold)
 Switch Weapon: Q
 Reload: R
-Inventory: E"
+Inventory: E
+Contracts: Tab"
 label_settings = SubResource("LabelSettings_nsspx")
 horizontal_alignment = 2
 
@@ -253,7 +258,7 @@ offset_bottom = 65.0
 texture_normal = ExtResource("7_nh6vl")
 stretch_mode = 0
 
-[node name="MuteButton" type="TextureButton" parent="Battle_HUD"]
+[node name="MuteButton" type="TextureButton" parent="Battle_HUD" unique_id=209805117]
 modulate = Color(0.55, 0.85, 1, 1)
 layout_mode = 0
 offset_left = 1797.0
@@ -263,24 +268,31 @@ offset_bottom = 65.0
 texture_normal = ExtResource("7_nh6vl")
 stretch_mode = 0
 
+[node name="ContractsPanel" parent="Battle_HUD" unique_id=172620836 instance=ExtResource("10_contracts")]
+layout_mode = 1
+
+[node name="ContractCallPanel" parent="Battle_HUD" unique_id=1050118680 instance=ExtResource("11_call")]
+layout_mode = 1
+
 [node name="Hub_HUD" type="Control" parent="." unique_id=1719708339]
 visible = false
 layout_mode = 3
-anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
 
 [node name="Label" type="Label" parent="Hub_HUD" unique_id=1683788738]
 layout_mode = 1
 anchors_preset = -1
-anchor_top = 1.0
-anchor_bottom = 1.0
 offset_left = 1639.0
-offset_top = 45.0
+offset_top = 85.0
 offset_right = 1903.0
-offset_bottom = 306.0
-grow_vertical = 0
+offset_bottom = 346.0
 text = "Movement: WASD
+Dash: Shift
 Interact: F"
 label_settings = SubResource("LabelSettings_nsspx")
 horizontal_alignment = 2
@@ -294,14 +306,17 @@ offset_bottom = 65.0
 texture_normal = ExtResource("7_nh6vl")
 stretch_mode = 0
 
-[node name="MuteButton" type="TextureButton" parent="Hub_HUD"]
+[node name="MuteButton" type="TextureButton" parent="Hub_HUD" unique_id=312120971]
 modulate = Color(0.55, 0.85, 1, 1)
 layout_mode = 0
 offset_left = 1797.0
 offset_top = 13.0
 offset_right = 1849.0
 offset_bottom = 65.0
-texture_normal = ExtResource("7_nh6vl")
+texture_normal = ExtResource("10_7l16x")
 stretch_mode = 0
+
+[node name="ObjectivesPanel" parent="Hub_HUD" unique_id=1960075220 instance=ExtResource("12_objectives")]
+layout_mode = 1
 
 [connection signal="pressed" from="Hub_HUD/PauseButton" to="." method="_on_pause_button_pressed"]

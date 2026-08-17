@@ -4,7 +4,8 @@
 [ext_resource type="Script" path="res://scripts/systems/parallax_layer.gd" id="2_ictjh"]
 [ext_resource type="Texture2D" uid="uid://dh6edgnxp7sn6" path="res://assets/art/environment/space2.png" id="3_78gbh"]
 [ext_resource type="Texture2D" uid="uid://eqcbko2e1grv" path="res://assets/art/ui/stars.png" id="4_umig0"]
-[ext_resource type="Script" path="res://scripts/levels/background_star.gd" id="5_star"]
+[ext_resource type="Script" uid="uid://be32c51s8bamu" path="res://scripts/levels/background_star.gd" id="5_star"]
+[ext_resource type="Texture2D" uid="uid://5nw3vo1wj7dt" path="res://assets/art/environment/cosmicCitadel.png" id="6_78gbh"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_st1"]
 atlas = ExtResource("4_umig0")
@@ -148,7 +149,7 @@ animations = [{
 }],
 "loop": 1,
 "name": &"frokenvinter",
-"speed": 5.0
+"speed": 8.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -171,7 +172,7 @@ animations = [{
 }],
 "loop": 1,
 "name": &"squilltrant",
-"speed": 5.0
+"speed": 8.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -231,6 +232,12 @@ motion_scale = Vector2(0.003, 0.003)
 position = Vector2(518, 331)
 scale = Vector2(0.460938, 0.460938)
 sprite_frames = SubResource("SpriteFrames_stars")
-animation = &"frokenvinter"
+animation = &"strogghold"
 autoplay = "flaschbourn"
 script = ExtResource("5_star")
+
+[node name="CosmicCitadel" type="Sprite2D" parent="ParallaxLayer2" unique_id=2115134557]
+visible = false
+position = Vector2(519, 321)
+scale = Vector2(0.17749992, 0.17749992)
+texture = ExtResource("6_78gbh")

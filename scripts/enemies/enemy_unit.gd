@@ -210,6 +210,7 @@ func _fire_at_player() -> void:
 	proj.direction = (_player.global_position - global_position).normalized()
 	proj.speed = data.projectile_speed
 	proj.damage = projectile_damage
+	proj.size_scale = data.projectile_scale
 	proj.global_position = global_position
 	get_tree().current_scene.add_child(proj)
 
@@ -314,8 +315,21 @@ func _die(with_drops: bool = true) -> void:
 			ExperienceShard.spawn(get_tree().current_scene, global_position)
 
 	_grant_kill_experience()
-	GameManager.on_enemy_killed(data.experience_value)
+	GameManager.on_enemy_killed(data.experience_value, _contract_kind())
 	queue_free()
+
+
+## Which contract category this counts as when killed. Ships share the chaser
+## bucket: they behave as fast chasers and a player reading "kill 20 chasers"
+## would count them.
+func _contract_kind() -> String:
+	if data.is_boss:
+		return "boss"
+	match data.physics_group:
+		EnemyData.PhysicsGroup.SHOOTERS: return "shooter"
+		EnemyData.PhysicsGroup.SLASHERS: return "slasher"
+		EnemyData.PhysicsGroup.BOMBERS:  return "bomber"
+	return "chaser"
 
 
 ## Kills feed the XP bar a little on their own, so clearing a wave still makes

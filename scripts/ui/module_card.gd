@@ -11,6 +11,7 @@ class_name ModuleCard
 
 signal chosen(card: ModuleCard)
 
+@onready var module_pick_panel: ModulePickPanel = $"../../.."
 @onready var rarity_label: Label = $Body/Rarity
 @onready var name_label: Label = $Body/ModuleName
 @onready var desc_label: Label = $Body/Description
@@ -58,6 +59,6 @@ func setup(card_rarity: String, card_option: Dictionary, phase: float) -> void:
 
 
 func _on_gui_input(event: InputEvent) -> void:
-	if event is InputEventMouseButton and event.pressed \
-			and event.button_index == MOUSE_BUTTON_LEFT:
+	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT and module_pick_panel.pickingTimerDone:
+		print(module_pick_panel.pickingTimerDone)
 		chosen.emit(self)

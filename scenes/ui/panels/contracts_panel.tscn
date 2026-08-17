@@ -1,0 +1,122 @@
+[gd_scene format=3 uid="uid://dul56r0my1e2q"]
+
+[ext_resource type="Script" uid="uid://b1ew64rmnq54f" path="res://scripts/ui/contracts_panel.gd" id="1_script"]
+[ext_resource type="FontFile" uid="uid://df2u10dmiarah" path="res://assets/fonts/RetroGaming.ttf" id="2_font"]
+[ext_resource type="Texture2D" uid="uid://0uckiy8w0bl1" path="res://assets/art/ui/inventoryInterface.png" id="3_frame"]
+[ext_resource type="Texture2D" uid="uid://bif325dq06dfq" path="res://assets/art/ui/quickQuest.png" id="4_tab"]
+
+[sub_resource type="InputEventKey" id="InputEventKey_j2qes"]
+device = -1
+keycode = 4194306
+
+[sub_resource type="Shortcut" id="Shortcut_qyfas"]
+events = [SubResource("InputEventKey_j2qes")]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_list"]
+texture = ExtResource("3_frame")
+texture_margin_left = 24.0
+texture_margin_top = 24.0
+texture_margin_right = 24.0
+texture_margin_bottom = 24.0
+modulate_color = Color(0.207843, 0.239216, 0.396078, 0.960784)
+
+[node name="ContractsPanel" type="Control" unique_id=1426954828]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("1_script")
+
+[node name="Slider" type="Control" parent="." unique_id=1977102035]
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -414.0
+offset_top = -422.0
+offset_right = 126.0
+offset_bottom = 238.0
+grow_horizontal = 0
+grow_vertical = 2
+scale = Vector2(0.74, 0.74)
+mouse_filter = 2
+
+[node name="TabButton" type="TextureButton" parent="Slider" unique_id=1367777832]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = -67.56764
+offset_top = -330.0
+offset_right = -5.405533
+offset_bottom = -187.91518
+grow_vertical = 2
+tooltip_text = "Contracts (Tab)"
+shortcut = SubResource("Shortcut_qyfas")
+texture_normal = ExtResource("4_tab")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="Panel" type="PanelContainer" parent="Slider" unique_id=167294779]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_list")
+
+[node name="Padding" type="MarginContainer" parent="Slider/Panel" unique_id=1543770423]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="Body" type="VBoxContainer" parent="Slider/Panel/Padding" unique_id=926054494]
+custom_minimum_size = Vector2(440, 0)
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Header" type="HBoxContainer" parent="Slider/Panel/Padding/Body" unique_id=1592047532]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="TitleLabel" type="Label" parent="Slider/Panel/Padding/Body/Header" unique_id=1354800957]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.635294, 0.870588, 1, 1)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 26
+text = "CONTRACTS"
+
+[node name="CountLabel" type="Label" parent="Slider/Panel/Padding/Body/Header" unique_id=1836064475]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 26
+text = "0"
+
+[node name="EmptyLabel" type="Label" parent="Slider/Panel/Padding/Body" unique_id=788321451]
+custom_minimum_size = Vector2(440, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.784314, 0.831373, 0.909804, 1)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 17
+text = "No contracts taken yet. Answer a call to pick one up."
+autowrap_mode = 3
+
+[node name="Scroll" type="ScrollContainer" parent="Slider/Panel/Padding/Body" unique_id=633773117]
+layout_mode = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+
+[node name="List" type="VBoxContainer" parent="Slider/Panel/Padding/Body/Scroll" unique_id=354297662]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 10

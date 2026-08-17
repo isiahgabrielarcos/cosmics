@@ -366,7 +366,7 @@ static func _legendary_pool(_player: Node, ws: Node, _ms: Node) -> Array:
 	if not ws.got_ultimate_shot:
 		pool.append({
 			"name": "Ultimate Shot",
-			"desc": "Last ammo before reloading makes the last projectile 2x size and 4x damage",
+			"desc": "First ammo used after reloading makes the last projectile 2x size and 4x damage",
 			"apply": func(): ws.got_ultimate_shot = true,
 		})
 	if not ws.got_fluctuating_energy:

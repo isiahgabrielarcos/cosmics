@@ -1,0 +1,112 @@
+[gd_scene format=3 uid="uid://bryfon75ibaib"]
+
+[ext_resource type="Script" uid="uid://da4gq8bhomo0q" path="res://scripts/ui/objectives_panel.gd" id="1_script"]
+[ext_resource type="FontFile" uid="uid://df2u10dmiarah" path="res://assets/fonts/RetroGaming.ttf" id="2_font"]
+[ext_resource type="Texture2D" uid="uid://0uckiy8w0bl1" path="res://assets/art/ui/inventoryInterface.png" id="3_frame"]
+[ext_resource type="Texture2D" uid="uid://bif325dq06dfq" path="res://assets/art/ui/quickQuest.png" id="4_tab"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_obj"]
+texture = ExtResource("3_frame")
+texture_margin_left = 24.0
+texture_margin_top = 24.0
+texture_margin_right = 24.0
+texture_margin_bottom = 24.0
+modulate_color = Color(0.207843, 0.239216, 0.396078, 0.960784)
+
+[node name="ObjectivesPanel" type="Control" unique_id=226927988]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("1_script")
+
+[node name="Slider" type="Control" parent="." unique_id=931062007]
+layout_mode = 1
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -520.0
+offset_top = -300.0
+offset_right = -20.0
+offset_bottom = 300.0
+grow_horizontal = 0
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="TabButton" type="TextureButton" parent="Slider" unique_id=724708758]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = -63.0
+offset_top = -308.0
+offset_right = -7.0
+offset_bottom = -180.0
+grow_vertical = 2
+tooltip_text = "Objectives (Tab)"
+texture_normal = ExtResource("4_tab")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="Panel" type="PanelContainer" parent="Slider" unique_id=204645867]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_obj")
+
+[node name="Padding" type="MarginContainer" parent="Slider/Panel" unique_id=1218697943]
+layout_mode = 2
+theme_override_constants/margin_left = 26
+theme_override_constants/margin_top = 22
+theme_override_constants/margin_right = 26
+theme_override_constants/margin_bottom = 24
+
+[node name="Body" type="VBoxContainer" parent="Slider/Panel/Padding" unique_id=954998960]
+custom_minimum_size = Vector2(400, 0)
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Header" type="HBoxContainer" parent="Slider/Panel/Padding/Body" unique_id=725042338]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="TitleLabel" type="Label" parent="Slider/Panel/Padding/Body/Header" unique_id=1465437873]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.635294, 0.870588, 1, 1)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 26
+text = "OBJECTIVES"
+
+[node name="CountLabel" type="Label" parent="Slider/Panel/Padding/Body/Header" unique_id=1919467599]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 26
+text = "0"
+
+[node name="EmptyLabel" type="Label" parent="Slider/Panel/Padding/Body" unique_id=740360008]
+custom_minimum_size = Vector2(400, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.784314, 0.831373, 0.909804, 1)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 17
+text = "Nothing pressing right now."
+autowrap_mode = 3
+
+[node name="Scroll" type="ScrollContainer" parent="Slider/Panel/Padding/Body" unique_id=1493449924]
+layout_mode = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+
+[node name="List" type="VBoxContainer" parent="Slider/Panel/Padding/Body/Scroll" unique_id=1174609325]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 10

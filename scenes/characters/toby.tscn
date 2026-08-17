@@ -141,8 +141,12 @@ animations = [{
 "speed": 8.0
 }]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_nsspx"]
-size = Vector2(38, 6.5)
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_083f5"]
+size = Vector2(30, 29)
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_nawo2"]
+radius = 3.0
+height = 35.999996
 
 [node name="Toby" type="CharacterBody2D" unique_id=778770256 groups=["friendlies"]]
 z_index = 1
@@ -162,12 +166,13 @@ animation = &"down"
 collision_mask = 65
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="TopOrder" unique_id=750828155]
-position = Vector2(0, -18.75)
-shape = SubResource("RectangleShape2D_nsspx")
+position = Vector2(0, -7.5)
+shape = SubResource("RectangleShape2D_083f5")
 
 [node name="Low Order" type="Area2D" parent="." unique_id=1627804267]
 collision_mask = 65
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Low Order" unique_id=1354233802]
-position = Vector2(0, 18.75)
-shape = SubResource("RectangleShape2D_nsspx")
+position = Vector2(0, 20)
+rotation = 1.5707964
+shape = SubResource("CapsuleShape2D_nawo2")

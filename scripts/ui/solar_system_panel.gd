@@ -25,8 +25,25 @@ const TIERS := [
 	  "desc": "Full roster, fastest spawns, no mercy.\nEnemies at 2x health and damage." },
 ]
 
+## Portraits for the selection panel, sliced out of enemySystems.png. The sheet
+## is a 3 wide grid of 128px cells, numbered left to right and top to bottom,
+## so frame 1 is FlaschBourn and frame 7 is the Citadel.
+const SYSTEM_SHEET := preload("res://assets/art/ui/enemySystems.png")
+const SYSTEM_FRAME_SIZE := 128
+const SYSTEM_SHEET_COLUMNS := 3
+
+## Stage id -> frame number in that sheet, counting from 1.
+const SYSTEM_FRAMES := {
+	1: 1,    # FlaschBourn
+	2: 2,    # Strogghold
+	3: 3,    # Frokenvinter
+	4: 4,    # Squilltrant
+	101: 7,  # The Citadel
+}
+
 ## Every named system, keyed by its battle stage id. Endless uses stage+20
-## (21-24) to match GameManager.is_endless_stage().
+## (21-24) to match GameManager.is_endless_stage(); the Citadel has its own
+## endless id because that block belongs to the four systems.
 const SYSTEMS := {
 	1: {
 		"name": "FLASCHBOURN",
@@ -58,6 +75,15 @@ const SYSTEMS := {
 			+ "that do not get a say. Kill the parent and you inherit the children.",
 		"gameplay": "Mixed fast and heavy enemies.\nSlimes split into smaller copies on death.",
 	},
+	101: {
+		"name": "THE CITADEL",
+		"subtitle": "CCC Central · Every System At Once",
+		"story": "The Commission's own fortress at the heart of the cluster, and the "
+			+ "holding pen beneath it. Everything the guild has ever dragged back alive is "
+			+ "kept down there, from all four systems. Sometimes it gets out.",
+		"gameplay": "Every faction and every archetype together.\n"
+			+ "No home system, no safe matchup.",
+	},
 }
 
 @onready var _root: Control        = $Root
@@ -78,6 +104,7 @@ var _stage: int = 1
 var _tier: int = 1
 var _rest_x: float = 0.0
 var _tween: Tween = null
+var _art_cache: Dictionary = {}
 
 
 func _ready() -> void:
@@ -103,6 +130,7 @@ func open(stage: int) -> void:
 	_subtitle.text = d["subtitle"]
 	_story.text = d["story"]
 	_gameplay.text = d["gameplay"]
+	_image.texture = _system_art(stage)
 	_refresh_tier()
 
 	visible = true
@@ -114,6 +142,24 @@ func open(stage: int) -> void:
 	_tween = create_tween()
 	_tween.tween_property(_root, "position:x", _rest_x, 0.3)\
 		.set_trans(Tween.TRANS_QUART).set_ease(Tween.EASE_OUT)
+
+
+## The portrait for a stage, cut out of the shared sheet. Cached because the
+## panel is reopened every time a system is clicked.
+func _system_art(stage: int) -> AtlasTexture:
+	if _art_cache.has(stage):
+		return _art_cache[stage]
+
+	var frame := int(SYSTEM_FRAMES.get(stage, 1)) - 1
+	var atlas := AtlasTexture.new()
+	atlas.atlas = SYSTEM_SHEET
+	@warning_ignore("integer_division")
+	atlas.region = Rect2(
+		(frame % SYSTEM_SHEET_COLUMNS) * SYSTEM_FRAME_SIZE,
+		(frame / SYSTEM_SHEET_COLUMNS) * SYSTEM_FRAME_SIZE,
+		SYSTEM_FRAME_SIZE, SYSTEM_FRAME_SIZE)
+	_art_cache[stage] = atlas
+	return atlas
 
 
 func close() -> void:

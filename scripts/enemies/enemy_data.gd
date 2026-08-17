@@ -9,8 +9,8 @@ class_name EnemyData
 @export var sprite_sheet: Texture2D
 @export var frame_width: int = 32
 @export var frame_height: int = 32
-@export var frame_count: int = 3
-@export var fps: float = 6.0
+@export var frame_count: int = 4
+@export var fps: float = 8.0
 
 ## Sizing — random range unless fixed_scale > 0 (bosses / babies use a fixed size)
 @export var scale_min: float = 2.0
@@ -42,6 +42,8 @@ class_name EnemyData
 @export var shoot_interval: float = 3.0
 @export var projectile_speed: float = 400.0
 @export var projectile_damage: int = 5
+## Sprite and hitbox multiplier on the rounds this enemy fires.
+@export var projectile_scale: float = 1.0
 
 ## Slasher lunge
 ## How close a slasher has to get before it commits to a lunge — far enough

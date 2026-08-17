@@ -1,0 +1,84 @@
+[gd_scene format=3 uid="uid://dnpnrho381sq"]
+
+[ext_resource type="Script" uid="uid://x64ye8gbdgdy" path="res://scripts/ui/contract_row.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://0uckiy8w0bl1" path="res://assets/art/ui/inventoryInterface.png" id="1_w4osd"]
+[ext_resource type="FontFile" uid="uid://df2u10dmiarah" path="res://assets/fonts/RetroGaming.ttf" id="2_font"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_0jxwx"]
+texture = ExtResource("1_w4osd")
+texture_margin_left = 15.0
+texture_margin_top = 15.0
+texture_margin_right = 15.0
+texture_margin_bottom = 15.0
+
+[sub_resource type="LabelSettings" id="LabelSettings_0lr0v"]
+font_size = 25
+
+[sub_resource type="LabelSettings" id="LabelSettings_72p4e"]
+font_size = 20
+
+[sub_resource type="LabelSettings" id="LabelSettings_qyfas"]
+font_size = 25
+
+[sub_resource type="LabelSettings" id="LabelSettings_tsx2l"]
+font_size = 20
+font_color = Color(0.92425233, 0.9132374, 0, 1)
+
+[node name="ContractRow" type="PanelContainer" unique_id=48710111]
+offset_right = 460.0
+offset_bottom = 96.0
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxTexture_0jxwx")
+script = ExtResource("1_script")
+
+[node name="Margin" type="MarginContainer" parent="." unique_id=988500338]
+layout_mode = 2
+theme_override_constants/margin_left = 14
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 10
+
+[node name="Box" type="VBoxContainer" parent="Margin" unique_id=7147531]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="TopRow" type="HBoxContainer" parent="Margin/Box" unique_id=94214652]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="FromLabel" type="Label" parent="Margin/Box/TopRow" unique_id=794375573]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.545098, 0.803922, 1, 1)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 15
+text = "Chesca"
+label_settings = SubResource("LabelSettings_0lr0v")
+
+[node name="StatusLabel" type="Label" parent="Margin/Box/TopRow" unique_id=1111438557]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.784314, 0.831373, 0.909804, 1)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 15
+text = "0 / 0"
+label_settings = SubResource("LabelSettings_72p4e")
+
+[node name="GoalLabel" type="Label" parent="Margin/Box" unique_id=37782425]
+custom_minimum_size = Vector2(380, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 17
+text = "Goal"
+label_settings = SubResource("LabelSettings_qyfas")
+autowrap_mode = 3
+
+[node name="RewardLabel" type="Label" parent="Margin/Box" unique_id=1785126078]
+custom_minimum_size = Vector2(380, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.858824, 0.407843, 1)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 15
+text = "Reward"
+label_settings = SubResource("LabelSettings_tsx2l")
+autowrap_mode = 3

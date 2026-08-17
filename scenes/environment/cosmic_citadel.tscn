@@ -1,0 +1,10 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/systems/cosmic_citadel.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://5nw3vo1wj7dt" path="res://assets/art/environment/cosmicCitadel.png" id="2_citadel"]
+
+[node name="CosmicCitadel" type="Node2D"]
+script = ExtResource("1_script")
+
+[node name="Sprite" type="Sprite2D" parent="."]
+texture = ExtResource("2_citadel")

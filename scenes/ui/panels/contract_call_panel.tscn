@@ -1,0 +1,181 @@
+[gd_scene format=3 uid="uid://b24pwguhx0x35"]
+
+[ext_resource type="Script" uid="uid://dk6icn4num2l2" path="res://scripts/ui/contract_call_panel.gd" id="1_script"]
+[ext_resource type="FontFile" uid="uid://df2u10dmiarah" path="res://assets/fonts/RetroGaming.ttf" id="2_font"]
+[ext_resource type="Texture2D" uid="uid://0uckiy8w0bl1" path="res://assets/art/ui/inventoryInterface.png" id="3_frame"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_call"]
+texture = ExtResource("3_frame")
+texture_margin_left = 24.0
+texture_margin_top = 24.0
+texture_margin_right = 24.0
+texture_margin_bottom = 24.0
+modulate_color = Color(0.207843, 0.239216, 0.396078, 0.980392)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_avatar"]
+texture = ExtResource("3_frame")
+texture_margin_left = 24.0
+texture_margin_top = 24.0
+texture_margin_right = 24.0
+texture_margin_bottom = 24.0
+modulate_color = Color(0.376471, 0.462745, 0.729412, 1)
+
+[node name="ContractCallPanel" type="Control" unique_id=1791956387]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("1_script")
+
+[node name="Panel" type="PanelContainer" parent="." unique_id=1622621793]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -488.0
+offset_top = -320.0
+offset_right = -20.0
+offset_bottom = 320.0
+grow_horizontal = 0
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_call")
+
+[node name="Padding" type="MarginContainer" parent="Panel" unique_id=1829115963]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="Body" type="VBoxContainer" parent="Panel/Padding" unique_id=44002867]
+custom_minimum_size = Vector2(400, 0)
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="TopRow" type="HBoxContainer" parent="Panel/Padding/Body" unique_id=351270226]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="CallLabel" type="Label" parent="Panel/Padding/Body/TopRow" unique_id=2131827609]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.635294, 0.870588, 1, 1)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 18
+text = "INCOMING CALL"
+
+[node name="TimerLabel" type="Label" parent="Panel/Padding/Body/TopRow" unique_id=1268366983]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.858824, 0.407843, 1)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 18
+text = "30"
+
+[node name="AvatarRow" type="HBoxContainer" parent="Panel/Padding/Body" unique_id=841720755]
+layout_mode = 2
+alignment = 1
+
+[node name="AvatarFrame" type="PanelContainer" parent="Panel/Padding/Body/AvatarRow" unique_id=969183334]
+custom_minimum_size = Vector2(150, 150)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_avatar")
+
+[node name="AvatarPadding" type="MarginContainer" parent="Panel/Padding/Body/AvatarRow/AvatarFrame" unique_id=528929750]
+layout_mode = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 16
+
+[node name="Avatar" type="TextureRect" parent="Panel/Padding/Body/AvatarRow/AvatarFrame" unique_id=583328743]
+layout_mode = 2
+offset_transform_enabled = true
+offset_transform_scale = Vector2(1.25, 1.25)
+offset_transform_visual_only = false
+expand_mode = 1
+stretch_mode = 5
+
+[node name="NameLabel" type="Label" parent="Panel/Padding/Body" unique_id=287946704]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 30
+text = "Chesca"
+horizontal_alignment = 1
+
+[node name="RoleLabel" type="Label" parent="Panel/Padding/Body" unique_id=1251793267]
+custom_minimum_size = Vector2(400, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.784314, 0.831373, 0.909804, 1)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 16
+text = "CCC Guild Receptionist"
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="GoalHeader" type="Label" parent="Panel/Padding/Body" unique_id=2047966406]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.635294, 0.870588, 1, 1)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 15
+text = "TASK"
+
+[node name="GoalValue" type="Label" parent="Panel/Padding/Body" unique_id=914747046]
+custom_minimum_size = Vector2(400, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 20
+text = "Goal"
+autowrap_mode = 3
+
+[node name="RewardHeader" type="Label" parent="Panel/Padding/Body" unique_id=1565409350]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.635294, 0.870588, 1, 1)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 15
+text = "REWARD"
+
+[node name="RewardValue" type="Label" parent="Panel/Padding/Body" unique_id=351922610]
+custom_minimum_size = Vector2(400, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.858824, 0.407843, 1)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 20
+text = "Reward"
+autowrap_mode = 3
+
+[node name="Spacer" type="Control" parent="Panel/Padding/Body" unique_id=1575789326]
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 2
+
+[node name="Buttons" type="HBoxContainer" parent="Panel/Padding/Body" unique_id=1913134499]
+layout_mode = 2
+theme_override_constants/separation = 14
+alignment = 1
+
+[node name="AcceptButton" type="Button" parent="Panel/Padding/Body/Buttons" unique_id=89475826]
+custom_minimum_size = Vector2(0, 52)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.560784, 1, 0.65098, 1)
+theme_override_colors/font_hover_color = Color(0.741176, 1, 0.803922, 1)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 24
+text = "Accept"
+
+[node name="DeclineButton" type="Button" parent="Panel/Padding/Body/Buttons" unique_id=1548439457]
+custom_minimum_size = Vector2(0, 52)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(1, 0.560784, 0.560784, 1)
+theme_override_colors/font_hover_color = Color(1, 0.729412, 0.729412, 1)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 24
+text = "Decline"

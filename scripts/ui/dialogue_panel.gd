@@ -22,11 +22,27 @@ const CHARACTERS := {
 	"trader":       { "avatar": "res://assets/art/ui/cosmicTraderAvatar.png",    "name": "Princess",  "role": "Central Trader Associate" },
 	"blacksmith":   { "avatar": "res://assets/art/ui/cosmicTalyerAvatar.png",    "name": "Gabriel",   "role": "Cosmic Blacksmith" },
 	"polaroid":     { "avatar": "res://assets/art/ui/cosmicPolaroidAvatar.png",  "name": "Lorraine",  "role": "Cosmic Polaroid Head" },
-	"nurse":        { "avatar": "res://assets/art/ui/nurseAvatar.png",          "name": "Mary Jane", "role": "CCC Nurse" },
+	"nurse":        { "avatar": "res://assets/art/ui/nurseAvatar.png",          "name": "Mary Jane", "role": "CCC First Responder Head" },
 	"guildmerc":    { "avatar": "res://assets/art/ui/arthurAvatar.png",         "name": "Cody",      "role": "Mercenary Guild Leader" },
 	# the mysterious girl before and after her name is revealed share one avatar
 	"girl":         { "avatar": "res://assets/art/ui/mysteriousGirlAvatar.png", "name": "???",       "role": "" },
 	"yujin":        { "avatar": "res://assets/art/ui/mysteriousGirlAvatar.png", "name": "Yujin",     "role": "" },
+}
+
+## A short voice sting per character, played once at the start of each of their
+## speaking turns. A back-and-forth conversation therefore alternates stings as
+## the speaker changes, and a character carrying on across two lines does not
+## re-trigger their own.
+const VOICES := {
+	"receptionist": "voiceChesca",
+	"toby":         "voiceToby",
+	"guildmerc":    "voiceCody",
+	"nurse":        "voiceMary",
+	"guard1":       "voiceJulie",
+	"guard2":       "voiceEveland",
+	"blacksmith":   "voiceGabriel",
+	"trader":       "voicePrincess",
+	"polaroid":     "voiceLorraine",
 }
 
 @onready var _dim: ColorRect       = $Root/Dim
@@ -100,10 +116,14 @@ func _show_line(i: int) -> void:
 	else:
 		_avatar.visible = false
 
-	# A new speaker rises into frame; the same speaker carrying on keeps
-	# breathing rather than re-entering mid-conversation.
-	if speaker != _prev_speaker and _avatar is AvatarFloat:
-		(_avatar as AvatarFloat).play_intro()
+	# A new speaker rises into frame, and gets their voice sting. The same
+	# speaker carrying on keeps breathing rather than re-entering mid
+	# conversation, and stays quiet rather than stuttering their own bite.
+	if speaker != _prev_speaker:
+		if _avatar is AvatarFloat:
+			(_avatar as AvatarFloat).play_intro()
+		if VOICES.has(speaker):
+			AudioManager.play_sfx(VOICES[speaker])
 
 	_prev_speaker = speaker
 

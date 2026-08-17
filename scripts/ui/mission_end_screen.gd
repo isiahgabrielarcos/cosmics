@@ -17,7 +17,7 @@ func _ready() -> void:
 	GameManager.game_over_triggered.connect(_show_game_over)
 	GameManager.mission_complete.connect(_show_mission_complete)
 
-	_game_over.restart_pressed.connect(func(): GameManager.goto_battle())
+	_game_over.restart_pressed.connect(func(): GameManager.restart_battle())
 	_game_over.menu_pressed.connect(func(): GameManager.goto_main_menu())
 	_game_win.continue_pressed.connect(func(): GameManager.goto_main_menu())
 

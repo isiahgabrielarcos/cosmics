@@ -85,14 +85,32 @@ func open_sequence(lines: Array) -> DialoguePanel:
 	return _dialogue
 
 
-## Nurse — heals the ship and chats
-func open_infirmary() -> void:
+## Patches the ship back to full. Split out from open_infirmary so the nurse
+## can heal and then run her normal rotating dialogue, rather than being stuck
+## with one fixed line forever.
+## The hub's Toby is toby_overworld.gd, which is a walking sprite with no
+## health at all — only the ship carries hp and shield. Calling this in the
+## hub used to throw on every single interaction because it assumed the ship.
+## Guarded rather than removed: the heal still lands whenever a body that
+## actually has those stats is the one in the friendlies group.
+func heal_player() -> void:
 	var players := get_tree().get_nodes_in_group("friendlies")
-	if not players.is_empty():
-		var player = players[0]
+	if players.is_empty():
+		return
+	var player = players[0]
+	if "max_hp" in player:
 		player.hp = player.max_hp
+		if player.has_signal("hp_changed"):
+			player.hp_changed.emit(player.hp, player.max_hp)
+	if "max_shield" in player:
 		player.shield = player.max_shield
-		player.hp_changed.emit(player.hp, player.max_hp)
-		player.shield_changed.emit(player.shield, player.max_shield)
+		if player.has_signal("shield_changed"):
+			player.shield_changed.emit(player.shield, player.max_shield)
+
+
+## Nurse — heals the ship and chats. Kept for hub_scene.gd, which still wires
+## the nurse straight to it.
+func open_infirmary() -> void:
+	heal_player()
 	open_dialogue("nurse",
 		"There you go — patched up and good as new!\nTry not to get shot so much out there, okay?")

@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://5lbjwm236vda"
+path="res://.godot/imported/Hums of the Cosmic Bird.mp3-e57e1aa14d1bd4dea91563ba00f3a2ff.mp3str"
+
+[deps]
+
+source_file="res://assets/audio/music/Hums of the Cosmic Bird.mp3"
+dest_files=["res://.godot/imported/Hums of the Cosmic Bird.mp3-e57e1aa14d1bd4dea91563ba00f3a2ff.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

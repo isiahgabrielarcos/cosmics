@@ -7,10 +7,17 @@ class_name EnemyProjectile
 const TEX := preload("res://assets/art/characters/laserBeam1.png")
 const POP_FX := preload("res://scenes/effects/particle_projectile_pop.tscn")
 
+const BASE_RADIUS := 10.0
+
 var direction: Vector2 = Vector2.RIGHT
 var speed: float = 400.0
 var damage: int = 5
 var lifetime: float = 5.0
+
+## Sprite and hitbox multiplier. The FlaschBourn boss fires rounds several
+## times this size, so the hitbox has to scale with the art rather than the
+## shot being a huge sprite you can fly straight through.
+var size_scale: float = 1.0
 
 var _age: float = 0.0
 
@@ -18,11 +25,12 @@ var _age: float = 0.0
 func _ready() -> void:
 	var spr := Sprite2D.new()
 	spr.texture = TEX
+	spr.scale = Vector2(size_scale, size_scale)
 	add_child(spr)
 
 	var shape := CollisionShape2D.new()
 	var circle := CircleShape2D.new()
-	circle.radius = 10.0
+	circle.radius = BASE_RADIUS * size_scale
 	shape.shape = circle
 	add_child(shape)
 

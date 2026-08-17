@@ -24,9 +24,11 @@ const DIM_ALPHA := 0.72
 @onready var _root: Control = $Root
 @onready var _dim: ColorRect = $Root/Dim
 @onready var _cards_root: Control = $Root/Cards
+@onready var picking_timer: Timer = $PickingTimer
 
 var _cards: Array = []
 var _resolved: bool = false
+var pickingTimerDone: bool = false
 
 var _player: Node = null
 var _weapon_system: Node = null
@@ -36,12 +38,12 @@ var _module_system: Node = null
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	visible = false
-
+	
 	for child in _cards_root.get_children():
 		if child is ModuleCard:
 			_cards.append(child)
 			(child as ModuleCard).chosen.connect(_on_card_chosen)
-
+	print(pickingTimerDone)
 
 # ── Opening ───────────────────────────────────────────────────────────────────
 
@@ -63,6 +65,9 @@ func open() -> void:
 	_root.modulate.a = 1.0
 	_dim.color.a = 0.0
 	create_tween().tween_property(_dim, "color:a", DIM_ALPHA, FADE_TIME)
+
+	pickingTimerDone = false
+	picking_timer.start()
 
 	_deal_cards()
 
@@ -132,3 +137,8 @@ func _close() -> void:
 	get_tree().paused = false
 	for card in _cards:
 		card.modulate.a = 0.0
+
+
+func _on_picking_timer_timeout() -> void:
+	pickingTimerDone = true
+	print("THen True")

@@ -21,6 +21,13 @@ const SLIDE_TIME := 0.3
 const WEAPON_SHEET := preload("res://assets/art/ui/weaponArray.png")
 const SKILL_SHEET := preload("res://assets/art/ui/skillArray.png")
 
+## Passive icons. A 2 wide grid of 128px cells whose frames are already in the
+## same order as COOLDOWN_PASSIVES below, so the two lists line up index for
+## index and the passives no longer need a flat colour standing in for art.
+const PASSIVE_SHEET := preload("res://assets/art/ui/cooldowns.png")
+const PASSIVE_SHEET_COLUMNS := 2
+const ICON_FRAME_SIZE := 128
+
 ## Passives that claim a sidebar slot once owned, in slot order. `flag` is the
 ## ModuleSystem property that turns them on, `timer` the key its cooldown
 ## Timer lives under.
@@ -150,7 +157,8 @@ func _bind_slots() -> void:
 		slot.flag = passive["flag"]
 		slot.timer_key = passive["timer"]
 		slot.title = passive["name"]
-		slot.icon.modulate = passive["tint"]
+		slot.icon.texture = _sheet_icon(PASSIVE_SHEET, i + 1, PASSIVE_SHEET_COLUMNS)
+		slot.icon.modulate = Color.WHITE
 
 	for slot in _slots:
 		slot.clicked.connect(_on_slot_clicked)
@@ -223,14 +231,17 @@ func _slot_passive(slot: IconSlot) -> void:
 	slot.set_cooldown(timer.time_left / maxf(timer.wait_time, 0.01), str(ceili(timer.time_left)))
 
 
-func _sheet_icon(sheet: Texture2D, id: int) -> AtlasTexture:
+## `id` counts from 1. `columns` differs per sheet: the weapon and skill arrays
+## are 3 wide, the passive cooldown sheet is 2.
+func _sheet_icon(sheet: Texture2D, id: int, columns: int = 3) -> AtlasTexture:
 	var key := "%s_%d" % [sheet.resource_path, id]
 	if _icon_cache.has(key):
 		return _icon_cache[key]
 	var atlas := AtlasTexture.new()
 	atlas.atlas = sheet
 	@warning_ignore("integer_division")
-	atlas.region = Rect2(((id - 1) % 3) * 128, ((id - 1) / 3) * 128, 128, 128)
+	atlas.region = Rect2(((id - 1) % columns) * ICON_FRAME_SIZE,
+		((id - 1) / columns) * ICON_FRAME_SIZE, ICON_FRAME_SIZE, ICON_FRAME_SIZE)
 	_icon_cache[key] = atlas
 	return atlas
 

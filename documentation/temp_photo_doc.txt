@@ -1,0 +1,43 @@
+=== ENTRIES ===
+  word/numbering.xml 1690
+  word/settings.xml 2152
+  word/fontTable.xml 1719
+  word/styles.xml 5421
+  word/document.xml 34215
+  word/_rels/document.xml.rels 1473
+  _rels/.rels 298
+  word/media/image2.png 229966
+  word/theme/theme1.xml 7643
+  word/media/image3.png 270187
+  word/media/image1.png 261727
+  word/media/image5.png 142556
+  word/media/image4.png 331054
+  [Content_Types].xml 1222
+
+=== TEXT ===
+Week 3
+August 10, 2026 (Monday)
+Caption / Description:
+Making of the blacksmith UI. Save and load system. Index system for the weapons and specials.
+Activity / Output:
+Set up a central character registry holding the avatar, display name, and role title for every speaking character, and built initial support for multi-stage conversations that step through several lines and switch speakers within a single chat box. Added floating damage numbers to combat and created the particle effect scenes for enemy and boss death, player hit and death, level up, and projectile disappearance, wiring each one into its correct trigger point in the game logic. Rebuilt the blacksmith loadout screen around a module grid with a purchase step placed ahead of equipping, produced a matching draft of the trader screen, and began the new level selection screen that orbits a camera around a cluster of solar systems.
+August 11, 2026 (Tuesday)
+Caption / Description:
+Improving gameplay. Making a hybrid 3D scene with 2D panels.
+Activity / Output:
+Replaced the placeholder dialogue used to prove the conversation system with real, character-appropriate lines for the hub roster, and reviewed the role titles beneath each speaker name for consistency across characters. Tuned the timing and motion of the floating damage numbers against live combat rather than an empty test scene, and gave the enemy death and level up particle effects their first real visual pass, separating the two so that each reads clearly as a distinct kind of event. Brought the trader screen to a finished pairing with the blacksmith screen and re-tested the purchase, equip, and equipped flow end to end, then advanced the level selection screen from a skeleton into a first working draft with a balance review across its difficulty steps.
+August 12, 2026 (Wednesday)
+Caption / Description:
+Far back seat picture photo documentation.
+Activity / Output:
+Attended the 2026 CCIS Midyear HTE Partners’ Day, held under the theme “Strengthening Partnerships, Celebrating Collaborations,” as an excused school-sanctioned activity in place of prototype development. The program opened with a session on technology-driven retail operations, covering how an enterprise technology organization is structured across infrastructure and cloud architecture, application development, retail systems and data analytics, automation and artificial intelligence, and cybersecurity, along with the employee engagement and internship programs supporting it. This was followed by a career readiness session on resume writing and interview preparation, and the program closed with talks on employability, professionalism, and purpose-driven career paths in financial protection.
+August 13, 2026 (Thursday)
+Caption / Description:
+Adding Level Up, Chests, and Module System
+Activity / Output:
+Built the full level-up module and upgrade system, including the three-card selection screen presented on level up, the complete upgrade table across all rarities, status effects, the surrender-for-currency mechanic, and rarity-based module chests. Rebuilt the inventory as a slide-in panel with a cooldown icon sidebar, a live stat display, and a scrollable module log. Reworked difficulty into four tiers with their own enemy rosters and health and damage scaling, gave each weapon its own ammo capacity and pierce value with reload behaviour on weapon switch, rebalanced the skill set and added a new charge-up skill, and resolved a series of engine-level defects affecting collision ranges, wall depth sorting, particle emission, and damage scaling.
+August 14, 2026 (Friday)
+Caption / Description:
+Publishing new version of the HTML playable vertical slice and its .exe version on itch.io
+Activity / Output:
+Made the game window resizable and corrected the heads-up display elements that had been anchored to a single fixed resolution, verifying the result by comparing the interface across multiple window sizes to confirm nothing shifted at the standard resolution. Diagnosed and fixed an intermittent defect that could permanently prevent the player from shooting, and added a periodic self-check to the weapon system to guard against the same class of failure recurring undetected. Wired the pause button in the interface through the same routine used by the keyboard shortcut so the two stay in sync, cleaned up obsolete node references left over from an earlier interface rework, and generated a proper multi-resolution Windows icon for the exported build, verified by building the game and inspecting the finished executable.

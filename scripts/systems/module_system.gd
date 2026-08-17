@@ -17,6 +17,12 @@ const ELECTRIC_FX    := preload("res://assets/art/vfx/electricAura.png")
 const HIT5_FX        := preload("res://assets/art/vfx/hitEffect5.png")
 const SHOCK_BOMBS_FX := preload("res://assets/art/vfx/shockBombs.png")
 const BURNING_FX     := preload("res://assets/art/vfx/burning.png")
+
+## Both worn effects are their own scenes so the art, animation speed, scale
+## and transparency can be tweaked in the editor instead of being built out of
+## constructor arguments here.
+const FORCE_FIELD_FX  := preload("res://scenes/effects/force_field.tscn")
+const SUPER_SHIELD_FX := preload("res://scenes/effects/super_shield.tscn")
 const COSMIC_BALL    := preload("res://assets/art/characters/cosmicBall.png")
 const PURPLE_SCENE   := preload("res://scenes/weapons/purple.tscn")
 
@@ -258,10 +264,7 @@ func _do_force_field() -> void:
 		return
 	force_field_charges += 1
 	is_force_field_up = true
-	if get_node_or_null("ForceFieldFX") == null:
-		var fx := _spawn_effect(BURNING_FX, 32, 3, 999.0, player, 3.0, true)
-		fx.modulate.a = 0.5
-		fx.name = "ForceFieldFX"
+	_show_worn_effect(FORCE_FIELD_FX, "ForceFieldFX")
 
 
 ## Called by the player when a force-field absorbs a hit.
@@ -271,9 +274,7 @@ func consume_force_field() -> bool:
 	force_field_charges -= 1
 	is_force_field_up = force_field_charges > 0
 	if not is_force_field_up:
-		var fx := get_node_or_null("ForceFieldFX")
-		if fx:
-			fx.queue_free()
+		_hide_worn_effect("ForceFieldFX")
 	return true
 
 
@@ -315,6 +316,32 @@ func _do_super_shield() -> void:
 	if player and player.has_method("grant_invincibility"):
 		player.grant_invincibility(SUPER_SHIELD_DURATION)
 	AudioManager.play_sfx("invincibleSkill")
+
+	_show_worn_effect(SUPER_SHIELD_FX, "SuperShieldFX")
+	get_tree().create_timer(SUPER_SHIELD_DURATION, false).timeout.connect(func():
+		if is_instance_valid(self):
+			_hide_worn_effect("SuperShieldFX"))
+
+
+## Worn effects ride on the player rather than the world, so they follow the
+## ship without any per-frame work. Named so they can be found and removed
+## again, and never doubled up if the module fires while one is already on.
+func _show_worn_effect(scene: PackedScene, node_name: String) -> void:
+	if player == null or not is_instance_valid(player):
+		return
+	if player.get_node_or_null(node_name) != null:
+		return
+	var fx := scene.instantiate()
+	fx.name = node_name
+	player.add_child(fx)
+
+
+func _hide_worn_effect(node_name: String) -> void:
+	if player == null or not is_instance_valid(player):
+		return
+	var fx := player.get_node_or_null(node_name)
+	if fx:
+		fx.queue_free()
 
 
 ## Retaliation (Electro Shield / thorns) — the player calls this with whatever

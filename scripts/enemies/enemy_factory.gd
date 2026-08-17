@@ -57,7 +57,7 @@ const DEFS := {
 	# ── Bosses (every 50th spawn) — all fundamentally chasers, each with a twist ──
 	"boss_strogghold":   { "sheet": "res://assets/art/enemies/cosmicBoss1.png", "fw": 128, "fh": 128, "count": 7, "fps": 8.75, "arch": Archetype.CHASER,  "group": GROUP.CHASERS,  "dmg": 30, "xp": 100, "speed": 200.0, "turn": 3.0, "boss": true },
 	"boss_frokenvinter": { "sheet": "res://assets/art/enemies/cosmicBoss2.png", "fw": 128, "fh": 128, "count": 3, "fps": 6.0,  "arch": Archetype.SLASHER, "group": GROUP.SLASHERS, "dmg": 25, "xp": 100, "speed": 220.0, "turn": 6.0, "boss": true },
-	"boss_flaschbourn":  { "sheet": "res://assets/art/enemies/cosmicBoss3.png", "fw": 128, "fh": 128, "count": 3, "fps": 6.0,  "arch": Archetype.CHASER,  "group": GROUP.SHOOTERS, "dmg": 20, "xp": 100, "speed": 160.0, "turn": 3.0, "boss": true, "shoots": true },
+	"boss_flaschbourn":  { "sheet": "res://assets/art/enemies/cosmicBoss3.png", "fw": 128, "fh": 128, "count": 3, "fps": 6.0,  "arch": Archetype.CHASER,  "group": GROUP.SHOOTERS, "dmg": 20, "xp": 100, "speed": 160.0, "turn": 3.0, "boss": true, "shoots": true, "shoot_rate": 1.5, "proj_scale": 3.0 },
 	"boss_squilltrant":  { "sheet": "res://assets/art/enemies/cosmicBoss4.png", "fw": 128, "fh": 128, "count": 3, "fps": 6.0,  "arch": Archetype.CHASER,  "group": GROUP.CHASERS,  "dmg": 20, "xp": 100, "speed": 220.0, "turn": 4.0, "boss": true, "split": true },
 }
 
@@ -131,6 +131,12 @@ static func _build_data(id: String) -> EnemyData:
 	d.immune_to_status  = d.is_boss
 	d.fires_projectiles = def.get("shoots", def["arch"] == Archetype.SHOOTER)
 	d.physics_group     = def["group"]
+
+	# `shoot_rate` is a multiple of how fast an ordinary shooter fires, so 1.5
+	# means one and a half times the rate — a shorter gap between rounds, not a
+	# longer one. `proj_scale` sizes both the sprite and its hitbox.
+	d.shoot_interval    = d.shoot_interval / maxf(float(def.get("shoot_rate", 1.0)), 0.01)
+	d.projectile_scale  = float(def.get("proj_scale", 1.0))
 
 	# Base health only. The hero-level bonus and the difficulty multiplier are
 	# applied per-instance at spawn (EnemyUnit), because this resource is

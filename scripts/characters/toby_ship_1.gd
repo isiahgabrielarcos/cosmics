@@ -74,6 +74,12 @@ var _shield_locked := false
 ## Temporary movement buff (Energy Overdrive). 1.0 = normal.
 var speed_multiplier: float = 1.0
 
+## Drag from a haul contract's cargo. Kept separate from speed_multiplier,
+## which the Overdrive module already drives — sharing one field meant an
+## overdrive wearing off would reset the ship to full speed and quietly cancel
+## the penalty the contract is paying you to fly under.
+var haul_multiplier: float = 1.0
+
 ## Permanent movement bonus stacked up from module picks (+5% each).
 var speed_bonus: float = 0.0
 
@@ -220,7 +226,7 @@ func _handle_normal_movement() -> void:
 		Input.get_action_strength("down")  - Input.get_action_strength("up")
 	)
 	if input_dir != Vector2.ZERO:
-		velocity = input_dir.normalized() * current_speed * speed_multiplier * (1.0 + speed_bonus)
+		velocity = input_dir.normalized() * current_speed * speed_multiplier * haul_multiplier * (1.0 + speed_bonus)
 	else:
 		velocity = Vector2.ZERO
 	move_and_slide()
@@ -235,7 +241,7 @@ func _handle_boost_movement(delta: float) -> void:
 	var to_mouse = (get_global_mouse_position() - global_position).normalized()
 	var cur_dir = velocity.normalized()
 	var new_dir = cur_dir.lerp(to_mouse, TURN_RATE * delta).normalized()
-	velocity = new_dir * current_speed * speed_multiplier * (1.0 + speed_bonus)
+	velocity = new_dir * current_speed * speed_multiplier * haul_multiplier * (1.0 + speed_bonus)
 	move_and_slide()
 
 func _drain_shield_while_boosting(delta: float) -> void:
@@ -373,9 +379,11 @@ func heal_full() -> void:
 ## looking.
 func apply_shrink_device() -> void:
 	ship_body.scale *= SHRINK_SCALE
-	var shape := $CollisionShape2D as CollisionShape2D
-	if shape:
-		shape.scale *= SHRINK_SCALE
+	_shrink_hitbox($CollisionShape2D as CollisionShape2D)
+	# The draw-order probes are sized to the old hull too, so a shrunk ship
+	# would still flip its z-order from a full-size distance away.
+	_shrink_hitbox($TopOrder/CollisionShape2D as CollisionShape2D)
+	_shrink_hitbox($LowOrder/CollisionShape2D as CollisionShape2D)
 	# The dash trails are sized to the old hull, so they'd hang off a shrunk
 	# ship like a cape unless they come in with it.
 	for trail_name in ["Dash Outer", "Dash Inner"]:
@@ -383,6 +391,36 @@ func apply_shrink_device() -> void:
 		if trail:
 			trail.width *= SHRINK_SCALE
 	speed_bonus += SHRINK_SPEED_BONUS
+	# Enemies cache how far away the ship counts as touched. That reading is
+	# taken once each, and would otherwise keep the old, larger hull forever,
+	# so a shrunk ship would still take contact damage at full-size range.
+	for enemy in get_tree().get_nodes_in_group("enemies"):
+		if "_cached_player_radius" in enemy:
+			enemy._cached_player_radius = -1.0
+
+
+## Halves a collision shape properly.
+##
+## Scaling the CollisionShape2D node was the obvious way to do this and it does
+## not work: the shape resource is what physics actually reads, and it is shared
+## between every instance that uses it, so the node's scale left the real hitbox
+## full size. Duplicating the shape and shrinking the radius resizes only this
+## ship's hitbox and leaves everything else alone.
+func _shrink_hitbox(shape: CollisionShape2D) -> void:
+	if shape == null or shape.shape == null:
+		return
+	var resized := shape.shape.duplicate()
+	if resized is CircleShape2D:
+		(resized as CircleShape2D).radius *= SHRINK_SCALE
+	elif resized is RectangleShape2D:
+		(resized as RectangleShape2D).size *= SHRINK_SCALE
+	elif resized is CapsuleShape2D:
+		var capsule := resized as CapsuleShape2D
+		capsule.radius *= SHRINK_SCALE
+		capsule.height *= SHRINK_SCALE
+	else:
+		return
+	shape.shape = resized
 
 
 ## Super Energy Module — a visible flash while the post-reload surge is up.

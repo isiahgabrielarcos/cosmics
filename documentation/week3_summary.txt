@@ -1,0 +1,56 @@
+Game Design Internship | Week 3
+Weekly Summary and Reflection Journal
+Prepared by: Isiah Gabriel Arcos
+Summary of the Week
+Dialogue System
+Built a central character registry (avatar, display name, role title) for all speaking characters, replacing data that had been hand-typed at every dialogue call site, and added multi-stage conversation support so one chat box can step through several lines and switch speakers.
+Replaced placeholder lines with real, character-appropriate dialogue for the three-character hub roster kept after scope reduction, and unified the tone of the role-title line across characters.
+Combat Feedback &amp; Balance
+Added floating damage numbers (white for damage dealt, red for damage taken) and five particle effect shells for enemy/boss death, player hit/death, level up, and projectile disappearance; later tuned their timing and gave enemy-death and level-up their first real visual pass.
+Rebalanced core combat: per-weapon ammo capacity and pierce values with reload-on-switch, a rebalanced Shockwave and Energy Overdrive, a new charge-up skill (Purple) built from scratch, reduced passive regen, multi-enemy swarm spawns, and small per-level damage scaling to offset rising enemy health.
+Loadout &amp; Economy Screens
+Rebuilt the blacksmith screen around a module grid (icon, name, price, equipped state) with a buy → equip → equipped flow and a rule blocking duplicate weapons across both slots.
+Took the trader screen from an early draft to a finished pairing with the blacksmith screen, matched spacing, transitions, and button behavior — and re-verified the purchase/equip flow and duplicate-weapon rule end to end across both screens.
+Level Selection &amp; Difficulty
+Built the level-selection screen: an orbiting camera over a cluster of solar systems, a selection panel with narrative and gameplay text, and an initial 5-step difficulty scale, then brought it to a first fully working draft with a balance pass over the difficulty curve.
+Reworked difficulty into 4 tiers (Beginner / Normal / Hard / Space Cowboy) with per-tier enemy rosters and health/damage scaling, and tied each boss to its own solar system.
+Progression, Inventory &amp; Stability
+Built the full level-up module/upgrade system: a 3-card selection screen, the complete upgrade table across all rarities, burn/paralysis status effects, and a module “surrender for currency” system with rarity-based chests.
+Rebuilt the inventory as a slide-in panel with a cooldown-icon sidebar, live stat display, and a scrollable module log; fixed it from blocking player shooting while open.
+Fixed a wide range of engine bugs: a Ship Status crash, wall depth-sorting, out-of-range enemy hits, missing particle emission, melee weapons losing their authored collision shapes, and a damage-compounding exploit in percentage-based upgrades.
+Window, HUD &amp; Build Polish
+Made the game window resizable and fixed HUD elements (health bar, ammo counter, minimap) that had been pinned to a single fixed resolution.
+Diagnosed and fixed an intermittent bug that could permanently lock the player out of shooting, and added a self-correcting “watchdog” safeguard so the same class of bug cannot recur unnoticed.
+Wired the HUD pause button to the same function as the Escape key, cleaned up dead node references from an earlier UI rework, and generated a proper multi-resolution Windows icon for the exported build.
+What I Learned
+Input binding conflicts can look exactly like scene-wiring bugs, a Day 1 issue where every NPC opened the blacksmith screen traced back to a key binding, not the dialogue code, which was a reminder to check project settings before assuming the code is broken.
+Placeholder content hides real problems: particle effects that looked fine against engine defaults, and text boxes sized to short placeholder copy, only broke once real content was substituted, a case for testing against worst-case real content earlier rather than later.
+Percentage-based upgrades must be calculated off a fixed base value, not the current (already-modified) one, or they compound exponentially, learned directly when a “+20% damage” upgrade sent numbers into the trillions.
+Godot's deferred node removal means a list rebuilt immediately after removing old entries can silently double up, since removal doesn't take effect until the end of the frame.
+Silent failures, no error, no crash, are the hardest bugs and the most worth guarding against; several issues this week never threw an error, so runtime tracing was far more useful than reading the code alone.
+It is worth building small defensive safety nets (like the watchdog timer added on Day 5) around state that, if it silently breaks, can permanently lock the player out, rather than only patching the one discovered case.
+Challenges Encountered
+A key-binding conflict silently routed every NPC interaction to the blacksmith screen, blocking dialogue testing until it was traced to the project's input settings.
+Inconsistent internal node names on hand-built loadout slots meant code written against one module slot failed on the others.
+Two particle effects read as visually identical once given real color and motion, undermining their purpose as distinct combat feedback.
+The trader and blacksmith screens did not share a live view of owned items, so a purchase made on one screen did not immediately show as owned on the other.
+A cluster of “silent” bugs, a renamed-node crash, non-firing depth-sort colliders, exploit-level damage compounding, a duplicating inventory list, particles saved with emission off, and a shared script overwriting authored melee hitboxes, took longer to find than to fix.
+An intermittent bug could permanently strip the player's ability to shoot if the game happened to pause during the last shot of a burst-fire skill, with no error message pointing to the cause.
+Making the window resizable surfaced a chain of HUD elements built on fixed-resolution anchoring, plus a non-obvious requirement that Windows needs a proper multi-size icon file rather than a plain PNG.
+How My Game Ideas Evolved
+The playable roster was deliberately trimmed per the Week 2 pitch review, five weapons and five skills instead of seven each, and dialogue narrowed to three hub characters, with nothing deleted, only held back for later.
+Difficulty design evolved from an early 5-step scale (Beginner/Easy/Medium/Hard/Space Cowboy) into a leaner, better-balanced 4-tier system once real per-tier enemy rosters and scaling were tuned against actual play.
+The loadout economy grew from a simple scrolling list into a matched two-screen system (blacksmith and trader) sharing one buy → equip → equipped flow, shopping and equipping are now treated as one connected loop rather than separate features.
+Level selection moved from a flat mission board toward a more atmospheric orbiting solar-system map, tying each boss to its own system, so visual identity and progression structure are starting to merge.
+The upgrade loop expanded from basic combat feedback into a full meta-progression system: leveling now offers a 3-card, rarity-based choice with a surrender-for-currency option, turning post-fight moments into real decisions instead of automatic stat bumps.
+Visual and art direction (particle looks, the level-select background) is being deliberately deferred behind functional and balance work, so the game's feel is being locked in through mechanics first and dressed later rather than guessed at early.
+Future Plans
+Finish the visual pass on the three remaining particle effects (boss death, player hit/death, projectile disappearance), using the same distinct-per-event approach applied to enemy death and level up.
+Continue balancing module/upgrade damage against enemy health scaling as more content is added, and keep testing the difficulty curve across all four tiers.
+Decide and apply an art direction for the level-selection background and the trader/blacksmith screens once the underlying logic is confirmed stable.
+Expand dialogue content as additional scenes are scripted, building on the multi-stage conversation framework.
+Continue resolution and aspect-ratio testing across other UI screens to catch any remaining fixed-anchor elements beyond the ones already fixed.
+Carry forward the habit of verifying with real content and runtime behavior, not just a code read-through, into next week's feature work.
+Links
+Playable prototype: https://creative-cats-club.itch.io/stellarbound-mercenary
+Repository: https://github.com/isiahgabrielarcos/temporary-game-repo

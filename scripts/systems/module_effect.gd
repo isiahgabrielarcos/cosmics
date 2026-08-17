@@ -56,9 +56,19 @@ func _ready() -> void:
 	collision_layer = 2           # Bullets
 	collision_mask  = EnemyUnit.HOSTILE_MASK   # every enemy lane
 
+	# Effects are spawned into the world alongside the drifting scenery, which
+	# reaches z_index 8. Without this a burst going off around the ship was
+	# drawn underneath the nearest asteroid and simply never seen.
+	z_index = 15
+
 	var circle := CircleShape2D.new()
 	circle.radius = radius
 	_shape.shape = circle
+	# The authored shapes carry a node scale (the shockwave's was over 9x) that
+	# was left in place while the radius was overwritten here, multiplying the
+	# real hitbox by it. That is why the shockwave paralysed things far outside
+	# anything the player could see. `radius` is the whole truth now.
+	_shape.scale = Vector2.ONE
 
 	# The 96px-wide art is authored for a 48px radius, so anything whose
 	# radius is set at spawn has to stretch its sprite to match. Off for the

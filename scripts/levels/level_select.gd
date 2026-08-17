@@ -20,6 +20,9 @@ const SYSTEM_STAGES := {
 	"Strogghold": 2,
 	"Frokenvinter": 3,
 	"Squilltrant": 4,
+	# The structure in the middle of the cluster. Same picking rules as a
+	# system, but it launches the all-factions stage rather than one system's.
+	"Citadel": GameManager.CITADEL_STAGE,
 }
 
 @onready var _camera: Camera3D = $"camera pointer/Camera3D"
@@ -127,7 +130,13 @@ func _open_system(stage: int) -> void:
 func _on_launch(stage: int, tier: int, endless: bool) -> void:
 	# Endless variants live at stage+20 (21-24) so is_endless_stage() picks
 	# up the count-up timer; a timed run keeps the plain stage id.
-	if endless:
+	if stage == GameManager.CITADEL_STAGE:
+		# The Citadel keeps its own endless id: 21-24 are the four systems'.
+		if endless:
+			GameManager.queue_battle(GameManager.CITADEL_ENDLESS_STAGE, "normal", tier, 0.0)
+		else:
+			GameManager.queue_battle(GameManager.CITADEL_STAGE, "normal", tier, 15.0)
+	elif endless:
 		GameManager.queue_battle(stage + 20, "normal", tier, 0.0)
 	else:
 		GameManager.queue_battle(stage, "normal", tier, 15.0)
